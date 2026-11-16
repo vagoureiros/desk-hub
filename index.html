@@ -38,6 +38,13 @@ header{display:flex;align-items:center;justify-content:space-between;gap:20px}
 .time{display:flex;align-items:baseline;gap:16px}
 #clock{font-family:Fraunces,serif;font-weight:300;font-size:52px;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
 #date{color:var(--muted);font-size:15px;text-transform:capitalize}
+.hright{display:flex;align-items:center;gap:12px}
+.out{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:13.5px;font-weight:600;color:var(--muted);transition:all .4s}
+.out svg{width:17px;height:17px}
+.out .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+.out.wl{color:var(--ink);border-color:rgba(120,200,140,.45);background:rgba(120,200,140,.10)}
+.out.wl .dot{background:#7fd393;box-shadow:0 0 8px #7fd393}
+.cbtn.wl{border-color:rgba(120,200,140,.6);color:#9be3ad}
 .modes{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px;position:relative}
 .modes button{position:relative;z-index:1;padding:11px 22px;border-radius:999px;font-weight:600;font-size:14.5px;color:var(--muted);transition:color .3s;display:flex;align-items:center;gap:8px}
 .modes button.on{color:#1a120c}
@@ -168,10 +175,13 @@ aside{display:flex;flex-direction:column;gap:14px;min-height:0}
 <div class="app">
   <header>
     <div class="time"><div id="clock">--:--</div><div id="date"></div></div>
+    <div class="hright">
+    <button class="out" id="out" aria-label="Έξοδος ήχου"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="M12 15l5 6H7z" fill="currentColor"/></svg><span id="outTxt">Ηχεία iPad</span></button>
     <div class="modes" id="modes">
       <div class="pill" id="pill"></div>
       <button data-mode="work"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Δουλειά</button>
       <button data-mode="chill"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>Χαλάρωση</button>
+    </div>
     </div>
   </header>
 
@@ -268,7 +278,12 @@ const STATIONS=[
  {id:'secretagent',name:'Secret Agent',sub:'lounge',c:'#2f5450',mode:'chill',src:'soma'},
  {id:'rp-global',name:'Global Mix',sub:'radio paradise',c:'#7a6a2e',mode:'chill',src:'rp',chan:3,stream:'https://stream.radioparadise.com/global-128'},
 ];
-STATIONS.forEach(s=>{ if(s.src==='soma') s.stream=`https://ice2.somafm.com/${s.id}-128-mp3`; });
+STATIONS.forEach(s=>{
+  if(s.src==='soma') s.streams=['ice1','ice2','ice4','ice6'].flatMap(h=>[`https://${h}.somafm.com/${s.id}-128-mp3`]).concat(['ice1','ice4'].map(h=>`https://${h}.somafm.com/${s.id}-128-aac`));
+  else { const base=s.stream.replace('-128',''); s.streams=[s.stream, s.stream.replace('-128','-192'), base.replace('mp3','aac')+'-128'].filter((v,i,a)=>a.indexOf(v)===i); }
+  s.stream=s.streams[0];
+});
+let tryIdx=0;
 
 const audio=$('#audio');
 let mode=store.get('mode','work');
@@ -316,12 +331,12 @@ function setPlayingUI(p){playing=p;$('#vinyl').classList.toggle('playing',p);$('
 function select(s,autoplay){const changed=!cur||cur.id!==s.id;cur=s;store.set('station',s.id);
   renderCrate();applyStationLabel();
   if(changed){meta={title:'',artist:'',cover:''};lastKey='';setCover('');$('#npTitle').textContent=s.name;$('#npArtist').textContent=s.sub;
-    switching=Date.now();audio.src=s.stream;}
+    switching=Date.now();tryIdx=0;audio.src=s.streams[0];}
   if(autoplay) play(); }
 function play(){if(!cur){select(crateList()[0],false)}
-  if(!audio.src) audio.src=cur.stream;
+  if(!audio.getAttribute('src')){tryIdx=0;audio.src=cur.streams[0];}
   setPlayingUI(true);toast('Ο δίσκος μπαίνει…',1400);
-  const p=audio.play(); if(p&&p.catch) p.catch(err=>{setPlayingUI(false);toast('Δεν ξεκίνησε η αναπαραγωγή, ξαναπάτα play');});
+  const p=audio.play(); if(p&&p.catch) p.catch(err=>{if(err&&err.name==='AbortError')return;setPlayingUI(false);toast('Δεν ξεκίνησε η αναπαραγωγή ('+(err&&err.name)+')',4000);});
   pollMeta(true);mediaSession();}
 function pause(){audio.pause();setPlayingUI(false);
   // drop the live buffer so resume is "live" again
@@ -329,8 +344,17 @@ function pause(){audio.pause();setPlayingUI(false);
 function toggle(){playing?pause():play()}
 function step(d){const l=crateList();let i=cur?l.findIndex(s=>s.id===cur.id):-1;i=(i+d+l.length)%l.length;select(l[i],playing||true)}
 $('#play').onclick=toggle;$('#platter').onclick=toggle;$('#next').onclick=()=>step(1);$('#prev').onclick=()=>step(-1);
+function outState(){const wl=!!audio.webkitCurrentPlaybackTargetIsWireless;$('#out').classList.toggle('wl',wl);$('#airplay').classList.toggle('wl',wl);
+  $('#outTxt').textContent=wl?'AirPlay · συνδεδεμένο':'Ηχεία iPad';}
+audio.addEventListener('webkitcurrentplaybacktargetiswirelesschanged',outState);
+audio.addEventListener('webkitplaybacktargetavailabilitychanged',e=>{$('#out').title=e.availability==='available'?'Υπάρχουν διαθέσιμα ηχεία AirPlay':'';});
+setInterval(outState,3000);
+$('#out').onclick=()=>$('#airplay').click();
 $('#airplay').onclick=()=>{if(audio.webkitShowPlaybackTargetPicker){audio.webkitShowPlaybackTargetPicker()}else{toast('Κέντρο Ελέγχου → εικονίδιο AirPlay → διάλεξε το Sonos',3500)}};
-audio.addEventListener('error',()=>{if(playing&&audio.getAttribute('src')){setPlayingUI(false);toast('Ο σταθμός δεν απαντά, δοκίμασε άλλον δίσκο',3000)}});
+audio.addEventListener('error',()=>{if(!playing||!audio.getAttribute('src')||!cur)return;
+  const code=audio.error?audio.error.code:'?';
+  if(tryIdx<cur.streams.length-1){tryIdx++;switching=Date.now();audio.src=cur.streams[tryIdx];const p=audio.play();if(p&&p.catch)p.catch(()=>{});return;}
+  setPlayingUI(false);toast('Ο σταθμός δεν απαντά (κωδ. '+code+'), δοκίμασε άλλον δίσκο',4000)});
 audio.addEventListener('pause',()=>{if(Date.now()-switching<2500)return;if(playing&&!audio.ended&&document.visibilityState==='visible'){/* paused externally (e.g. Control Center) */setPlayingUI(false)}});
 audio.addEventListener('play',()=>setPlayingUI(true));
 
