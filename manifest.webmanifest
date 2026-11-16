@@ -1,0 +1,11 @@
+{
+  "name": "Desk Hub",
+  "short_name": "Desk Hub",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#15100c",
+  "theme_color": "#15100c",
+  "icons": [{ "src": "icon.png", "sizes": "180x180", "type": "image/png" }]
+}
