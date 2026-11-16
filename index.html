@@ -148,6 +148,13 @@ aside{display:flex;flex-direction:column;gap:14px;min-height:0}
 .endday{width:100%;padding:15px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(90deg,rgba(var(--glow),.12),transparent);font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:space-between}
 .endday svg{width:20px;height:20px;opacity:.8}
 
+/* solo (turntable only) */
+header,aside,.now{transition:opacity .6s ease}
+body.solo header,body.solo aside,body.solo .now{opacity:0;pointer-events:none}
+.stage.fly{position:fixed;z-index:15;transition:left .9s cubic-bezier(.6,0,.2,1),top .9s cubic-bezier(.6,0,.2,1),width .9s cubic-bezier(.6,0,.2,1),height .9s cubic-bezier(.6,0,.2,1)}
+#soloExit{position:fixed;z-index:16;top:calc(env(safe-area-inset-top) + 22px);right:calc(env(safe-area-inset-right) + 24px);width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(255,240,220,.06);border:1px solid var(--line);opacity:0;pointer-events:none;transition:opacity .6s ease .5s}
+#soloExit svg{width:20px;height:20px}
+body.solo #soloExit{opacity:.75;pointer-events:auto}
 /* overlays */
 .ov{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 1s ease}
 .ov.on{opacity:1;pointer-events:auto}
@@ -224,6 +231,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-height:0}
           <button class="cbtn" id="prev" aria-label="Προηγούμενος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
           <button class="cbtn big" id="play" aria-label="Αναπαραγωγή"><svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
           <button class="cbtn" id="next" aria-label="Επόμενος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+          <button class="cbtn" id="soloBtn" aria-label="Μόνο το πικάπ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
           <button class="cbtn" id="airplay" aria-label="AirPlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="M12 15l5 6H7z" fill="currentColor"/></svg></button>
         </div>
       </div>
@@ -256,6 +264,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-height:0}
   </main>
 </div>
 
+<button id="soloExit" aria-label="Επιστροφή"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
 <div class="ov" id="idle"><div class="ic" id="idleClock"></div><div class="id" id="idleDate"></div><div class="inp" id="idleNp"></div></div>
 <div class="ov" id="eod"><h1>Τέλος για σήμερα.</h1><p id="eodTxt"></p><button class="chip solid" id="eodClose">Καλή ξεκούραση</button></div>
 <div class="toast" id="toast"></div>
@@ -471,6 +480,20 @@ if(location.hash==='#diag'){
     a.removeAttribute('src');a.load();out('\nΤέλος ελέγχου.');};
 }
 
+/* ---------- Solo view ---------- */
+let solo=false,ph=null;
+function rectStyle(el,r){Object.assign(el.style,{left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px'});}
+function enterSolo(){if(solo||!window.tt3d)return;solo=true;const st=$('#stage');const r=st.getBoundingClientRect();
+  ph=document.createElement('div');ph.style.flex='1';ph.style.minHeight='0';st.parentNode.insertBefore(ph,st);
+  st.style.transition='none';st.classList.add('fly');rectStyle(st,r);void st.offsetWidth;st.style.transition='';
+  document.body.classList.add('solo');
+  requestAnimationFrame(()=>rectStyle(st,{left:0,top:0,width:innerWidth,height:innerHeight}));
+  tt3d.setView('top');}
+function exitSolo(){if(!solo)return;solo=false;const st=$('#stage');const r=ph.getBoundingClientRect();
+  document.body.classList.remove('solo');rectStyle(st,r);tt3d.setView('angled');
+  setTimeout(()=>{if(solo)return;st.classList.remove('fly');st.removeAttribute('style');ph&&ph.remove();ph=null;},950);}
+$('#soloBtn').onclick=enterSolo;$('#soloExit').onclick=exitSolo;
+addEventListener('resize',()=>{if(solo)rectStyle($('#stage'),{left:0,top:0,width:innerWidth,height:innerHeight});});
 window.hub={toggle,sync(){applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
 /* init */
 setMode(mode);setPlayingUI(false);drawTimer();applyStationLabel();if(cur){$('#npTitle').textContent=cur.name;$('#npArtist').textContent=cur.sub;$('#npStation').textContent=cur.name;}

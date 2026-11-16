@@ -354,16 +354,26 @@ function setPlaying(p) {
 
 /* ---------------- camera fit ---------------- */
 const BOX = new THREE.Box3(new THREE.Vector3(-W / 2 - 1, 0, -D / 2 - 1), new THREE.Vector3(W / 2 + 1, ARM_Y + 3.5, D / 2 + 1));
+let viewT = 0, viewFrom = 0, viewTo = 0, viewStart = 0, VIEW_DUR = 1600;
+function setView(v) { viewFrom = viewT; viewTo = v === 'top' ? 1 : 0; viewStart = performance.now(); requestRender(); }
 function fit() {
   const w = container.clientWidth, h = container.clientHeight; if (!w || !h) return;
   renderer.setSize(w, h, false); camera.aspect = w / h;
-  const target = new THREE.Vector3(0, TOP - 1.0, 1.4);
-  const dir = new THREE.Vector3(0, Math.sin(THREE.MathUtils.degToRad(57)), Math.cos(THREE.MathUtils.degToRad(57))).normalize();
+  const e = ease(viewT);
+  const target = new THREE.Vector3(0, THREE.MathUtils.lerp(TOP - 1.0, TOP, e), THREE.MathUtils.lerp(1.4, 0, e));
+  const el = THREE.MathUtils.degToRad(THREE.MathUtils.lerp(57, 90, e));
+  camera.fov = THREE.MathUtils.lerp(26, 20, e);
+  // from straight above the studio ceiling lights would mirror in the vinyl: tilt & dim the environment
+  scene.environmentIntensity = THREE.MathUtils.lerp(.55, .2, e);
+  scene.environmentRotation.set(THREE.MathUtils.lerp(0, 1.05, e), THREE.MathUtils.lerp(0, .5, e), 0);
+  M.vinylTop.clearcoat = THREE.MathUtils.lerp(.55, .3, e);
+  const dir = new THREE.Vector3(0, Math.sin(el), Math.cos(el)).normalize();
+  const mx = THREE.MathUtils.lerp(.97, .94, e), my = THREE.MathUtils.lerp(.95, .92, e);
   const corners = []; for (const x of [BOX.min.x, BOX.max.x]) for (const y of [BOX.min.y, BOX.max.y]) for (const z of [BOX.min.z, BOX.max.z]) corners.push(new THREE.Vector3(x, y, z));
   let lo = 20, hi = 400;
   for (let i = 0; i < 30; i++) {
     const d = (lo + hi) / 2; camera.position.copy(target).addScaledVector(dir, d); camera.lookAt(target); camera.updateProjectionMatrix(); camera.updateMatrixWorld();
-    const ok = corners.every(c => { const p = c.clone().project(camera); return Math.abs(p.x) < .97 && Math.abs(p.y) < .95; });
+    const ok = corners.every(c => { const p = c.clone().project(camera); return Math.abs(p.x) < mx && Math.abs(p.y) < my; });
     if (ok) hi = d; else lo = d;
   }
   camera.position.copy(target).addScaledVector(dir, hi); camera.lookAt(target); camera.updateProjectionMatrix();
@@ -393,6 +403,7 @@ function frame(now) {
     const el = (now - ARM.grooveStart) / 1000, r = Math.max(7.4, 14.55 - el * (6.5 / 1500));
     ARM.yaw = yawForRadius(r); needs = true;
   }
+  if (viewT !== viewTo) { const t = Math.min(1, (now - viewStart) / VIEW_DUR); viewT = viewFrom + (viewTo - viewFrom) * t; fit(); needs = true; }
   armYaw.rotation.y = ARM.yaw;
   armLift.rotation.x = -ARM.lift * LIFT_ANGLE;
   cueLever.rotation.z = ARM.lift * .5;
@@ -427,7 +438,7 @@ export function init(el, opts = {}) {
   scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
   scene.environmentIntensity = .55;
 
-  camera = new THREE.PerspectiveCamera(26, 1, 1, 1000);
+  camera = new THREE.PerspectiveCamera(26, 1, 1, 1000); camera.up.set(0, 0, -1);
 
   const key = new THREE.DirectionalLight(0xfff3e4, 2.1);
   key.position.set(-26, 70, 30); key.castShadow = true;
@@ -469,7 +480,7 @@ export function init(el, opts = {}) {
 }
 
 const api = {
-  setPlaying, setCover, setLabel,
+  setPlaying, setCover, setLabel, setView,
   onTap(fn) { tapHandler = fn; },
   pause(p) { paused = p; if (!p) { last = performance.now(); requestRender(); } },
 };
