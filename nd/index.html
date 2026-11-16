@@ -396,6 +396,13 @@ aside>.card{flex:none}
 #eod h1{font-family:Fraunces,Georgia,serif;font-weight:300;font-size:72px;letter-spacing:-.03em;color:#fff}
 #eod p{color:rgba(255,255,255,.8)}
 #eod .chip.solid{background:#f3eee9;color:#141110}
+/* v2: mostly dark — no background mesh, purple only behind the timer */
+.mesh,.ambient,.grain{display:none!important}
+html,body{background:#0e0d0d}
+.card{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.08)}
+.grow.card{background:radial-gradient(90% 70% at 50% 40%,rgba(124,82,190,.55),rgba(70,44,120,.35) 55%,rgba(255,255,255,.03) 100%);border-color:rgba(170,140,230,.18)}
+#idle{background:#0b0a0a}
+#eod{background:#0b0a0a}
 </style>
 </head>
 <body class="chill">
@@ -408,7 +415,8 @@ aside>.card{flex:none}
     <div class="time"><div id="clock">--:--</div><div id="date"></div></div>
     <div class="hright">
         <div class="skins" id="skins">
-          <button data-skin="mono"><span class="sw" style="background:#efefec"></span>White</button>
+          <button data-skin="noir"><span class="sw" style="background:#141414;position:relative"><i style="position:absolute;left:8px;bottom:7px;width:12px;height:7px;border-radius:2px;background:#d71921"></i></span>Black · red</button>
+          <button data-skin="mono"><span class="sw" style="background:#efefec;position:relative"><i style="position:absolute;left:8px;bottom:7px;width:12px;height:7px;border-radius:2px;background:#d71921"></i></span>White · red</button>
           <button data-skin="black"><span class="sw" style="background:linear-gradient(150deg,#2a2a2c,#0b0b0c)"></span>Black</button>
           <button data-skin="walnut"><span class="sw" style="background:repeating-linear-gradient(170deg,#6a3d1e 0 5px,#55301a 5px 8px,#7a4824 8px 11px)"></span>Walnut</button>
           <button data-skin="acrylic"><span class="sw" style="background:linear-gradient(150deg,rgba(220,235,240,.5),rgba(255,255,255,.08));border-color:rgba(255,255,255,.25)"></span>Clear</button>
@@ -807,8 +815,8 @@ $('#onair').addEventListener('pointerdown',e=>{e.stopPropagation();});
 $('#onair').addEventListener('click',e=>{if(e.target.id==='oaEnd'){exitOnAir();return;}
   $('#onair').classList.add('ask');clearTimeout(oaAskT);oaAskT=setTimeout(()=>$('#onair').classList.remove('ask'),4000);});
 /* ---------- Skins ---------- */
-let skinName=store.get('skin_nd','black');
-function applySkin(n){skinName=n;store.set('skin_nd',n);window.tt3d&&tt3d.setSkin(n);$$('#skins button').forEach(b=>b.classList.toggle('on',b.dataset.skin===n));}
+let skinName=store.get('skin_nd2','noir');
+function applySkin(n){skinName=n;store.set('skin_nd2',n);window.tt3d&&tt3d.setSkin(n);$$('#skins button').forEach(b=>b.classList.toggle('on',b.dataset.skin===n));}
 $('#skinBtn').onclick=e=>{e.stopPropagation();$('#skinBtn').classList.toggle('on',$('#skins').classList.toggle('on'));};
 $$('#skins button').forEach(b=>b.onclick=e=>{e.stopPropagation();applySkin(b.dataset.skin);setTimeout(()=>{$('#skins').classList.remove('on');$('#skinBtn').classList.remove('on');},350);});
 addEventListener('pointerdown',e=>{if(!e.target.closest('#skins')&&!e.target.closest('#skinBtn')){$('#skins').classList.remove('on');$('#skinBtn').classList.remove('on');}});

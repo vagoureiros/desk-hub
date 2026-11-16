@@ -491,9 +491,10 @@ let skin = 'black';
 function setSkin(name) {
   skin = name; const acr = name === 'acrylic';
   const mono = name === 'mono';
-  SK.plinth.material = name === 'walnut' ? M.walnut : acr ? M.acrylic : mono ? M.mono : M.plinth;
+  SK.plinth.material = name === 'walnut' ? M.walnut : acr ? M.acrylic : mono ? M.mono : M.plinth; // noir uses black plinth
   SK.inlay.material = name === 'walnut' ? M.walnutTop : mono ? M.monoTop : M.plinthTop;
-  startBtn.material = mono ? M.red : M.button;
+  const noir = name === 'noir';
+  startBtn.material = mono || noir ? M.red : M.button;
   SK.inlay.visible = !acr;
   SK.plinth.castShadow = !acr;
   SK.inner.visible = acr;
