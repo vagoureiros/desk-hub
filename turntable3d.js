@@ -172,7 +172,7 @@ function shade(hex, p) {
 /* ---------------- scene ---------------- */
 let renderer, scene, camera, container, spinGroup, armYaw, armLift, cueLever, targetLamp, ledOn, led33;
 let needs = true, paused = false, tapHandler = null, startBtn, recHolder, recSpin;
-const SK = { feet: [] };
+const SK = { feet: [], prints: [] };
 function requestRender() { needs = true; }
 
 const M = {}; // materials
@@ -342,7 +342,7 @@ function addPrint(parent, text, x, z, px = 20, align = 'center') {
   g.textAlign = align; g.textBaseline = 'middle'; g.fillText(spaced(text), align === 'right' ? 506 : 256, 32);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
   const m = new THREE.Mesh(new THREE.PlaneGeometry(10, 1.25), new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false }));
-  m.rotation.x = -Math.PI / 2; m.position.set(align === 'right' ? x - 5 : x, TOP + .07, z); parent.add(m);
+  m.rotation.x = -Math.PI / 2; m.position.set(align === 'right' ? x - 5 : x, TOP + .07, z); parent.add(m); SK.prints.push(m);
 }
 
 /* ---------------- tonearm kinematics ---------------- */
@@ -456,6 +456,7 @@ function setSkin(name) {
   SK.inner.visible = acr;
   SK.feet.forEach(f => f.material = acr ? M.chrome : M.rubber);
   M.button.color.set(name === 'walnut' ? 0x16110d : 0x1b1c1e);
+  SK.prints.forEach(p => p.material.color.set(acr ? 0x2a2a2a : 0xffffff));
   requestRender();
 }
 

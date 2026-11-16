@@ -142,10 +142,10 @@ aside{display:flex;flex-direction:column;gap:14px;min-height:0}
 .sleeve.ask .rm{display:flex}
 .sleeve .rm i{font-style:normal;padding:7px 12px;border-radius:999px;background:#c9533a;color:#fff;font-weight:700}
 .sleeve .rm u{text-decoration:none;color:var(--muted)}
-#sheet{position:fixed;inset:0;z-index:25;background:rgba(8,5,4,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s}
-#sheet.on{opacity:1;pointer-events:auto}
+#sheet,#hist{position:fixed;inset:0;z-index:25;background:rgba(8,5,4,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s}
+#sheet.on,#hist.on{opacity:1;pointer-events:auto}
 .sheet{width:min(720px,92vw);height:min(640px,86vh);background:#1d1611;border:1px solid var(--line);border-radius:26px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6);transform:translateY(20px);transition:transform .35s}
-#sheet.on .sheet{transform:none}
+#sheet.on .sheet,#hist.on .sheet{transform:none}
 .sh-head{padding:22px 22px 14px;display:flex;flex-direction:column;gap:14px;border-bottom:1px solid var(--line)}
 .sh-top{display:flex;align-items:center;justify-content:space-between}
 .sh-top h2{margin:0;font-family:Fraunces,serif;font-weight:400;font-size:26px}
@@ -206,6 +206,27 @@ body.solo header,body.solo aside,body.solo .now{opacity:0;pointer-events:none}
 #soloExit{position:fixed;z-index:16;top:calc(env(safe-area-inset-top) + 22px);right:calc(env(safe-area-inset-right) + 24px);width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(255,240,220,.06);border:1px solid var(--line);opacity:0;pointer-events:none;transition:opacity .6s ease .5s}
 #soloExit svg{width:20px;height:20px}
 body.solo #soloExit{opacity:.75;pointer-events:auto}
+/* history */
+.np-row{display:flex;align-items:center;gap:10px;min-width:0}
+.np-row .np-title{min-width:0}
+#likeBtn{flex:none;width:38px;height:38px;border-radius:50%;display:none;place-items:center;margin-top:6px;color:var(--muted);border:1px solid var(--line);transition:all .25s}
+#likeBtn.show{display:grid}
+#likeBtn svg{width:19px;height:19px}
+#likeBtn.on{color:#ef6f6c;border-color:rgba(239,111,108,.45);background:rgba(239,111,108,.1)}
+#likeBtn.pop{animation:pop .4s ease}
+@keyframes pop{50%{transform:scale(1.25)}}
+.hbtn{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:var(--panel);color:var(--muted)}
+.hbtn svg{width:19px;height:19px}
+.tabs{display:flex;gap:8px}
+.hrow{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:10px;border-radius:14px}
+.hrow .cv{width:52px;height:52px;border-radius:8px;background:var(--c,#3a2a20) center/cover;box-shadow:0 4px 10px rgba(0,0,0,.35)}
+.hrow .t{font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hrow .a{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.hrow .links{font-size:12px;color:var(--faint);margin-top:4px}
+.hrow .links a{color:var(--accent);text-decoration:none;margin-right:12px}
+.hrow .hv{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--faint)}
+.hrow .hv svg{width:20px;height:20px}
+.hrow .hv.on{color:#ef6f6c}
 /* on air */
 .oa-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:13.5px;font-weight:700;letter-spacing:.08em;color:var(--muted)}
 .oa-btn i{width:9px;height:9px;border-radius:50%;background:#7a2a22;box-shadow:inset 0 1px 1px rgba(0,0,0,.5)}
@@ -255,6 +276,7 @@ body.solo #soloExit{opacity:.75;pointer-events:auto}
   <header>
     <div class="time"><div id="clock">--:--</div><div id="date"></div></div>
     <div class="hright">
+    <button class="hbtn" id="histBtn" aria-label="Τι έπαιξε"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h11M4 12h11M4 18h7"/><circle cx="18" cy="17" r="2.5"/><path d="M20.5 17V6.5l-2.5 1"/></svg></button>
     <button class="oa-btn" id="oaBtn" aria-label="Σε κλήση"><i></i>ΣΕ ΚΛΗΣΗ</button>
     <button class="out" id="out" aria-label="Έξοδος ήχου"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="M12 15l5 6H7z" fill="currentColor"/></svg><span id="outTxt">Ηχεία iPad</span></button>
     <div class="modes" id="modes">
@@ -295,7 +317,7 @@ body.solo #soloExit{opacity:.75;pointer-events:auto}
       <div class="now" id="now">
         <div style="min-width:0">
           <div class="np-station"><span class="dots"><i></i><i></i><i></i></span><span id="npStation"></span></div>
-          <div class="np-title" id="npTitle">Διάλεξε έναν δίσκο</div>
+          <div class="np-row"><div class="np-title" id="npTitle">Διάλεξε έναν δίσκο</div><button id="likeBtn" aria-label="Μου αρέσει"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.4 7.6 3.6 4 7.1 4c2 0 3.6 1.1 4.9 2.8C13.3 5.1 14.9 4 16.9 4c3.5 0 5.7 3.6 4.4 7.1-1.8 4.8-9.3 9.4-9.3 9.4z"/></svg></button></div>
           <div class="np-artist" id="npArtist">Πάτα πάνω στο βινύλιο ή σε ένα εξώφυλλο δεξιά</div>
         </div>
         <div class="ctrls">
@@ -354,6 +376,13 @@ body.solo #soloExit{opacity:.75;pointer-events:auto}
     <div class="sh-sub" id="shSub"></div>
   </div>
   <div id="results"></div>
+</div></div>
+<div id="hist"><div class="sheet">
+  <div class="sh-head">
+    <div class="sh-top"><h2>Τι έπαιξε</h2><button id="hClose" aria-label="Κλείσιμο">×</button></div>
+    <div class="tabs"><button class="chip on" data-tab="recent">Πρόσφατα</button><button class="chip" data-tab="liked">♥ Αγαπημένα</button></div>
+  </div>
+  <div id="hList" style="flex:1;overflow-y:auto;padding:8px 12px 16px;-webkit-overflow-scrolling:touch"></div>
 </div></div>
 <div class="toast" id="toast"></div>
 <audio id="audio" preload="none" playsinline x-webkit-airplay="allow"></audio>
@@ -450,7 +479,7 @@ function setPlayingUI(p){playing=p;window.tt3d&&tt3d.setPlaying(p);$('#vinyl').c
 
 function select(s,autoplay,dir){const changed=!cur||cur.id!==s.id;if(changed&&cur&&window.tt3d)tt3d.swapRecord(dir||1);cur=s;store.set('station',s.id);
   renderCrate();applyStationLabel();
-  if(changed){meta={title:'',artist:'',cover:''};lastKey='';setCover('');$('#npTitle').textContent=s.name;$('#npArtist').textContent=s.sub;
+  if(changed){meta={title:'',artist:'',cover:''};lastKey='';$('#likeBtn').classList.remove('show');setCover('');$('#npTitle').textContent=s.name;$('#npArtist').textContent=s.sub;
     switching=Date.now();tryIdx=0;audio.src=s.streams[0];}
   if(autoplay) play(); }
 function play(){if(!cur){select(crateList()[0],false)}
@@ -494,7 +523,8 @@ async function pollMeta(now){clearTimeout(metaTimer);if(!cur)return;const s=cur;
   try{const m=await fetchMeta(s);if(m&&s===cur){const key=m.artist+'|'+m.title;
       if(key!==lastKey){lastKey=key;meta=m;
         $('#npTitle').textContent=m.title||s.name;$('#npArtist').textContent=[m.artist,m.album].filter(Boolean).join(' · ')||s.sub;
-        let cv=m.cover||'';if(!cv&&m.artist&&m.title)cv=await itunesCover(m.artist,m.title);if(s===cur){meta.cover=cv;setCover(cv);mediaSession();}}}}
+        if(m.title)addHistory({k:key,title:m.title,artist:m.artist||'',station:s.name,c:s.c,cover:'',ts:Date.now()});updateLike();
+        let cv=m.cover||'';if(!cv&&m.artist&&m.title)cv=await itunesCover(m.artist,m.title);if(cv)patchCover(key,cv);if(s===cur){meta.cover=cv;setCover(cv);mediaSession();}}}}
   catch(e){}
   if(playing) metaTimer=setTimeout(()=>pollMeta(),15000);}
 function setCover(url){window.tt3d&&tt3d.setCover(url);const img=$('#cover');img.classList.remove('show');
@@ -607,7 +637,7 @@ function exitSolo(){if(!solo)return;solo=false;setTimeout(wake,1000);const st=$(
 $('#soloBtn').onclick=enterSolo;$('#soloExit').onclick=exitSolo;
 addEventListener('resize',()=>{if(solo)rectStyle($('#stage'),{left:0,top:0,width:innerWidth,height:innerHeight});});
 /* ---------- Station search (radio-browser.info) ---------- */
-const HUB_V='19';
+const HUB_V='20';
 const RB=['https://de1.api.radio-browser.info','https://fi1.api.radio-browser.info','https://de2.api.radio-browser.info'];
 let grOnly=true,qT=null,qSeq=0;
 function openSheet(){$('#sheet').classList.add('on');$('#q').value='';search('');setTimeout(()=>$('#q').focus(),350);}
@@ -660,6 +690,26 @@ $('#skinBtn').onclick=e=>{e.stopPropagation();$('#skins').classList.toggle('on')
 $$('#skins button').forEach(b=>b.onclick=e=>{e.stopPropagation();applySkin(b.dataset.skin);setTimeout(()=>$('#skins').classList.remove('on'),350);});
 addEventListener('pointerdown',e=>{if(!e.target.closest('#skins')&&!e.target.closest('#skinBtn'))$('#skins').classList.remove('on');});
 setTimeout(()=>{if(!window.tt3d)$('#stage').classList.add('no3d');},8000);
+/* ---------- History & likes ---------- */
+const HEART="<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 20.5s-7.5-4.6-9.3-9.4C1.4 7.6 3.6 4 7.1 4c2 0 3.6 1.1 4.9 2.8C13.3 5.1 14.9 4 16.9 4c3.5 0 5.7 3.6 4.4 7.1-1.8 4.8-9.3 9.4-9.3 9.4z\"/></svg>";
+function hist(){return store.get('hist',[])}function liked(){return store.get('liked',[])}
+function addHistory(e){const h=hist();if(h[0]&&h[0].k===e.k)return;h.unshift(e);store.set('hist',h.slice(0,60));}
+function patchCover(k,cv){[['hist',hist()],['liked',liked()]].forEach(([n,l])=>{let ch=false;l.forEach(x=>{if(x.k===k&&!x.cover){x.cover=cv;ch=true}});if(ch)store.set(n,l)});}
+function isLiked(k){return liked().some(x=>x.k===k)}
+function toggleLike(e){let l=liked();if(l.some(x=>x.k===e.k))l=l.filter(x=>x.k!==e.k);else l.unshift({...e,likedAt:Date.now()});store.set('liked',l);updateLike();}
+function updateLike(){const b=$('#likeBtn');const k=lastKey;const ok=!!(meta&&meta.title&&k);b.classList.toggle('show',ok);b.classList.toggle('on',ok&&isLiked(k));}
+$('#likeBtn').onclick=()=>{const h=hist().find(x=>x.k===lastKey)||{k:lastKey,title:meta.title,artist:meta.artist||'',station:cur?cur.name:'',c:cur?cur.c:'#3a2a20',cover:meta.cover||'',ts:Date.now()};
+  if(!h.cover&&meta.cover)h.cover=meta.cover;const was=isLiked(lastKey);toggleLike(h);const b=$('#likeBtn');b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');toast(was?'Αφαιρέθηκε από τα αγαπημένα':'Στα αγαπημένα ♥');};
+let hTab='recent';
+function ago(ts){const m=Math.round((Date.now()-ts)/60000);if(m<1)return'τώρα';if(m<60)return m+'′ πριν';const d=new Date(ts);const t=d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',hour12:false});return(new Date().toDateString()===d.toDateString()?'':d.toLocaleDateString('el-GR',{day:'numeric',month:'short'})+' ')+t;}
+function renderHist(){const L=$('#hList');const l=hTab==='recent'?hist():liked();
+  if(!l.length){L.innerHTML='<div class="empty">'+(hTab==='recent'?'Ακόμα τίποτα. Τα τραγούδια εμφανίζονται εδώ όταν ο σταθμός λέει τι παίζει (π.χ. Εν Λευκώ, Pepper, Play Lounge).':'Πάτα την καρδιά δίπλα στον τίτλο του τραγουδιού για να το κρατήσεις εδώ.')+'</div>';return;}
+  L.innerHTML='';l.forEach(e=>{const q=encodeURIComponent((e.artist+' '+e.title).trim());const r=document.createElement('div');r.className='hrow';r.style.setProperty('--c',e.c||'#3a2a20');
+    r.innerHTML=`<div class="cv" style="${e.cover?`background-image:url('${e.cover.replace(/'/g,'%27')}')`:''}"></div><div style="min-width:0"><div class="t">${esc(e.title)}</div><div class="a">${esc([e.artist,e.station].filter(Boolean).join(' · '))} · ${ago(hTab==='liked'?(e.likedAt||e.ts):e.ts)}</div><div class="links"><a href="https://open.spotify.com/search/${q}" target="_blank" rel="noopener">Spotify</a><a href="https://music.youtube.com/search?q=${q}" target="_blank" rel="noopener">YouTube Music</a><a href="https://music.apple.com/search?term=${q}" target="_blank" rel="noopener">Apple Music</a></div></div><button class="hv${isLiked(e.k)?' on':''}" aria-label="Μου αρέσει">${HEART}</button>`;
+    r.querySelector('.hv').onclick=()=>{toggleLike(e);renderHist();};L.appendChild(r);});}
+$('#histBtn').onclick=()=>{renderHist();$('#hist').classList.add('on');};
+$('#hClose').onclick=()=>$('#hist').classList.remove('on');$('#hist').addEventListener('click',e=>{if(e.target.id==='hist')$('#hist').classList.remove('on')});
+$$('#hist .tabs .chip').forEach(b=>b.onclick=()=>{hTab=b.dataset.tab;$$('#hist .tabs .chip').forEach(x=>x.classList.toggle('on',x===b));renderHist();});
 window.hub={toggle,sync(){applySkin(skinName);applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
 /* init */
 setMode(mode);setPlayingUI(false);drawTimer();applyStationLabel();if(cur){$('#npTitle').textContent=cur.name;$('#npArtist').textContent=cur.sub;$('#npStation').textContent=cur.name;}
