@@ -94,6 +94,20 @@ function matTexture() {
   for (let i = 0; i < 26000; i++) { const a = r() * Math.PI * 2, d = Math.sqrt(r()) * R; const v = 20 + r() * 14; x.fillStyle = `rgb(${v},${v},${v})`; x.fillRect(R + Math.cos(a) * d, R + Math.sin(a) * d, 1.4, 1.4); }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
+function woodTextures() {
+  const Wd = 2048, Hd = 1024, c = canvas(Wd, Hd), x = c.getContext('2d'), r = rng(21);
+  const g = x.createLinearGradient(0, 0, 0, Hd); g.addColorStop(0, '#45260f'); g.addColorStop(.5, '#53301a'); g.addColorStop(1, '#3f2210');
+  x.fillStyle = g; x.fillRect(0, 0, Wd, Hd);
+  for (let i = 0; i < 900; i++) {
+    const y0 = r() * Hd, amp = 6 + r() * 26, fr = .002 + r() * .004, ph = r() * 6.28, dark = r() < .55;
+    x.strokeStyle = dark ? `rgba(30,14,5,${.06 + r() * .16})` : `rgba(160,98,52,${.04 + r() * .1})`;
+    x.lineWidth = .6 + r() * 2.6; x.beginPath();
+    for (let xx = 0; xx <= Wd; xx += 16) { const y = y0 + Math.sin(xx * fr + ph) * amp + Math.sin(xx * fr * 3.1 + ph * 2) * amp * .25; xx ? x.lineTo(xx, y) : x.moveTo(xx, y); }
+    x.stroke();
+  }
+  for (let i = 0; i < 9000; i++) { x.fillStyle = `rgba(20,8,2,${r() * .18})`; x.fillRect(r() * Wd, r() * Hd, 2 + r() * 10, .8); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+}
 function contactShadowTex() {
   const N = 256, c = canvas(N), x = c.getContext('2d');
   const g = x.createRadialGradient(N / 2, N / 2, N * .05, N / 2, N / 2, N / 2);
@@ -158,6 +172,7 @@ function shade(hex, p) {
 /* ---------------- scene ---------------- */
 let renderer, scene, camera, container, spinGroup, armYaw, armLift, cueLever, targetLamp, ledOn, led33;
 let needs = true, paused = false, tapHandler = null, startBtn, recHolder, recSpin;
+const SK = { feet: [] };
 function requestRender() { needs = true; }
 
 const M = {}; // materials
@@ -180,6 +195,12 @@ function buildMaterials() {
   M.cartridge = new THREE.MeshPhysicalMaterial({ color: 0x15161a, roughness: .3, clearcoat: .8, clearcoatRoughness: .2 });
   M.stylusGuard = new THREE.MeshStandardMaterial({ color: 0xb48a3c, metalness: .6, roughness: .35 });
   M.button = new THREE.MeshPhysicalMaterial({ color: 0x1b1c1e, roughness: .4, clearcoat: .5 });
+  const wood = woodTextures();
+  M.walnut = new THREE.MeshPhysicalMaterial({ map: wood, roughness: .48, clearcoat: .55, clearcoatRoughness: .28, envMapIntensity: .8 });
+  M.walnutTop = M.walnut.clone();
+  M.acrylic = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0, roughness: .06, transmission: 1, thickness: 3.5, ior: 1.49, clearcoat: 1, clearcoatRoughness: .05, attenuationColor: new THREE.Color(0xd8e6ec), attenuationDistance: 60, specularIntensity: 1 });
+  M.pcb = new THREE.MeshStandardMaterial({ color: 0x0f2a22, roughness: .55, metalness: .1 });
+  M.copper = new THREE.MeshStandardMaterial({ color: 0xb87333, roughness: .35, metalness: 1 });
   M.print = new THREE.MeshBasicMaterial({ color: 0x8b8b8b, transparent: true });
   M.ledOff = new THREE.MeshStandardMaterial({ color: 0x2a1408, emissive: 0x000000, roughness: .3 });
   M.ledOn = new THREE.MeshStandardMaterial({ color: 0xff7a2a, emissive: 0xff6a1a, emissiveIntensity: 2.2, roughness: .3 });
@@ -202,16 +223,25 @@ function buildDeck() {
   const deck = new THREE.Group();
 
   // plinth
-  const pl = mesh(new RoundedBoxGeometry(W, H, D, 6, .7), M.plinth); pl.position.y = FOOT + H / 2; deck.add(pl);
+  const pl = mesh(new RoundedBoxGeometry(W, H, D, 6, .7), M.plinth); pl.position.y = FOOT + H / 2; deck.add(pl); SK.plinth = pl;
   // subtle top inlay (slightly different sheen)
-  const inlay = mesh(new RoundedBoxGeometry(W - 1.2, .06, D - 1.2, 4, .03), M.plinthTop, false, true); inlay.position.y = TOP + .005; deck.add(inlay);
+  const inlay = mesh(new RoundedBoxGeometry(W - 1.2, .06, D - 1.2, 4, .03), M.plinthTop, false, true); inlay.position.y = TOP + .005; deck.add(inlay); SK.inlay = inlay;
 
   // feet
   [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => {
-    const f = mesh(new THREE.CylinderGeometry(2.6, 2.9, FOOT, 40), M.rubber); f.position.set(sx * (W / 2 - 4), FOOT / 2, sz * (D / 2 - 4)); deck.add(f);
+    const f = mesh(new THREE.CylinderGeometry(2.6, 2.9, FOOT, 40), M.rubber); f.position.set(sx * (W / 2 - 4), FOOT / 2, sz * (D / 2 - 4)); deck.add(f); SK.feet.push(f);
     const ring = mesh(new THREE.CylinderGeometry(2.95, 2.95, .18, 40), M.satin); ring.position.set(sx * (W / 2 - 4), FOOT - .1, sz * (D / 2 - 4)); deck.add(ring);
   });
 
+  // internals (only visible with the clear acrylic skin)
+  const inner = new THREE.Group(); inner.visible = false; SK.inner = inner; deck.add(inner);
+  const sub = mesh(new THREE.BoxGeometry(W - 6, .25, D - 6), M.darkMetal); sub.position.y = FOOT + .9; inner.add(sub);
+  const motor = mesh(new THREE.CylinderGeometry(7.5, 7.5, 3.2, 64), M.darkMetal); motor.position.set(C.x, FOOT + 2.7, C.z); inner.add(motor);
+  const coil = mesh(new THREE.TorusGeometry(5.6, .55, 16, 64), M.copper); coil.rotation.x = Math.PI / 2; coil.position.set(C.x, FOOT + 4.4, C.z); inner.add(coil);
+  const bearing = mesh(new THREE.CylinderGeometry(1.4, 1.4, 2.2, 32), M.chrome); bearing.position.set(C.x, TOP - 1.4, C.z); inner.add(bearing);
+  const pcb = mesh(new THREE.BoxGeometry(12, .16, 7), M.pcb); pcb.position.set(10.5, FOOT + 1.2, 10.5); inner.add(pcb);
+  for (let i = 0; i < 7; i++) { const chip = mesh(new THREE.BoxGeometry(1 + (i % 3) * .5, .5, .9), M.blackPlastic); chip.position.set(6.2 + (i % 4) * 2.6, FOOT + 1.55, 8.6 + Math.floor(i / 4) * 2.8); inner.add(chip); }
+  const armCol = mesh(new THREE.CylinderGeometry(1.1, 1.1, H - 1.2, 24), M.satin); armCol.position.set(PIVOT.x, FOOT + 1 + (H - 1.2) / 2, PIVOT.z); inner.add(armCol);
   // platter well (dark ring) + spinning group
   const well = mesh(new THREE.CylinderGeometry(PLATTER_R + .35, PLATTER_R + .35, .04, 96), M.blackPlastic, false, true);
   well.position.set(C.x, TOP + .02, C.z); deck.add(well);
@@ -415,6 +445,20 @@ function frame(now) {
   if (needs) { renderer.render(scene, camera); needs = false; }
 }
 
+/* ---------------- skins ---------------- */
+let skin = 'black';
+function setSkin(name) {
+  skin = name; const acr = name === 'acrylic';
+  SK.plinth.material = name === 'walnut' ? M.walnut : acr ? M.acrylic : M.plinth;
+  SK.inlay.material = name === 'walnut' ? M.walnutTop : M.plinthTop;
+  SK.inlay.visible = !acr;
+  SK.plinth.castShadow = !acr;
+  SK.inner.visible = acr;
+  SK.feet.forEach(f => f.material = acr ? M.chrome : M.rubber);
+  M.button.color.set(name === 'walnut' ? 0x16110d : 0x1b1c1e);
+  requestRender();
+}
+
 /* ---------------- record swap ---------------- */
 let swap = null, recOffset = 0, pending = [];
 function swapRecord(dir = 1) {
@@ -519,7 +563,7 @@ export function init(el, opts = {}) {
 }
 
 const api = {
-  setPlaying, setCover, setLabel, setView, swapRecord,
+  setPlaying, setCover, setLabel, setView, swapRecord, setSkin,
   onTap(fn) { tapHandler = fn; },
   pause(p) { paused = p; if (!p) { last = performance.now(); requestRender(); } },
 };

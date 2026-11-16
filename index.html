@@ -56,7 +56,18 @@ header{display:flex;align-items:center;justify-content:space-between;gap:20px}
 main{display:grid;grid-template-columns:1fr 370px;gap:22px;min-height:0}
 .deck{display:flex;flex-direction:column;min-height:0;min-width:0}
 .stage{flex:1;min-height:0;position:relative}
+.stage .tt{visibility:hidden}
+.stage.no3d .tt{visibility:visible}
 .stage.has3d .tt{display:none}
+.stage .loader{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px;border-radius:50%;border:2px solid rgba(255,232,204,.12);border-top-color:var(--accent);animation:spin 1s linear infinite;transition:opacity .4s}
+.stage.has3d .loader,.stage.no3d .loader{opacity:0;pointer-events:none}
+.skins{position:absolute;right:0;bottom:84px;display:flex;gap:10px;padding:10px;border-radius:18px;background:#1d1611;border:1px solid var(--line);box-shadow:0 14px 40px rgba(0,0,0,.5);opacity:0;pointer-events:none;transform:translateY(8px);transition:all .25s;z-index:5}
+.skins.on{opacity:1;pointer-events:auto;transform:none}
+.skins button{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);font-weight:600}
+.skins .sw{width:58px;height:42px;border-radius:9px;border:2px solid transparent}
+.skins button.on .sw{border-color:var(--accent)}
+.skins button.on{color:var(--ink)}
+.now{position:relative}
 .stage canvas{animation:fadein 1.2s ease both}@keyframes fadein{from{opacity:0}to{opacity:1}}
 .tt{position:absolute;left:50%;top:50%;width:680px;height:540px;transform-origin:0 0}
 .plinth{position:absolute;inset:0;border-radius:28px;
@@ -257,6 +268,7 @@ body.solo #soloExit{opacity:.75;pointer-events:auto}
   <main>
     <section class="deck">
       <div class="stage" id="stage">
+        <div class="loader"></div>
         <div class="tt" id="tt">
           <div class="plinth"></div>
           <div class="mat"></div>
@@ -290,8 +302,14 @@ body.solo #soloExit{opacity:.75;pointer-events:auto}
           <button class="cbtn" id="prev" aria-label="Προηγούμενος δίσκος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
           <button class="cbtn big" id="play" aria-label="Αναπαραγωγή"><svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
           <button class="cbtn" id="next" aria-label="Επόμενος δίσκος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+          <button class="cbtn" id="skinBtn" aria-label="Εμφάνιση πικάπ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3a9 9 0 0 1 9 9"/></svg></button>
           <button class="cbtn" id="soloBtn" aria-label="Μόνο το πικάπ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
           <button class="cbtn" id="airplay" aria-label="AirPlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="M12 15l5 6H7z" fill="currentColor"/></svg></button>
+        </div>
+        <div class="skins" id="skins">
+          <button data-skin="black"><span class="sw" style="background:linear-gradient(150deg,#2a2a2c,#0b0b0c)"></span>Μαύρο</button>
+          <button data-skin="walnut"><span class="sw" style="background:repeating-linear-gradient(170deg,#6a3d1e 0 5px,#55301a 5px 8px,#7a4824 8px 11px)"></span>Καρυδιά</button>
+          <button data-skin="acrylic"><span class="sw" style="background:linear-gradient(150deg,rgba(220,235,240,.5),rgba(255,255,255,.08));border-color:rgba(255,255,255,.25)"></span>Διάφανο</button>
         </div>
       </div>
     </section>
@@ -589,7 +607,7 @@ function exitSolo(){if(!solo)return;solo=false;setTimeout(wake,1000);const st=$(
 $('#soloBtn').onclick=enterSolo;$('#soloExit').onclick=exitSolo;
 addEventListener('resize',()=>{if(solo)rectStyle($('#stage'),{left:0,top:0,width:innerWidth,height:innerHeight});});
 /* ---------- Station search (radio-browser.info) ---------- */
-const HUB_V='18';
+const HUB_V='19';
 const RB=['https://de1.api.radio-browser.info','https://fi1.api.radio-browser.info','https://de2.api.radio-browser.info'];
 let grOnly=true,qT=null,qSeq=0;
 function openSheet(){$('#sheet').classList.add('on');$('#q').value='';search('');setTimeout(()=>$('#q').focus(),350);}
@@ -635,7 +653,14 @@ $('#oaBtn').onclick=enterOnAir;
 $('#onair').addEventListener('pointerdown',e=>{e.stopPropagation();});
 $('#onair').addEventListener('click',e=>{if(e.target.id==='oaEnd'){exitOnAir();return;}
   $('#onair').classList.add('ask');clearTimeout(oaAskT);oaAskT=setTimeout(()=>$('#onair').classList.remove('ask'),4000);});
-window.hub={toggle,sync(){applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
+/* ---------- Skins ---------- */
+let skinName=store.get('skin','black');
+function applySkin(n){skinName=n;store.set('skin',n);window.tt3d&&tt3d.setSkin(n);$$('#skins button').forEach(b=>b.classList.toggle('on',b.dataset.skin===n));}
+$('#skinBtn').onclick=e=>{e.stopPropagation();$('#skins').classList.toggle('on');};
+$$('#skins button').forEach(b=>b.onclick=e=>{e.stopPropagation();applySkin(b.dataset.skin);setTimeout(()=>$('#skins').classList.remove('on'),350);});
+addEventListener('pointerdown',e=>{if(!e.target.closest('#skins')&&!e.target.closest('#skinBtn'))$('#skins').classList.remove('on');});
+setTimeout(()=>{if(!window.tt3d)$('#stage').classList.add('no3d');},8000);
+window.hub={toggle,sync(){applySkin(skinName);applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
 /* init */
 setMode(mode);setPlayingUI(false);drawTimer();applyStationLabel();if(cur){$('#npTitle').textContent=cur.name;$('#npArtist').textContent=cur.sub;$('#npStation').textContent=cur.name;}
 requestAnimationFrame(()=>{fit();setMode(mode);});wake();
@@ -648,7 +673,7 @@ try {
   const st = document.getElementById('stage');
   const t = init(st); window.tt3d = t; st.classList.add('has3d');
   t.onTap(() => window.hub.toggle()); window.hub.sync();
-} catch (e) { console.error('3D init failed', e); }
+} catch (e) { console.error('3D init failed', e); document.getElementById('stage').classList.add('no3d'); }
 </script>
 </body>
 </html>
