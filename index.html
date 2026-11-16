@@ -600,12 +600,12 @@ async function search(q){const seq=++qSeq;const res=$('#results');res.innerHTML=
   if(!list.length){res.innerHTML='<div class="empty">Δεν βρέθηκε σταθμός. Δοκίμασε άλλο όνομα'+(grOnly?' ή βγάλε το «Μόνο Ελλάδα».':'.')+'</div>';return;}
   res.innerHTML='';
   list.forEach(x=>{const raw=(x.url_resolved||x.url||'').trim();const upg=raw.startsWith('http://');const url=raw.replace(/^http:\/\//,'https://');const ok=url.startsWith('https://');const name=x.name.trim();
-    const have=STATIONS.some(s=>s.streams.includes(url));const col=hashColor(name);
+    const have=crateList().some(s=>s.streams.includes(url));const other=!have&&STATIONS.find(s=>s.mode!==mode&&s.streams.includes(url));const col=hashColor(name);
     const row=document.createElement('div');row.className='res'+(ok?'':' na');row.style.setProperty('--c',col);
     const tags=(x.tags||'').split(',').filter(Boolean).slice(0,3).join(' · ');
-    row.innerHTML=`<div class="fav">${esc(name[0]||'♪')}</div><div style="min-width:0"><div class="nm">${esc(name)}</div><div class="tg">${esc([x.state,tags,x.bitrate?x.bitrate+' kbps':''].filter(Boolean).join(' · ')||'—')}${upg?' · πάτα πρώτα Δοκιμή':''}</div></div><div class="act">${ok?(have?'<button class="done" disabled>Υπάρχει ✓</button>':'<button class="try">Δοκιμή</button><button class="add">Προσθήκη</button>'):''}</div>`;
+    row.innerHTML=`<div class="fav">${esc(name[0]||'♪')}</div><div style="min-width:0"><div class="nm">${esc(name)}</div><div class="tg">${esc([x.state,tags,x.bitrate?x.bitrate+' kbps':''].filter(Boolean).join(' · ')||'—')}${other?' · υπάρχει ήδη στη '+(other.mode==='work'?'Δουλειά':'Χαλάρωση'):''}${upg&&!other?' · πάτα πρώτα Δοκιμή':''}</div></div><div class="act">${ok?(have?'<button class="done" disabled>Υπάρχει ✓</button>':'<button class="try">Δοκιμή</button><button class="add">Προσθήκη</button>'):''}</div>`;
     if(x.favicon&&x.favicon.startsWith('https://')){const im=new Image();im.onload=()=>{const f=row.querySelector('.fav');f.textContent='';f.appendChild(im)};im.src=x.favicon;}
-    const st=()=>({id:'c_'+x.stationuuid,name:name.replace(/\s*[-–|].*$/,'').slice(0,28)||name,sub:(x.state||tags.split(' · ')[0]||'web radio').toLowerCase().slice(0,26),c:col,mode,streams:[url],rj:(url.match(/stream\.radiojar\.com\/([a-z0-9]+)/i)||[])[1]});
+    const st=()=>({id:'c_'+x.stationuuid+'_'+mode,name:name.replace(/\s*[-–|].*$/,'').slice(0,28)||name,sub:(x.state||tags.split(' · ')[0]||'web radio').toLowerCase().slice(0,26),c:col,mode,streams:[url],rj:(url.match(/stream\.radiojar\.com\/([a-z0-9]+)/i)||[])[1]});
     const tryB=row.querySelector('.try'),addB=row.querySelector('.add');
     if(tryB)tryB.onclick=()=>{const t=st();t.stream=url;select(t,true);toast('Δοκιμή: '+t.name);};
     if(addB)addB.onclick=()=>{const t=st();const c=store.get('custom',[]);c.push(t);store.set('custom',c);loadStations();
