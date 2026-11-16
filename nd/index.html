@@ -408,6 +408,25 @@ html,body,button,input,.modes button,.oa-btn,.chip,.sleeve span,.sleeve em,.np-t
 .np-title{font-weight:400;letter-spacing:-.02em}
 .sign b{font-weight:300}
 .oa-btn{letter-spacing:.08em}
+/* v3: gradient black bg, subtler purple, tighter radii, station logos */
+html,body{background:#0d0c0c}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 90% at 85% 100%,#232120 0%,#171615 45%,#0b0a0a 100%)}
+.card{border-radius:22px}
+.grow.card{background:radial-gradient(90% 70% at 50% 40%,rgba(124,82,190,.28),rgba(70,44,120,.16) 55%,rgba(255,255,255,.03) 100%);border-color:rgba(170,140,230,.12)}
+.grow.card .chip.on{background:rgba(255,255,255,.12)}
+.sleeve{border-radius:15px}
+.sleeve .rm{border-radius:15px}
+.sleeve .chipc.img{width:30px;height:30px;border-radius:8px;background-size:cover;background-position:center;background-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.sheet{border-radius:24px}
+.skins{border-radius:16px}
+.skins .sw{border-radius:7px}
+.sh-search input{border-radius:12px}
+.res .fav{border-radius:10px}
+.hrow .cv{border-radius:9px}
+aside{border-radius:22px}
+.endday{border-radius:14px}
+#lenChips{gap:6px}
+#lenChips .chip{padding:8px 12px}
 </style>
 </head>
 <body class="chill">
@@ -485,7 +504,7 @@ html,body,button,input,.modes button,.oa-btn,.chip,.sleeve span,.sleeve em,.np-t
       </div>
       <div class="card grow">
         <div class="panel" id="pWork">
-          <div class="row" id="lenChips"><button class="chip on" data-len="25">25′</button><button class="chip" data-len="50">50′</button></div>
+          <div class="row" id="lenChips"><button class="chip" data-len="5">5′</button><button class="chip" data-len="15">15′</button><button class="chip on" data-len="25">25′</button><button class="chip" data-len="50">50′</button></div>
           <div class="ring">
             <svg viewBox="0 0 200 200"><defs><mask id="rm"><circle id="ringArc" cx="100" cy="100" r="88" fill="none" stroke="#fff" stroke-width="14" stroke-dasharray="553" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear"/></mask></defs>
               <circle cx="100" cy="100" r="88" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="0 7.37"/>
@@ -599,6 +618,7 @@ function renderCrate(){const c=$('#crate');c.innerHTML='';c.onscroll=crateFade;
     b.onclick=e=>{if(longed){longed=false;return;}
       if(b.classList.contains('ask')){if(e.target.tagName==='I')removeStation(s);else b.classList.remove('ask');return;}
       select(s,true)};
+    const cc=b.querySelector('.chipc');if(cc)setChipImg(cc,s);
     c.appendChild(b);});
   const n=crateList().length;$('#crateTitle').textContent=(mode==='work'?'Focus':'Chill')+' · '+n+(n===1?' record':' records');
   const a=document.createElement('button');a.className='sleeve add';a.innerHTML='<b>+</b><em>Add</em>';a.onclick=openSheet;c.appendChild(a);
@@ -607,6 +627,17 @@ function renderCrate(){const c=$('#crate');c.innerHTML='';c.onscroll=crateFade;
 function crateFade(){const c=$('#crate');c.classList.toggle('more',c.scrollHeight-c.scrollTop-c.clientHeight>8);}
 function showInCrate(id){const l=crateList();const i=l.findIndex(x=>x.id===id);if(i<0)return;const el=$('#crate').children[i];if(!el)return;
   el.scrollIntoView({block:'nearest',behavior:'smooth'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
+/* station logos (radio-browser favicon), cached per stream */
+const imgQ=new Set();let imgT=null;
+function imgCache(){return store.get('imgs',{})}
+function setChipImg(cc,s){const k=s.streams[0];const c=imgCache();const u=s.img||c[k];
+  if(u){const im=new Image();im.onload=()=>{cc.style.backgroundImage=`url("${u}")`;cc.classList.add('img');};im.src=u;}
+  else if(!(k in c))setTimeout(()=>lookupImg(s),600);}
+async function lookupImg(s){const k=s.streams[0];if(imgQ.has(k))return;imgQ.add(k);
+  let fav='';try{const l=await rbFetch('/json/stations/byurl?url='+encodeURIComponent(k));const h=(l||[]).find(x=>x.favicon)||null;
+    if(!h){const l2=await rbFetch('/json/stations/byname/'+encodeURIComponent(s.name)+'?limit=5&order=clickcount&reverse=true');const h2=(l2||[]).find(x=>x.favicon);if(h2)fav=h2.favicon;}else fav=h.favicon;}catch(e){return;}
+  fav=(fav||'').replace(/^http:\/\//,'https://');const c=imgCache();c[k]=fav;store.set('imgs',c);
+  if(fav){clearTimeout(imgT);imgT=setTimeout(renderCrate,300);}}
 function removeStation(s){if(s.id.startsWith('c_')){store.set('custom',store.get('custom',[]).filter(x=>x.id!==s.id));}
   else{const h=store.get('hidden',[]);h.push(s.id);store.set('hidden',h);}
   loadStations();if(cur&&cur.id===s.id&&!playing)cur=null;renderCrate();toast('Station removed');}
@@ -685,19 +716,20 @@ function mediaSession(){if(!('mediaSession'in navigator)||!cur)return;try{
   navigator.mediaSession.setActionHandler('nexttrack',()=>step(1));navigator.mediaSession.setActionHandler('previoustrack',()=>step(-1));}catch(e){}}
 
 /* ---------- Focus timer ---------- */
+const brk=l=>({5:1,15:3,25:5,50:10})[l]||5;
 let tLen=store.get('tlen',25), tLeft=tLen*60, tRun=false, tPhase='focus', tInt=null, tEnd=0;
 const C=553;
 function today(){return new Date().toISOString().slice(0,10)}
 function stats(){const s=store.get('stats',{});return s[today()]||{n:0,min:0}}
 function addSession(min){const s=store.get('stats',{});const t=s[today()]||{n:0,min:0};t.n++;t.min+=min;s[today()]=t;store.set('stats',s);}
 function drawTimer(){const m=Math.floor(tLeft/60),s=tLeft%60;$('#tTime').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  const total=(tPhase==='focus'?tLen:(tLen===50?10:5))*60;$('#ringArc').style.strokeDashoffset=C*(1-tLeft/total);
+  const total=(tPhase==='focus'?tLen:brk(tLen))*60;$('#ringArc').style.strokeDashoffset=C*(1-tLeft/total);
   $('#tPhase').textContent=tPhase==='focus'?'Focus':'Break';
   $('#tStart').textContent=tRun?'Pause':(tLeft<total?'Resume':'Start');
   const n=stats().n;$('#sess').innerHTML=Array.from({length:Math.max(4,n)},(_,i)=>`<i class="${i<n?'done':''}"></i>`).join('');}
 function tStep(){tLeft=Math.max(0,Math.round((tEnd-Date.now())/1000));
   if(tLeft<=0){clearInterval(tInt);tRun=false;chime();
-    if(tPhase==='focus'){addSession(tLen);tPhase='break';tLeft=(tLen===50?10:5)*60;toast('Break time · stand up, stretch, look away',5000);}
+    if(tPhase==='focus'){addSession(tLen);tPhase='break';tLeft=brk(tLen)*60;toast('Break time · stand up, stretch, look away',5000);}
     else{tPhase='focus';tLeft=tLen*60;toast('On to the next round',3000);}}
   drawTimer();}
 $('#tStart').onclick=()=>{unlockAudio();if(tRun){clearInterval(tInt);tRun=false;}else{tEnd=Date.now()+tLeft*1000;tRun=true;tInt=setInterval(tStep,500);}drawTimer();};
@@ -773,7 +805,7 @@ function exitSolo(){if(!solo)return;solo=false;setTimeout(wake,1000);const st=$(
 $('#soloBtn').onclick=enterSolo;$('#soloExit').onclick=exitSolo;
 addEventListener('resize',()=>{if(solo)rectStyle($('#stage'),{left:0,top:0,width:innerWidth,height:innerHeight});});
 /* ---------- Station search (radio-browser.info) ---------- */
-const HUB_V='G-'+'22';
+const HUB_V='G-'+'23';
 const RB=['https://de1.api.radio-browser.info','https://fi1.api.radio-browser.info','https://de2.api.radio-browser.info'];
 let grOnly=true,qT=null,qSeq=0;
 function openSheet(){$('#sheet').classList.add('on');$('#q').value='';search('');setTimeout(()=>$('#q').focus(),350);}
@@ -799,7 +831,7 @@ async function search(q){const seq=++qSeq;const res=$('#results');res.innerHTML=
     const tags=(x.tags||'').split(',').filter(Boolean).slice(0,3).join(' · ');
     row.innerHTML=`<div class="fav">${esc(name[0]||'♪')}</div><div style="min-width:0"><div class="nm">${esc(name)}</div><div class="tg">${esc([x.state,tags,x.bitrate?x.bitrate+' kbps':''].filter(Boolean).join(' · ')||'—')}${other?' · already in '+(other.mode==='work'?'Focus':'Chill'):''}${upg&&!other?' · tap Try first':''}</div></div><div class="act">${ok?(have?'<button class="done show">In list ✓ · Show</button>':'<button class="try">Try</button><button class="add">Add</button>'):''}</div>`;
     if(x.favicon&&x.favicon.startsWith('https://')){const im=new Image();im.onload=()=>{const f=row.querySelector('.fav');f.textContent='';f.appendChild(im)};im.src=x.favicon;}
-    const st=()=>({id:'c_'+x.stationuuid+'_'+mode,name:name.replace(/\s*[-–|].*$/,'').slice(0,28)||name,sub:(x.state||tags.split(' · ')[0]||'web radio').toLowerCase().slice(0,26),c:col,mode,streams:[url],rj:(url.match(/stream\.radiojar\.com\/([a-z0-9]+)/i)||[])[1]});
+    const st=()=>({img:(x.favicon||'').replace(/^http:\/\//,'https://'),id:'c_'+x.stationuuid+'_'+mode,name:name.replace(/\s*[-–|].*$/,'').slice(0,28)||name,sub:(x.state||tags.split(' · ')[0]||'web radio').toLowerCase().slice(0,26),c:col,mode,streams:[url],rj:(url.match(/stream\.radiojar\.com\/([a-z0-9]+)/i)||[])[1]});
     const tryB=row.querySelector('.try'),addB=row.querySelector('.add');
     const showB=row.querySelector('.show');if(showB)showB.onclick=()=>{const h=crateList().find(s=>s.streams.includes(url));closeSheet();if(h)setTimeout(()=>showInCrate(h.id),380);};
     if(tryB)tryB.onclick=()=>{const t=st();t.stream=url;select(t,true);toast('Trying: '+t.name);};
