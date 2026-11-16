@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Desk Hub">
+<meta name="theme-color" content="#16110d">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Desk Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#15100c; --bg2:#1d1611; --panel:rgba(255,240,220,.045); --line:rgba(255,232,204,.10);
+  --ink:#f3e7d6; --muted:#a8968a; --faint:#6f6157;
+  --accent:#e7a35a; --accent2:#c9743c; --glow:231,163,90;
+  --wood1:#5a3a22; --wood2:#3c2615; --wood3:#2a1a0e;
+  --r:22px;
+}
+body.work{ --accent:#d9b26f; --accent2:#9fb7a6; --glow:159,183,166; }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.ambient{position:fixed;inset:-20%;pointer-events:none;z-index:0;transition:background 2.5s ease;
+  background:radial-gradient(40% 45% at 32% 55%, rgba(var(--glow),.16), transparent 70%),
+             radial-gradient(35% 40% at 85% 20%, rgba(var(--glow),.07), transparent 70%)}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.06;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.app{position:relative;z-index:2;height:100%;display:grid;grid-template-rows:auto 1fr;
+  padding:calc(env(safe-area-inset-top) + 18px) calc(env(safe-area-inset-right) + 26px) calc(env(safe-area-inset-bottom) + 20px) calc(env(safe-area-inset-left) + 26px);gap:14px}
+
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.time{display:flex;align-items:baseline;gap:16px}
+#clock{font-family:Fraunces,serif;font-weight:300;font-size:52px;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+#date{color:var(--muted);font-size:15px;text-transform:capitalize}
+.modes{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px;position:relative}
+.modes button{position:relative;z-index:1;padding:11px 22px;border-radius:999px;font-weight:600;font-size:14.5px;color:var(--muted);transition:color .3s;display:flex;align-items:center;gap:8px}
+.modes button.on{color:#1a120c}
+.modes .pill{position:absolute;top:4px;bottom:4px;border-radius:999px;background:var(--accent);transition:all .45s cubic-bezier(.6,.1,.2,1);box-shadow:0 4px 20px rgba(var(--glow),.35)}
+
+/* main */
+main{display:grid;grid-template-columns:1fr 370px;gap:22px;min-height:0}
+.deck{display:flex;flex-direction:column;min-height:0;min-width:0}
+.stage{flex:1;min-height:0;position:relative}
+.tt{position:absolute;left:50%;top:50%;width:680px;height:540px;transform-origin:0 0}
+.plinth{position:absolute;inset:0;border-radius:28px;
+  background:
+   linear-gradient(180deg,rgba(255,255,255,.07),transparent 18%),
+   repeating-linear-gradient(92deg, rgba(0,0,0,.0) 0 7px, rgba(0,0,0,.09) 7px 9px, rgba(255,220,180,.03) 9px 15px),
+   linear-gradient(160deg,var(--wood1),var(--wood2) 55%,var(--wood3));
+  box-shadow:0 40px 80px -20px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,230,200,.18), inset 0 -8px 20px rgba(0,0,0,.35)}
+.mat{position:absolute;left:22px;top:32px;width:456px;height:456px;border-radius:50%;
+  background:radial-gradient(circle,#2a2725 0 60%,#1b1918 61% 100%);box-shadow:inset 0 2px 6px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.08)}
+.platter{position:absolute;left:30px;top:40px;width:440px;height:440px;border-radius:50%;cursor:pointer}
+.vinyl{position:absolute;inset:0;border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 21%, rgba(255,255,255,.03) 21.4%, transparent 22%),
+    repeating-radial-gradient(circle at 50% 50%, #121212 0 1.2px, #1a1a1a 1.6px 2.6px),
+    #111;
+  box-shadow:0 10px 30px rgba(0,0,0,.6), inset 0 0 0 2px #0a0a0a;
+  animation:spin 1.8s linear infinite;animation-play-state:paused}
+.vinyl.playing{animation-play-state:running}
+.sheen{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 20deg, transparent 0 8%, rgba(255,255,255,.10) 12%, transparent 18% 50%, rgba(255,255,255,.08) 62%, transparent 68%)}
+.label{position:absolute;left:31%;top:31%;width:38%;height:38%;border-radius:50%;overflow:hidden;
+  background:var(--labelc,#c9743c) center/cover no-repeat;box-shadow:0 0 0 3px rgba(0,0,0,.35)}
+.label .lt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18%;color:rgba(255,248,236,.95)}
+.label .lt b{font-family:Fraunces,serif;font-weight:500;font-size:19px;line-height:1.05}
+.label .lt small{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;margin-top:6px;opacity:.8}
+.label img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s}
+.label img.show{opacity:1}
+.label::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;background:#d7d2cc;box-shadow:inset 0 1px 2px rgba(0,0,0,.6)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.arm{position:absolute;left:560px;top:20px;width:60px;height:390px;transform-origin:30px 70px;transform:rotate(0deg);transition:transform 1.4s cubic-bezier(.5,0,.2,1);pointer-events:none;filter:drop-shadow(6px 10px 8px rgba(0,0,0,.45))}
+.arm.down{transform:rotate(29deg)}
+.armbase{position:absolute;left:548px;top:48px;width:84px;height:84px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#5b544e,#2a2623 70%);box-shadow:0 6px 14px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2)}
+.rest{position:absolute;left:578px;top:392px;width:22px;height:30px;border-radius:6px;background:linear-gradient(#3b3531,#221e1b)}
+.rpm{position:absolute;left:520px;bottom:34px;display:flex;gap:8px;align-items:center;font-size:11px;letter-spacing:.14em;color:rgba(255,232,204,.55)}
+.led{width:8px;height:8px;border-radius:50%;background:#4a2e1e;box-shadow:inset 0 1px 1px rgba(0,0,0,.5)}
+.led.on{background:#ff7a3c;box-shadow:0 0 10px #ff7a3c,0 0 2px #ffd0a8}
+.brand{position:absolute;left:520px;bottom:62px;font-family:Fraunces,serif;font-style:italic;font-size:15px;color:rgba(255,232,204,.45)}
+
+.now{display:grid;grid-template-columns:1fr auto;align-items:end;gap:18px;padding:6px 6px 0}
+.np-station{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;display:flex;align-items:center;gap:8px}
+.np-title{font-family:Fraunces,serif;font-size:27px;line-height:1.15;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-artist{color:var(--muted);font-size:15px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctrls{display:flex;align-items:center;gap:12px}
+.cbtn{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--panel);border:1px solid var(--line);transition:transform .15s,background .3s}
+.cbtn:active{transform:scale(.93)}
+.cbtn.big{width:70px;height:70px;background:var(--accent);border:0;color:#1a120c;box-shadow:0 8px 30px rgba(var(--glow),.35)}
+.cbtn svg{width:22px;height:22px}
+.cbtn.big svg{width:28px;height:28px}
+.dots{display:inline-flex;gap:3px}
+.dots i{width:3px;height:10px;background:var(--accent);border-radius:2px;animation:eq 1s ease-in-out infinite}
+.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+.paused .dots i{animation:none;height:3px}
+@keyframes eq{0%,100%{height:3px}50%{height:11px}}
+
+/* side */
+aside{display:flex;flex-direction:column;gap:14px;min-height:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.card h3{margin:0 0 12px;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.crate{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sleeve{aspect-ratio:1;border-radius:10px;position:relative;overflow:hidden;text-align:left;padding:10px;display:flex;flex-direction:column;justify-content:flex-end;
+  background:var(--c);box-shadow:0 6px 16px rgba(0,0,0,.35);transition:transform .2s}
+.sleeve::before{content:"";position:absolute;right:-30%;top:-30%;width:90%;height:90%;border-radius:50%;
+  background:repeating-radial-gradient(circle,rgba(0,0,0,.18) 0 2px,transparent 2px 5px);opacity:.55}
+.sleeve::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,.45))}
+.sleeve span{position:relative;z-index:1;font-family:Fraunces,serif;font-size:14px;line-height:1.1;color:#fff8ee}
+.sleeve em{position:relative;z-index:1;font-style:normal;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,248,238,.75);margin-top:3px}
+.sleeve.cur{outline:2px solid var(--accent);outline-offset:3px}
+.sleeve:active{transform:scale(.95)}
+.grow{flex:1;min-height:0;display:flex;flex-direction:column}
+.panel{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.panel.on{display:flex}
+.ring{position:relative;width:190px;height:190px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .t{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .t b{font-family:Fraunces,serif;font-weight:300;font-size:46px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.ring .t small{color:var(--muted);font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-top:2px}
+.row{display:flex;gap:8px;align-items:center;justify-content:center}
+.chip{padding:9px 15px;border-radius:999px;border:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--muted)}
+.chip.on{background:rgba(var(--glow),.16);color:var(--ink);border-color:rgba(var(--glow),.45)}
+.chip.solid{background:var(--accent);color:#1a120c;border:0;padding:10px 22px}
+.sess{display:flex;gap:6px}
+.sess i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.sess i.done{background:var(--accent)}
+.breath{width:170px;height:170px;display:grid;place-items:center;position:relative}
+.breath .orb{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(var(--glow),.9),rgba(var(--glow),.25));box-shadow:0 0 50px rgba(var(--glow),.4);transition:transform 4s ease-in-out}
+.breath .halo{position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(var(--glow),.35)}
+#breathTxt{font-family:Fraunces,serif;font-size:22px;min-height:28px}
+.endday{width:100%;padding:15px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(90deg,rgba(var(--glow),.12),transparent);font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:space-between}
+.endday svg{width:20px;height:20px;opacity:.8}
+
+/* overlays */
+.ov{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 1s ease}
+.ov.on{opacity:1;pointer-events:auto}
+#idle{background:#070504}
+#idle .ic{font-family:Fraunces,serif;font-weight:300;font-size:180px;letter-spacing:-.03em;color:rgba(243,231,214,.85);line-height:1;font-variant-numeric:tabular-nums}
+#idle .id{color:rgba(168,150,138,.8);font-size:20px;margin-top:14px;text-transform:capitalize}
+#idle .inp{margin-top:48px;color:rgba(168,150,138,.7);font-size:15px;display:flex;align-items:center;gap:12px}
+#idle .inp img{width:44px;height:44px;border-radius:6px;object-fit:cover}
+#idle.night .ic{color:rgba(243,231,214,.35)} #idle.night .id,#idle.night .inp{opacity:.4}
+#eod{background:radial-gradient(60% 60% at 50% 45%,rgba(120,60,20,.55),#0d0907 75%)}
+#eod h1{font-family:Fraunces,serif;font-weight:300;font-size:58px;margin:0;text-align:center}
+#eod p{color:var(--muted);font-size:18px;margin:14px 0 34px;text-align:center;line-height:1.6}
+.toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,30px);background:#2a2019;border:1px solid var(--line);padding:12px 20px;border-radius:14px;font-size:14px;opacity:0;transition:all .4s;z-index:30}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (orientation:portrait){
+  main{grid-template-columns:1fr;grid-template-rows:1.25fr auto}
+  aside{flex-direction:row;flex-wrap:wrap}
+  aside>.card{flex:1 1 300px}
+  #clock{font-size:44px}
+}
+</style>
+</head>
+<body class="chill">
+<div class="ambient" id="ambient"></div>
+<div class="grain"></div>
+
+<div class="app">
+  <header>
+    <div class="time"><div id="clock">--:--</div><div id="date"></div></div>
+    <div class="modes" id="modes">
+      <div class="pill" id="pill"></div>
+      <button data-mode="work"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Δουλειά</button>
+      <button data-mode="chill"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>Χαλάρωση</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="deck">
+      <div class="stage" id="stage">
+        <div class="tt" id="tt">
+          <div class="plinth"></div>
+          <div class="mat"></div>
+          <div class="platter" id="platter">
+            <div class="vinyl" id="vinyl">
+              <div class="label" id="label"><div class="lt"><b id="lblName"></b><small id="lblSub"></small></div><img id="cover" alt=""></div>
+            </div>
+            <div class="sheen"></div>
+          </div>
+          <div class="armbase"></div>
+          <div class="rest"></div>
+          <svg class="arm" id="arm" viewBox="0 0 60 390">
+            <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#9d958d"/><stop offset=".5" stop-color="#e9e3dc"/><stop offset="1" stop-color="#8a827b"/></linearGradient></defs>
+            <rect x="19" y="4" width="22" height="34" rx="5" fill="#2e2a27" stroke="#4a443f"/>
+            <rect x="26.5" y="30" width="7" height="300" rx="3.5" fill="url(#g)"/>
+            <circle cx="30" cy="70" r="13" fill="#3a3531" stroke="#6b645d" stroke-width="2"/>
+            <circle cx="30" cy="70" r="4" fill="#bdb6ae"/>
+            <g transform="translate(30 330) rotate(-18)"><rect x="-11" y="-6" width="22" height="46" rx="4" fill="#1e1c1a" stroke="#56504a"/><rect x="-3" y="34" width="6" height="8" fill="#c9a86a"/></g>
+          </svg>
+          <div class="brand">Desk Hub</div>
+          <div class="rpm"><span class="led" id="led"></span>33⅓ RPM</div>
+        </div>
+      </div>
+      <div class="now" id="now">
+        <div style="min-width:0">
+          <div class="np-station"><span class="dots"><i></i><i></i><i></i></span><span id="npStation"></span></div>
+          <div class="np-title" id="npTitle">Διάλεξε έναν δίσκο</div>
+          <div class="np-artist" id="npArtist">Πάτα πάνω στο βινύλιο ή σε ένα εξώφυλλο δεξιά</div>
+        </div>
+        <div class="ctrls">
+          <button class="cbtn" id="prev" aria-label="Προηγούμενος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+          <button class="cbtn big" id="play" aria-label="Αναπαραγωγή"><svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
+          <button class="cbtn" id="next" aria-label="Επόμενος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+          <button class="cbtn" id="airplay" aria-label="AirPlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="M12 15l5 6H7z" fill="currentColor"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <aside>
+      <div class="card">
+        <h3><span id="crateTitle">Δίσκοι</span><span id="crateHint" style="letter-spacing:.05em;text-transform:none;font-weight:500;color:var(--faint)"></span></h3>
+        <div class="crate" id="crate"></div>
+      </div>
+      <div class="card grow">
+        <div class="panel" id="pWork">
+          <div class="row" id="lenChips"><button class="chip on" data-len="25">25′</button><button class="chip" data-len="50">50′</button></div>
+          <div class="ring">
+            <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="88" fill="none" stroke="rgba(255,232,204,.08)" stroke-width="8"/>
+              <circle id="ringArc" cx="100" cy="100" r="88" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" stroke-dasharray="553" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear"/></svg>
+            <div class="t"><b id="tTime">25:00</b><small id="tPhase">Συγκέντρωση</small></div>
+          </div>
+          <div class="sess" id="sess"></div>
+          <div class="row"><button class="chip solid" id="tStart">Έναρξη</button><button class="chip" id="tReset">Μηδενισμός</button></div>
+        </div>
+        <div class="panel" id="pChill">
+          <div class="breath"><div class="halo"></div><div class="orb" id="orb"></div></div>
+          <div id="breathTxt">Μια ανάσα;</div>
+          <div class="row"><button class="chip solid" id="bStart">Ξεκίνα · 1 λεπτό</button></div>
+        </div>
+        <button class="endday" id="endBtn"><span>Τέλος δουλειάς για σήμερα</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<div class="ov" id="idle"><div class="ic" id="idleClock"></div><div class="id" id="idleDate"></div><div class="inp" id="idleNp"></div></div>
+<div class="ov" id="eod"><h1>Τέλος για σήμερα.</h1><p id="eodTxt"></p><button class="chip solid" id="eodClose">Καλή ξεκούραση</button></div>
+<div class="toast" id="toast"></div>
+<audio id="audio" preload="none" playsinline x-webkit-airplay="allow"></audio>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('hub.'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('hub.'+k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- Stations ---------- */
+const STATIONS=[
+ {id:'groovesalad',name:'Groove Salad',sub:'downtempo',c:'#5f7a4a',mode:'work',src:'soma'},
+ {id:'fluid',name:'Fluid',sub:'instrumental hip-hop',c:'#3f6f86',mode:'work',src:'soma'},
+ {id:'dronezone',name:'Drone Zone',sub:'ambient focus',c:'#4b4f7a',mode:'work',src:'soma'},
+ {id:'deepspaceone',name:'Deep Space',sub:'deep ambient',c:'#2f3d5a',mode:'work',src:'soma'},
+ {id:'rp-mellow',name:'Mellow Mix',sub:'radio paradise',c:'#a8693a',mode:'work',src:'rp',chan:1,stream:'https://stream.radioparadise.com/mellow-128'},
+ {id:'cliqhop',name:'Cliqhop',sub:'idm · beats',c:'#6c5a86',mode:'work',src:'soma'},
+ {id:'rp-main',name:'Main Mix',sub:'radio paradise',c:'#b5533a',mode:'chill',src:'rp',chan:0,stream:'https://stream.radioparadise.com/mp3-128'},
+ {id:'sonicuniverse',name:'Sonic Universe',sub:'jazz',c:'#7a3b3b',mode:'chill',src:'soma'},
+ {id:'7soul',name:'Seven Inch Soul',sub:'vintage soul',c:'#a2782e',mode:'chill',src:'soma'},
+ {id:'lush',name:'Lush',sub:'vocal chill',c:'#8a4a6a',mode:'chill',src:'soma'},
+ {id:'secretagent',name:'Secret Agent',sub:'lounge',c:'#2f5450',mode:'chill',src:'soma'},
+ {id:'rp-global',name:'Global Mix',sub:'radio paradise',c:'#7a6a2e',mode:'chill',src:'rp',chan:3,stream:'https://stream.radioparadise.com/global-128'},
+];
+STATIONS.forEach(s=>{ if(s.src==='soma') s.stream=`https://ice2.somafm.com/${s.id}-128-mp3`; });
+
+const audio=$('#audio');
+let mode=store.get('mode','work');
+let cur=STATIONS.find(s=>s.id===store.get('station',''))||null;
+let switching=0, playing=false, meta={title:'',artist:'',cover:''}, metaTimer=null, lastKey='';
+
+/* ---------- UI: layout scale ---------- */
+function fit(){const st=$('#stage'),tt=$('#tt');const w=st.clientWidth,h=st.clientHeight;const s=Math.min(w/680,h/540);
+  tt.style.transform=`translate(${-340*s}px,${-270*s}px) scale(${s})`;}
+addEventListener('resize',fit);
+
+/* ---------- Clock ---------- */
+function tick(){const d=new Date();const t=d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',hour12:false});
+  const ds=d.toLocaleDateString('el-GR',{weekday:'long',day:'numeric',month:'long'});
+  $('#clock').textContent=t;$('#date').textContent=ds;$('#idleClock').textContent=t;$('#idleDate').textContent=ds;
+  $('#idle').classList.toggle('night',d.getHours()>=23||d.getHours()<6);}
+setInterval(tick,1000);tick();
+
+/* ---------- Mode ---------- */
+function setMode(m,silent){mode=m;store.set('mode',m);document.body.className=m;
+  $$('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));
+  const on=$(`#modes button[data-mode="${m}"]`);const p=$('#pill');p.style.left=on.offsetLeft+'px';p.style.width=on.offsetWidth+'px';
+  $('#pWork').classList.toggle('on',m==='work');$('#pChill').classList.toggle('on',m==='chill');
+  $('#endBtn').style.display=m==='work'?'flex':'none';
+  $('#crateTitle').textContent=m==='work'?'Δίσκοι για συγκέντρωση':'Δίσκοι για χαλάρωση';
+  renderCrate(); if(!cur||!playing) applyStationLabel();
+}
+$$('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+
+function crateList(){return STATIONS.filter(s=>s.mode===mode)}
+function renderCrate(){const c=$('#crate');c.innerHTML='';
+  crateList().forEach(s=>{const b=document.createElement('button');b.className='sleeve'+(cur&&cur.id===s.id?' cur':'');b.style.setProperty('--c',`linear-gradient(150deg,${s.c},${shade(s.c,-35)})`);
+    b.innerHTML=`<span>${s.name}</span><em>${s.sub}</em>`;b.onclick=()=>{select(s,true)};c.appendChild(b);});
+  $('#crateHint').textContent=cur?'':'πάτα για να παίξει';}
+function shade(hex,p){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=x=>Math.max(0,Math.min(255,Math.round(x+(p/100)*255)));return `rgb(${f(r)},${f(g)},${f(b)})`;}
+
+/* ---------- Turntable ---------- */
+function applyStationLabel(){const s=cur||crateList()[0];
+  $('#label').style.setProperty('--labelc',s.c);$('#lblName').textContent=s.name;$('#lblSub').textContent=s.sub;
+  $('#npStation').textContent=cur?cur.name:'';}
+function setPlayingUI(p){playing=p;$('#vinyl').classList.toggle('playing',p);$('#arm').classList.toggle('down',p);$('#led').classList.toggle('on',p);
+  $('#now').classList.toggle('paused',!p);
+  $('#playIcon').innerHTML=p?'<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>':'<path d="M8 5v14l11-7z"/>';}
+
+function select(s,autoplay){const changed=!cur||cur.id!==s.id;cur=s;store.set('station',s.id);
+  renderCrate();applyStationLabel();
+  if(changed){meta={title:'',artist:'',cover:''};lastKey='';setCover('');$('#npTitle').textContent=s.name;$('#npArtist').textContent=s.sub;
+    switching=Date.now();audio.src=s.stream;}
+  if(autoplay) play(); }
+function play(){if(!cur){select(crateList()[0],false)}
+  if(!audio.src) audio.src=cur.stream;
+  setPlayingUI(true);toast('Ο δίσκος μπαίνει…',1400);
+  const p=audio.play(); if(p&&p.catch) p.catch(err=>{setPlayingUI(false);toast('Δεν ξεκίνησε η αναπαραγωγή, ξαναπάτα play');});
+  pollMeta(true);mediaSession();}
+function pause(){audio.pause();setPlayingUI(false);
+  // drop the live buffer so resume is "live" again
+  setTimeout(()=>{if(!playing){audio.removeAttribute('src');audio.load();}},400);}
+function toggle(){playing?pause():play()}
+function step(d){const l=crateList();let i=cur?l.findIndex(s=>s.id===cur.id):-1;i=(i+d+l.length)%l.length;select(l[i],playing||true)}
+$('#play').onclick=toggle;$('#platter').onclick=toggle;$('#next').onclick=()=>step(1);$('#prev').onclick=()=>step(-1);
+$('#airplay').onclick=()=>{if(audio.webkitShowPlaybackTargetPicker){audio.webkitShowPlaybackTargetPicker()}else{toast('Κέντρο Ελέγχου → εικονίδιο AirPlay → διάλεξε το Sonos',3500)}};
+audio.addEventListener('error',()=>{if(playing&&audio.getAttribute('src')){setPlayingUI(false);toast('Ο σταθμός δεν απαντά, δοκίμασε άλλον δίσκο',3000)}});
+audio.addEventListener('pause',()=>{if(Date.now()-switching<2500)return;if(playing&&!audio.ended&&document.visibilityState==='visible'){/* paused externally (e.g. Control Center) */setPlayingUI(false)}});
+audio.addEventListener('play',()=>setPlayingUI(true));
+
+/* ---------- Now playing metadata ---------- */
+async function getJSON(u){const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw 0;return r.json();}
+async function fetchMeta(s){
+  if(s.src==='rp'){const j=await getJSON(`https://api.radioparadise.com/api/now_playing?chan=${s.chan}`);return {title:j.title,artist:j.artist,album:j.album,cover:j.cover};}
+  try{const j=await getJSON(`https://somafm.com/songs/${s.id}.json`);const t=j.songs&&j.songs[0];if(t)return {title:t.title,artist:t.artist,album:t.album};}catch(e){}
+  const j=await getJSON('https://api.somafm.com/channels.json');const ch=j.channels.find(c=>c.id===s.id);
+  if(ch&&ch.lastPlaying){const [a,...t]=ch.lastPlaying.split(' - ');return {title:t.join(' - ')||a,artist:t.length?a:''};}
+  return null;}
+function itunesCover(artist,title){return new Promise(res=>{const cb='itc'+Date.now()+Math.floor(Math.random()*1e4);const sc=document.createElement('script');
+  const done=v=>{delete window[cb];sc.remove();res(v)};const to=setTimeout(()=>done(''),6000);
+  window[cb]=d=>{clearTimeout(to);const r=d&&d.results&&d.results[0];done(r?r.artworkUrl100.replace('100x100bb','600x600bb'):'')};
+  sc.src=`https://itunes.apple.com/search?term=${encodeURIComponent(artist+' '+title)}&entity=song&limit=1&callback=${cb}`;sc.onerror=()=>{clearTimeout(to);done('')};document.head.appendChild(sc);});}
+async function pollMeta(now){clearTimeout(metaTimer);if(!cur)return;const s=cur;
+  try{const m=await fetchMeta(s);if(m&&s===cur){const key=m.artist+'|'+m.title;
+      if(key!==lastKey){lastKey=key;meta=m;
+        $('#npTitle').textContent=m.title||s.name;$('#npArtist').textContent=[m.artist,m.album].filter(Boolean).join(' · ')||s.sub;
+        let cv=m.cover||'';if(!cv&&m.artist&&m.title)cv=await itunesCover(m.artist,m.title);if(s===cur){meta.cover=cv;setCover(cv);mediaSession();}}}}
+  catch(e){}
+  if(playing) metaTimer=setTimeout(()=>pollMeta(),15000);}
+function setCover(url){const img=$('#cover');img.classList.remove('show');
+  const np=$('#idleNp');
+  if(!url){np.innerHTML=cur&&playing?`<span>${esc(cur.name)}</span>`:'';tint(cur?cur.c:null);return;}
+  const probe=new Image();probe.crossOrigin='anonymous';
+  probe.onload=()=>{img.src=url;img.classList.add('show');tint(dominant(probe));};
+  probe.onerror=()=>{img.src=url;img.onload=()=>img.classList.add('show');};
+  probe.src=url;
+  np.innerHTML=`<img src="${url}" alt=""><span>${esc(meta.title||'')} — ${esc(meta.artist||'')}</span>`;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function dominant(img){try{const c=document.createElement('canvas');c.width=c.height=24;const x=c.getContext('2d');x.drawImage(img,0,0,24,24);
+  const d=x.getImageData(0,0,24,24).data;let r=0,g=0,b=0,n=0;for(let i=0;i<d.length;i+=4){const mx=Math.max(d[i],d[i+1],d[i+2]),mn=Math.min(d[i],d[i+1],d[i+2]);const sat=mx-mn;if(mx<40||sat<25)continue;r+=d[i]*sat;g+=d[i+1]*sat;b+=d[i+2]*sat;n+=sat;}
+  if(!n)return null;return `rgb(${Math.round(r/n)},${Math.round(g/n)},${Math.round(b/n)})`}catch(e){return null}}
+function tint(c){const a=$('#ambient');if(!c){a.style.background='';return;}
+  a.style.background=`radial-gradient(40% 45% at 32% 55%, ${c.replace('rgb','rgba').replace(')',',.22)')}, transparent 70%),radial-gradient(35% 40% at 85% 20%, ${c.replace('rgb','rgba').replace(')',',.10)')}, transparent 70%)`;
+  if(c.startsWith('#')){const n=parseInt(c.slice(1),16);tint(`rgb(${n>>16},${n>>8&255},${n&255})`);}}
+
+function mediaSession(){if(!('mediaSession'in navigator)||!cur)return;try{
+  navigator.mediaSession.metadata=new MediaMetadata({title:meta.title||cur.name,artist:meta.artist||cur.sub,album:cur.name,artwork:meta.cover?[{src:meta.cover,sizes:'600x600',type:'image/jpeg'}]:[]});
+  navigator.mediaSession.setActionHandler('play',play);navigator.mediaSession.setActionHandler('pause',pause);
+  navigator.mediaSession.setActionHandler('nexttrack',()=>step(1));navigator.mediaSession.setActionHandler('previoustrack',()=>step(-1));}catch(e){}}
+
+/* ---------- Focus timer ---------- */
+let tLen=store.get('tlen',25), tLeft=tLen*60, tRun=false, tPhase='focus', tInt=null, tEnd=0;
+const C=553;
+function today(){return new Date().toISOString().slice(0,10)}
+function stats(){const s=store.get('stats',{});return s[today()]||{n:0,min:0}}
+function addSession(min){const s=store.get('stats',{});const t=s[today()]||{n:0,min:0};t.n++;t.min+=min;s[today()]=t;store.set('stats',s);}
+function drawTimer(){const m=Math.floor(tLeft/60),s=tLeft%60;$('#tTime').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const total=(tPhase==='focus'?tLen:(tLen===50?10:5))*60;$('#ringArc').style.strokeDashoffset=C*(1-tLeft/total);
+  $('#tPhase').textContent=tPhase==='focus'?'Συγκέντρωση':'Διάλειμμα';
+  $('#tStart').textContent=tRun?'Παύση':(tLeft<total?'Συνέχεια':'Έναρξη');
+  const n=stats().n;$('#sess').innerHTML=Array.from({length:Math.max(4,n)},(_,i)=>`<i class="${i<n?'done':''}"></i>`).join('');}
+function tStep(){tLeft=Math.max(0,Math.round((tEnd-Date.now())/1000));
+  if(tLeft<=0){clearInterval(tInt);tRun=false;chime();
+    if(tPhase==='focus'){addSession(tLen);tPhase='break';tLeft=(tLen===50?10:5)*60;toast('Ώρα για διάλειμμα · σήκω, τεντώσου, κοίτα μακριά',5000);}
+    else{tPhase='focus';tLeft=tLen*60;toast('Πάμε για τον επόμενο κύκλο',3000);}}
+  drawTimer();}
+$('#tStart').onclick=()=>{unlockAudio();if(tRun){clearInterval(tInt);tRun=false;}else{tEnd=Date.now()+tLeft*1000;tRun=true;tInt=setInterval(tStep,500);}drawTimer();};
+$('#tReset').onclick=()=>{clearInterval(tInt);tRun=false;tPhase='focus';tLeft=tLen*60;drawTimer();};
+$$('#lenChips .chip').forEach(b=>{b.classList.toggle('on',+b.dataset.len===tLen);b.onclick=()=>{if(tRun)return;tLen=+b.dataset.len;store.set('tlen',tLen);$$('#lenChips .chip').forEach(x=>x.classList.toggle('on',x===b));tPhase='focus';tLeft=tLen*60;drawTimer();}});
+
+let actx=null;function unlockAudio(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume();}catch(e){}}
+function chime(){if(!actx)return;const t=actx.currentTime;[523.25,659.25,783.99].forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=f;
+  g.gain.setValueAtTime(0,t+i*.18);g.gain.linearRampToValueAtTime(.18,t+i*.18+.02);g.gain.exponentialRampToValueAtTime(.0001,t+i*.18+1.6);o.connect(g).connect(actx.destination);o.start(t+i*.18);o.stop(t+i*.18+1.7);});}
+
+/* ---------- Breathing (box 4-4-4-4) ---------- */
+let bInt=null,bTO=null;
+$('#bStart').onclick=()=>{if(bInt){stopBreath();return;}
+  const steps=[['Εισπνοή',1.9],['Κράτα',1.9],['Εκπνοή',1],['Κράτα',1]];let i=0;const orb=$('#orb');
+  const run=()=>{const [txt,sc]=steps[i%4];$('#breathTxt').textContent=txt;orb.style.transform=`scale(${sc})`;i++;};
+  run();bInt=setInterval(run,4000);$('#bStart').textContent='Σταμάτα';bTO=setTimeout(()=>{stopBreath();$('#breathTxt').textContent='Ωραία. ✦';},64000);};
+function stopBreath(){clearInterval(bInt);clearTimeout(bTO);bInt=null;$('#orb').style.transform='scale(1)';$('#breathTxt').textContent='Μια ανάσα;';$('#bStart').textContent='Ξεκίνα · 1 λεπτό';}
+
+/* ---------- End of day ---------- */
+$('#endBtn').onclick=()=>{clearInterval(tInt);tRun=false;tPhase='focus';tLeft=tLen*60;drawTimer();
+  const s=stats();$('#eodTxt').innerHTML=s.n?`Σήμερα έκανες <b>${s.n}</b> ${s.n===1?'κύκλο':'κύκλους'} συγκέντρωσης · ${Math.floor(s.min/60)?Math.floor(s.min/60)+' ώρ. ':''}${s.min%60} λεπτά.<br>Κλείσε το laptop. Τα υπόλοιπα αύριο.`:'Κλείσε το laptop. Τα υπόλοιπα αύριο.';
+  setMode('chill');
+  select(STATIONS.find(x=>x.id==='sonicuniverse'),true);
+  $('#eod').classList.add('on');};
+$('#eodClose').onclick=()=>$('#eod').classList.remove('on');
+
+/* ---------- Idle ---------- */
+let idleT;function wake(){$('#idle').classList.remove('on');clearTimeout(idleT);idleT=setTimeout(()=>$('#idle').classList.add('on'),4*60*1000);}
+['pointerdown','touchstart','keydown'].forEach(e=>addEventListener(e,wake,{passive:true}));
+$('#idle').addEventListener('pointerdown',e=>{e.stopPropagation();wake();});
+
+/* ---------- Wake lock ---------- */
+async function keepAwake(){try{if('wakeLock'in navigator)await navigator.wakeLock.request('screen')}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){keepAwake();if(playing)pollMeta()}});
+addEventListener('pointerdown',keepAwake,{once:true});
+
+let tt;function toast(m,ms=2200){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),ms);}
+
+/* init */
+setMode(mode);setPlayingUI(false);drawTimer();applyStationLabel();if(cur){$('#npTitle').textContent=cur.name;$('#npArtist').textContent=cur.sub;$('#npStation').textContent=cur.name;}
+requestAnimationFrame(()=>{fit();setMode(mode);});wake();
+if(location.hash==='#demo'){cur=STATIONS[0];applyStationLabel();setPlayingUI(true);$('#npTitle').textContent='Sunset Pier';$('#npArtist').textContent='Bonobo · Black Sands';}
+})();
+</script>
+</body>
+</html>
