@@ -36,7 +36,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   padding:calc(env(safe-area-inset-top) + 18px) calc(env(safe-area-inset-right) + 26px) calc(env(safe-area-inset-bottom) + 20px) calc(env(safe-area-inset-left) + 26px);gap:14px}
 
 /* header */
-header{display:flex;align-items:center;justify-content:space-between;gap:20px}
+header{display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative;z-index:6}
 .time{display:flex;align-items:baseline;gap:16px}
 #clock{font-family:Fraunces,serif;font-weight:300;font-size:52px;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
 #date{color:var(--muted);font-size:15px;text-transform:capitalize}
@@ -61,8 +61,10 @@ main{display:grid;grid-template-columns:1fr 370px;gap:22px;min-height:0}
 .stage.has3d .tt{display:none}
 .stage .loader{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px;border-radius:50%;border:2px solid rgba(255,232,204,.12);border-top-color:var(--accent);animation:spin 1s linear infinite;transition:opacity .4s}
 .stage.has3d .loader,.stage.no3d .loader{opacity:0;pointer-events:none}
-.skins{position:absolute;right:0;bottom:84px;display:flex;gap:10px;padding:10px;border-radius:18px;background:#1d1611;border:1px solid var(--line);box-shadow:0 14px 40px rgba(0,0,0,.5);opacity:0;pointer-events:none;transform:translateY(8px);transition:all .25s;z-index:5}
+.hright{position:relative}
+.skins{position:absolute;left:0;top:58px;display:flex;gap:10px;padding:10px;border-radius:18px;background:#1d1611;border:1px solid var(--line);box-shadow:0 14px 40px rgba(0,0,0,.5);opacity:0;pointer-events:none;transform:translateY(8px);transition:all .25s;z-index:5}
 .skins.on{opacity:1;pointer-events:auto;transform:none}
+#skinBtn.on,#histBtn:active{color:var(--ink);border-color:rgba(var(--glow),.45)}
 .skins button{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);font-weight:600}
 .skins .sw{width:58px;height:42px;border-radius:9px;border:2px solid transparent}
 .skins button.on .sw{border-color:var(--accent)}
@@ -276,9 +278,14 @@ body.solo #soloExit{opacity:.75;pointer-events:auto}
   <header>
     <div class="time"><div id="clock">--:--</div><div id="date"></div></div>
     <div class="hright">
+        <div class="skins" id="skins">
+          <button data-skin="black"><span class="sw" style="background:linear-gradient(150deg,#2a2a2c,#0b0b0c)"></span>Μαύρο</button>
+          <button data-skin="walnut"><span class="sw" style="background:repeating-linear-gradient(170deg,#6a3d1e 0 5px,#55301a 5px 8px,#7a4824 8px 11px)"></span>Καρυδιά</button>
+          <button data-skin="acrylic"><span class="sw" style="background:linear-gradient(150deg,rgba(220,235,240,.5),rgba(255,255,255,.08));border-color:rgba(255,255,255,.25)"></span>Διάφανο</button>
+        </div>
     <button class="hbtn" id="histBtn" aria-label="Τι έπαιξε"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h11M4 12h11M4 18h7"/><circle cx="18" cy="17" r="2.5"/><path d="M20.5 17V6.5l-2.5 1"/></svg></button>
+    <button class="hbtn" id="skinBtn" aria-label="Εμφάνιση πικάπ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3a9 9 0 0 1 9 9"/></svg></button>
     <button class="oa-btn" id="oaBtn" aria-label="Σε κλήση"><i></i>ΣΕ ΚΛΗΣΗ</button>
-    <button class="out" id="out" aria-label="Έξοδος ήχου"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="M12 15l5 6H7z" fill="currentColor"/></svg><span id="outTxt">Ηχεία iPad</span></button>
     <div class="modes" id="modes">
       <div class="pill" id="pill"></div>
       <button data-mode="work"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Δουλειά</button>
@@ -321,18 +328,10 @@ body.solo #soloExit{opacity:.75;pointer-events:auto}
           <div class="np-artist" id="npArtist">Πάτα πάνω στο βινύλιο ή σε ένα εξώφυλλο δεξιά</div>
         </div>
         <div class="ctrls">
-          <button class="cbtn" id="prev" aria-label="Προηγούμενος δίσκος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
           <button class="cbtn big" id="play" aria-label="Αναπαραγωγή"><svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
-          <button class="cbtn" id="next" aria-label="Επόμενος δίσκος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
-          <button class="cbtn" id="skinBtn" aria-label="Εμφάνιση πικάπ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3a9 9 0 0 1 9 9"/></svg></button>
           <button class="cbtn" id="soloBtn" aria-label="Μόνο το πικάπ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
-          <button class="cbtn" id="airplay" aria-label="AirPlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="M12 15l5 6H7z" fill="currentColor"/></svg></button>
         </div>
-        <div class="skins" id="skins">
-          <button data-skin="black"><span class="sw" style="background:linear-gradient(150deg,#2a2a2c,#0b0b0c)"></span>Μαύρο</button>
-          <button data-skin="walnut"><span class="sw" style="background:repeating-linear-gradient(170deg,#6a3d1e 0 5px,#55301a 5px 8px,#7a4824 8px 11px)"></span>Καρυδιά</button>
-          <button data-skin="acrylic"><span class="sw" style="background:linear-gradient(150deg,rgba(220,235,240,.5),rgba(255,255,255,.08));border-color:rgba(255,255,255,.25)"></span>Διάφανο</button>
-        </div>
+
       </div>
     </section>
 
@@ -492,14 +491,7 @@ function pause(){audio.pause();setPlayingUI(false);
   setTimeout(()=>{if(!playing){audio.removeAttribute('src');audio.load();}},400);}
 function toggle(){playing?pause():play()}
 function step(d){const l=crateList();if(!l.length)return;let i=cur?l.findIndex(s=>s.id===cur.id):-1;i=(i+d+l.length)%l.length;select(l[i],true,d)}
-$('#play').onclick=toggle;$('#platter').onclick=toggle;$('#next').onclick=()=>step(1);$('#prev').onclick=()=>step(-1);
-function outState(){const wl=!!audio.webkitCurrentPlaybackTargetIsWireless;$('#out').classList.toggle('wl',wl);$('#airplay').classList.toggle('wl',wl);
-  $('#outTxt').textContent=wl?'AirPlay · συνδεδεμένο':'Ηχεία iPad';}
-audio.addEventListener('webkitcurrentplaybacktargetiswirelesschanged',outState);
-audio.addEventListener('webkitplaybacktargetavailabilitychanged',e=>{$('#out').title=e.availability==='available'?'Υπάρχουν διαθέσιμα ηχεία AirPlay':'';});
-setInterval(outState,3000);
-$('#out').onclick=()=>$('#airplay').click();
-$('#airplay').onclick=()=>{if(audio.webkitShowPlaybackTargetPicker){audio.webkitShowPlaybackTargetPicker()}else{toast('Κέντρο Ελέγχου → εικονίδιο AirPlay → διάλεξε το Sonos',3500)}};
+$('#play').onclick=toggle;$('#platter').onclick=toggle;
 audio.addEventListener('error',()=>{if(!playing||!audio.getAttribute('src')||!cur)return;
   const code=audio.error?audio.error.code:'?';
   if(tryIdx<cur.streams.length-1){tryIdx++;switching=Date.now();audio.src=cur.streams[tryIdx];const p=audio.play();if(p&&p.catch)p.catch(()=>{});return;}
@@ -637,7 +629,7 @@ function exitSolo(){if(!solo)return;solo=false;setTimeout(wake,1000);const st=$(
 $('#soloBtn').onclick=enterSolo;$('#soloExit').onclick=exitSolo;
 addEventListener('resize',()=>{if(solo)rectStyle($('#stage'),{left:0,top:0,width:innerWidth,height:innerHeight});});
 /* ---------- Station search (radio-browser.info) ---------- */
-const HUB_V='20';
+const HUB_V='21';
 const RB=['https://de1.api.radio-browser.info','https://fi1.api.radio-browser.info','https://de2.api.radio-browser.info'];
 let grOnly=true,qT=null,qSeq=0;
 function openSheet(){$('#sheet').classList.add('on');$('#q').value='';search('');setTimeout(()=>$('#q').focus(),350);}
@@ -686,9 +678,9 @@ $('#onair').addEventListener('click',e=>{if(e.target.id==='oaEnd'){exitOnAir();r
 /* ---------- Skins ---------- */
 let skinName=store.get('skin','black');
 function applySkin(n){skinName=n;store.set('skin',n);window.tt3d&&tt3d.setSkin(n);$$('#skins button').forEach(b=>b.classList.toggle('on',b.dataset.skin===n));}
-$('#skinBtn').onclick=e=>{e.stopPropagation();$('#skins').classList.toggle('on');};
-$$('#skins button').forEach(b=>b.onclick=e=>{e.stopPropagation();applySkin(b.dataset.skin);setTimeout(()=>$('#skins').classList.remove('on'),350);});
-addEventListener('pointerdown',e=>{if(!e.target.closest('#skins')&&!e.target.closest('#skinBtn'))$('#skins').classList.remove('on');});
+$('#skinBtn').onclick=e=>{e.stopPropagation();$('#skinBtn').classList.toggle('on',$('#skins').classList.toggle('on'));};
+$$('#skins button').forEach(b=>b.onclick=e=>{e.stopPropagation();applySkin(b.dataset.skin);setTimeout(()=>{$('#skins').classList.remove('on');$('#skinBtn').classList.remove('on');},350);});
+addEventListener('pointerdown',e=>{if(!e.target.closest('#skins')&&!e.target.closest('#skinBtn')){$('#skins').classList.remove('on');$('#skinBtn').classList.remove('on');}});
 setTimeout(()=>{if(!window.tt3d)$('#stage').classList.add('no3d');},8000);
 /* ---------- History & likes ---------- */
 const HEART="<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 20.5s-7.5-4.6-9.3-9.4C1.4 7.6 3.6 4 7.1 4c2 0 3.6 1.1 4.9 2.8C13.3 5.1 14.9 4 16.9 4c3.5 0 5.7 3.6 4.4 7.1-1.8 4.8-9.3 9.4-9.3 9.4z\"/></svg>";
