@@ -116,7 +116,42 @@ main{display:grid;grid-template-columns:1fr 370px;gap:22px;min-height:0}
 aside{display:flex;flex-direction:column;gap:14px;min-height:0}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
 .card h3{margin:0 0 12px;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700;display:flex;justify-content:space-between;align-items:center}
-.crate{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.crate{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-height:226px;overflow-y:auto;padding:4px;margin:-4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.crate::-webkit-scrollbar{display:none}
+.sleeve.add{background:transparent;border:1.5px dashed rgba(255,232,204,.22);box-shadow:none;align-items:center;justify-content:center;color:var(--muted)}
+.sleeve.add::before,.sleeve.add::after{display:none}
+.sleeve.add b{font-size:30px;font-weight:300;line-height:1}
+.sleeve.add em{color:var(--muted)}
+.sleeve .rm{position:absolute;inset:0;z-index:3;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(12,8,6,.82);border-radius:10px;font-size:12.5px}
+.sleeve.ask .rm{display:flex}
+.sleeve .rm i{font-style:normal;padding:7px 12px;border-radius:999px;background:#c9533a;color:#fff;font-weight:700}
+.sleeve .rm u{text-decoration:none;color:var(--muted)}
+#sheet{position:fixed;inset:0;z-index:25;background:rgba(8,5,4,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s}
+#sheet.on{opacity:1;pointer-events:auto}
+.sheet{width:min(720px,92vw);height:min(640px,86vh);background:#1d1611;border:1px solid var(--line);border-radius:26px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6);transform:translateY(20px);transition:transform .35s}
+#sheet.on .sheet{transform:none}
+.sh-head{padding:22px 22px 14px;display:flex;flex-direction:column;gap:14px;border-bottom:1px solid var(--line)}
+.sh-top{display:flex;align-items:center;justify-content:space-between}
+.sh-top h2{margin:0;font-family:Fraunces,serif;font-weight:400;font-size:26px}
+.sh-top button{width:40px;height:40px;border-radius:50%;background:var(--panel);border:1px solid var(--line);font-size:20px;color:var(--muted)}
+.sh-search{display:flex;gap:10px;align-items:center}
+.sh-search input{flex:1;font:inherit;font-size:17px;color:var(--ink);background:rgba(255,240,220,.06);border:1px solid var(--line);border-radius:14px;padding:13px 16px;outline:none;-webkit-user-select:text;user-select:text}
+.sh-search input:focus{border-color:rgba(var(--glow),.6)}
+.sh-sub{font-size:13px;color:var(--muted)}
+.sh-sub b{color:var(--ink);font-weight:600}
+#results{flex:1;overflow-y:auto;padding:8px 12px 16px;-webkit-overflow-scrolling:touch}
+.res{display:grid;grid-template-columns:46px 1fr auto;gap:14px;align-items:center;padding:10px;border-radius:14px}
+.res:active{background:var(--panel)}
+.res .fav{width:46px;height:46px;border-radius:10px;background:var(--c,#3a2a20) center/cover;display:grid;place-items:center;font-family:Fraunces,serif;font-size:20px;color:#fff8ee;overflow:hidden}
+.res .fav img{width:100%;height:100%;object-fit:cover}
+.res .nm{font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res .tg{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.res .act{display:flex;gap:8px}
+.res .act button{padding:9px 14px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:600}
+.res .act button.add{background:var(--accent);color:#1a120c;border:0}
+.res .act button.done{background:transparent;color:var(--muted)}
+.res.na{opacity:.4}
+.empty{padding:40px;text-align:center;color:var(--muted)}
 .sleeve{aspect-ratio:1;border-radius:10px;position:relative;overflow:hidden;text-align:left;padding:10px;display:flex;flex-direction:column;justify-content:flex-end;
   background:var(--c);box-shadow:0 6px 16px rgba(0,0,0,.35);transition:transform .2s}
 .sleeve::before{content:"";position:absolute;right:-30%;top:-30%;width:90%;height:90%;border-radius:50%;
@@ -239,7 +274,7 @@ body.solo #soloExit{opacity:.75;pointer-events:auto}
 
     <aside>
       <div class="card">
-        <h3><span id="crateTitle">Δίσκοι</span><span id="crateHint" style="letter-spacing:.05em;text-transform:none;font-weight:500;color:var(--faint)"></span></h3>
+        <h3><span id="crateTitle">Δίσκοι</span><button id="crateAdd" style="letter-spacing:.04em;text-transform:none;font-weight:700;font-size:12.5px;color:var(--accent);padding:4px 2px">+ Σταθμός</button><span id="crateHint" style="display:none"></span></h3>
         <div class="crate" id="crate"></div>
       </div>
       <div class="card grow">
@@ -267,6 +302,14 @@ body.solo #soloExit{opacity:.75;pointer-events:auto}
 <button id="soloExit" aria-label="Επιστροφή"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
 <div class="ov" id="idle"><div class="ic" id="idleClock"></div><div class="id" id="idleDate"></div><div class="inp" id="idleNp"></div></div>
 <div class="ov" id="eod"><h1>Τέλος για σήμερα.</h1><p id="eodTxt"></p><button class="chip solid" id="eodClose">Καλή ξεκούραση</button></div>
+<div id="sheet"><div class="sheet">
+  <div class="sh-head">
+    <div class="sh-top"><h2>Πρόσθεσε σταθμό</h2><button id="shClose" aria-label="Κλείσιμο">×</button></div>
+    <div class="sh-search"><input id="q" type="search" placeholder="Όνομα σταθμού, π.χ. Kiss, Rock FM, jazz…" autocomplete="off" autocorrect="off" spellcheck="false"><button class="chip on" id="grOnly">Μόνο Ελλάδα</button></div>
+    <div class="sh-sub" id="shSub"></div>
+  </div>
+  <div id="results"></div>
+</div></div>
 <div class="toast" id="toast"></div>
 <audio id="audio" preload="none" playsinline x-webkit-airplay="allow"></audio>
 
@@ -291,6 +334,13 @@ const STATIONS=[
  {id:'diesi',name:'Δίεση',sub:'101,3',c:'#7a6a2e',mode:'chill',streams:['https://stream.rcs.revma.com/gkfwrhqxbfhvv','https://n05a-eu.rcs.revma.com/gkfwrhqxbfhvv']},
 ];
 STATIONS.forEach(s=>{s.stream=s.streams[0];});
+const DEFAULTS=STATIONS.slice();
+const PALETTE=['#a8693a','#b5533a','#7a3b3b','#8a4a6a','#6c5a86','#4b5a7a','#3f6f86','#2f5450','#3f7a62','#5f7a4a','#7a6a2e','#a2782e'];
+function hashColor(t){let h=0;for(const ch of t)h=(h*31+ch.charCodeAt(0))>>>0;return PALETTE[h%PALETTE.length];}
+function loadStations(){const hidden=store.get('hidden',[]),custom=store.get('custom',[]);STATIONS.length=0;
+  DEFAULTS.forEach(s=>{if(!hidden.includes(s.id))STATIONS.push(s)});
+  custom.forEach(s=>{s.stream=s.streams[0];STATIONS.push(s)});}
+loadStations();
 let tryIdx=0;
 
 const audio=$('#audio');
@@ -323,9 +373,21 @@ $$('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 
 function crateList(){return STATIONS.filter(s=>s.mode===mode)}
 function renderCrate(){const c=$('#crate');c.innerHTML='';
-  crateList().forEach(s=>{const b=document.createElement('button');b.className='sleeve'+(cur&&cur.id===s.id?' cur':'');b.style.setProperty('--c',`linear-gradient(150deg,${s.c},${shade(s.c,-35)})`);
-    b.innerHTML=`<span>${s.name}</span><em>${s.sub}</em>`;b.onclick=()=>{select(s,true)};c.appendChild(b);});
-  $('#crateHint').textContent=cur?'':'πάτα για να παίξει';}
+  crateList().forEach(s=>{const b=document.createElement('div');b.setAttribute('role','button');b.className='sleeve'+(cur&&cur.id===s.id?' cur':'');b.style.setProperty('--c',`linear-gradient(150deg,${s.c},${shade(s.c,-35)})`);
+    b.innerHTML=`<span>${esc(s.name)}</span><em>${esc(s.sub||'')}</em><div class="rm"><i>Αφαίρεση</i><u>Άκυρο</u></div>`;
+    let lp=null,longed=false;
+    b.addEventListener('pointerdown',()=>{longed=false;lp=setTimeout(()=>{longed=true;$$('.sleeve.ask').forEach(x=>x.classList.remove('ask'));b.classList.add('ask');},600);});
+    ['pointerup','pointerleave','pointercancel'].forEach(e=>b.addEventListener(e,()=>clearTimeout(lp)));
+    b.addEventListener('contextmenu',e=>e.preventDefault());
+    b.onclick=e=>{if(longed){longed=false;return;}
+      if(b.classList.contains('ask')){if(e.target.tagName==='I')removeStation(s);else b.classList.remove('ask');return;}
+      select(s,true)};
+    c.appendChild(b);});
+  const a=document.createElement('button');a.className='sleeve add';a.innerHTML='<b>+</b><em>Προσθήκη</em>';a.onclick=openSheet;c.appendChild(a);
+  $('#crateHint').textContent=cur?'κράτα πατημένο για αφαίρεση':'πάτα για να παίξει';}
+function removeStation(s){if(s.id.startsWith('c_')){store.set('custom',store.get('custom',[]).filter(x=>x.id!==s.id));}
+  else{const h=store.get('hidden',[]);h.push(s.id);store.set('hidden',h);}
+  loadStations();if(cur&&cur.id===s.id&&!playing)cur=null;renderCrate();toast('Ο σταθμός αφαιρέθηκε');}
 function shade(hex,p){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=x=>Math.max(0,Math.min(255,Math.round(x+(p/100)*255)));return `rgb(${f(r)},${f(g)},${f(b)})`;}
 
 /* ---------- Turntable ---------- */
@@ -494,6 +556,36 @@ function exitSolo(){if(!solo)return;solo=false;const st=$('#stage');const r=ph.g
   setTimeout(()=>{if(solo)return;st.classList.remove('fly');st.removeAttribute('style');ph&&ph.remove();ph=null;},950);}
 $('#soloBtn').onclick=enterSolo;$('#soloExit').onclick=exitSolo;
 addEventListener('resize',()=>{if(solo)rectStyle($('#stage'),{left:0,top:0,width:innerWidth,height:innerHeight});});
+/* ---------- Station search (radio-browser.info) ---------- */
+const RB=['https://de1.api.radio-browser.info','https://fi1.api.radio-browser.info','https://de2.api.radio-browser.info'];
+let grOnly=true,qT=null,qSeq=0;
+function openSheet(){$('#sheet').classList.add('on');$('#q').value='';search('');setTimeout(()=>$('#q').focus(),350);}
+function closeSheet(){$('#sheet').classList.remove('on');$('#q').blur();}
+$('#shClose').onclick=closeSheet;$('#crateAdd').onclick=openSheet;$('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeSheet()});
+$('#grOnly').onclick=()=>{grOnly=!grOnly;$('#grOnly').classList.toggle('on',grOnly);search($('#q').value.trim())};
+$('#q').addEventListener('input',()=>{clearTimeout(qT);qT=setTimeout(()=>search($('#q').value.trim()),380)});
+async function rbFetch(path){for(const h of RB){try{const r=await fetch(h+path);if(r.ok)return await r.json()}catch(e){}}throw new Error('rb');}
+async function search(q){const seq=++qSeq;const res=$('#results');res.innerHTML='<div class="empty">Ψάχνω…</div>';
+  const params=new URLSearchParams({hidebroken:'true',order:'clickcount',reverse:'true',limit:'60'});
+  if(q)params.set('name',q);if(grOnly)params.set('countrycode','GR');
+  $('#shSub').innerHTML=`Θα μπει στους δίσκους για <b>${mode==='work'?'Δουλειά':'Χαλάρωση'}</b>`+(q?'':(grOnly?' · οι πιο δημοφιλείς ελληνικοί σταθμοί':' · οι πιο δημοφιλείς σταθμοί'))+'<br>Για αφαίρεση δίσκου: κράτα τον πατημένο.';
+  let list=[];try{list=await rbFetch('/json/stations/search?'+params)}catch(e){if(seq===qSeq)res.innerHTML='<div class="empty">Δεν μπόρεσα να φέρω σταθμούς. Δοκίμασε ξανά σε λίγο.</div>';return;}
+  if(seq!==qSeq)return;
+  const seen=new Set();list=list.filter(x=>{const k=(x.name||'').trim().toLowerCase();if(!k||seen.has(k))return false;seen.add(k);return true;});
+  if(!list.length){res.innerHTML='<div class="empty">Δεν βρέθηκε σταθμός. Δοκίμασε άλλο όνομα'+(grOnly?' ή βγάλε το «Μόνο Ελλάδα».':'.')+'</div>';return;}
+  res.innerHTML='';
+  list.forEach(x=>{const url=(x.url_resolved||x.url||'').trim();const ok=url.startsWith('https://');const name=x.name.trim();
+    const have=STATIONS.some(s=>s.streams.includes(url));const col=hashColor(name);
+    const row=document.createElement('div');row.className='res'+(ok?'':' na');row.style.setProperty('--c',col);
+    const tags=(x.tags||'').split(',').filter(Boolean).slice(0,3).join(' · ');
+    row.innerHTML=`<div class="fav">${esc(name[0]||'♪')}</div><div style="min-width:0"><div class="nm">${esc(name)}</div><div class="tg">${esc([x.state,tags,x.bitrate?x.bitrate+' kbps':''].filter(Boolean).join(' · ')||'—')}${ok?'':' · δεν υποστηρίζεται'}</div></div><div class="act">${ok?(have?'<button class="done" disabled>Υπάρχει ✓</button>':'<button class="try">Δοκιμή</button><button class="add">Προσθήκη</button>'):''}</div>`;
+    if(x.favicon&&x.favicon.startsWith('https://')){const im=new Image();im.onload=()=>{const f=row.querySelector('.fav');f.textContent='';f.appendChild(im)};im.src=x.favicon;}
+    const st=()=>({id:'c_'+x.stationuuid,name:name.replace(/\s*[-–|].*$/,'').slice(0,28)||name,sub:(x.state||tags.split(' · ')[0]||'web radio').toLowerCase().slice(0,26),c:col,mode,streams:[url],rj:(url.match(/stream\.radiojar\.com\/([a-z0-9]+)/i)||[])[1]});
+    const tryB=row.querySelector('.try'),addB=row.querySelector('.add');
+    if(tryB)tryB.onclick=()=>{const t=st();t.stream=url;select(t,true);toast('Δοκιμή: '+t.name);};
+    if(addB)addB.onclick=()=>{const t=st();const c=store.get('custom',[]);c.push(t);store.set('custom',c);loadStations();
+      const added=STATIONS.find(s=>s.id===t.id);select(added,true);addB.parentNode.innerHTML='<button class="done" disabled>Προστέθηκε ✓</button>';toast('Προστέθηκε στους δίσκους σου');};
+    res.appendChild(row);});}
 window.hub={toggle,sync(){applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
 /* init */
 setMode(mode);setPlayingUI(false);drawTimer();applyStationLabel();if(cur){$('#npTitle').textContent=cur.name;$('#npArtist').textContent=cur.sub;$('#npStation').textContent=cur.name;}
