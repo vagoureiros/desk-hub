@@ -157,7 +157,7 @@ function shade(hex, p) {
 
 /* ---------------- scene ---------------- */
 let renderer, scene, camera, container, spinGroup, armYaw, armLift, cueLever, targetLamp, ledOn, led33;
-let needs = true, paused = false, tapHandler = null, startBtn;
+let needs = true, paused = false, tapHandler = null, startBtn, recHolder, recSpin;
 function requestRender() { needs = true; }
 
 const M = {}; // materials
@@ -221,8 +221,10 @@ function buildDeck() {
   platter.position.y = PLATTER_H / 2; spinGroup.add(platter);
   platter.material[0].map.repeat.set(1, 1);
   const mat = mesh(new THREE.CylinderGeometry(14.85, 14.85, MAT_H, 128), [M.rubber, M.mat, M.rubber]); mat.position.y = PLATTER_H + MAT_H / 2; spinGroup.add(mat);
-  const rec = mesh(new THREE.CylinderGeometry(15.15, 15.15, REC_H, 160), [M.vinylEdge, M.vinylTop, M.vinylEdge]); rec.position.y = PLATTER_H + MAT_H + REC_H / 2; spinGroup.add(rec);
-  const label = mesh(new THREE.CircleGeometry(5.05, 96), M.label, false, true); label.rotation.x = -Math.PI / 2; label.position.y = RY - TOP + .008; spinGroup.add(label);
+  recHolder = new THREE.Group(); recHolder.position.copy(C); deck.add(recHolder);
+  recSpin = new THREE.Group(); recHolder.add(recSpin);
+  const rec = mesh(new THREE.CylinderGeometry(15.15, 15.15, REC_H, 160), [M.vinylEdge, M.vinylTop, M.vinylEdge]); rec.position.y = PLATTER_H + MAT_H + REC_H / 2; recSpin.add(rec);
+  const label = mesh(new THREE.CircleGeometry(5.05, 96), M.label, false, true); label.rotation.x = -Math.PI / 2; label.position.y = RY - TOP + .008; recSpin.add(label);
   const spindle = mesh(new THREE.CylinderGeometry(.36, .36, 1.6, 24), M.chrome); spindle.position.y = RY - TOP + .7; spinGroup.add(spindle);
   const spTop = mesh(new THREE.SphereGeometry(.36, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), M.chrome); spTop.position.y = RY - TOP + 1.5; spinGroup.add(spTop);
   spinGroup.userData.tap = true; platter.userData.tap = rec.userData.tap = label.userData.tap = mat.userData.tap = true;
@@ -392,10 +394,13 @@ function frame(now) {
   speed += (targetSpeed - speed) * (1 - Math.exp(-k * dt));
   if (Math.abs(speed) < 1e-3 && !ARM.playing) speed = 0;
   if (speed) { spinGroup.rotation.y -= speed * dt; needs = true; }
+  recSpin.rotation.y = spinGroup.rotation.y + recOffset;
+  if (swap) { stepSwap(now); needs = true; }
   // arm sequence
   if (seq.length) {
     const s = seq[0]; const t = Math.min(1, (now - s.start) / s.dur), e = ease(t);
-    if (s.k === 'lift') ARM.lift = s.from + (s.to - s.from) * e; else ARM.yaw = s.from + (s.to - s.from) * e;
+    if (s.k === 'lift') ARM.lift = s.from + (s.to - s.from) * e; else if (s.k === 'yaw') ARM.yaw = s.from + (s.to - s.from) * e;
+    if (s.k === 'yawTo') { if (s.from == null) s.from = ARM.yaw; ARM.yaw = s.from + (s.to - s.from) * e; }
     if (t >= 1) { s.after && s.after(); seq.shift(); if (seq.length) seq[0].start = now; }
     needs = true;
   } else if (ARM.phase === 'groove') {
@@ -410,9 +415,43 @@ function frame(now) {
   if (needs) { renderer.render(scene, camera); needs = false; }
 }
 
+/* ---------------- record swap ---------------- */
+let swap = null, recOffset = 0, pending = [];
+function swapRecord(dir = 1) {
+  const now = performance.now();
+  const k = window.__slow || 1; swap = { start: now, dir, phase: 'out', OUT: 520 * k, IN: 620 * k, swapped: false };
+  if (ARM.playing) {
+    const yStart = yawForRadius(14.55);
+    ARM.phase = 'swap';
+    runSeq([
+      { k: 'lift', from: ARM.lift, to: 1, dur: 260 },
+      { k: 'wait', dur: 720 },
+      { k: 'yawTo', to: yStart, dur: 420 },
+      { k: 'lift', from: 1, to: 0, dur: 600, after: () => { ARM.phase = 'groove'; ARM.grooveStart = performance.now(); } },
+    ]);
+  }
+  requestRender();
+}
+function stepSwap(now) {
+  const t = now - swap.start, away = new THREE.Vector3(C.x - 44 * swap.dir, C.y + 7, C.z - 6);
+  if (t < swap.OUT) {
+    const e = ease(t / swap.OUT); recHolder.position.lerpVectors(C, away, e);
+    recHolder.rotation.z = .12 * swap.dir * e;
+  } else {
+    if (!swap.swapped) { swap.swapped = true; const p = pending; pending = []; p.forEach(f => f()); recOffset = Math.random() * Math.PI * 2; }
+    const ti = Math.min(1, (t - swap.OUT) / swap.IN), e = 1 - Math.pow(1 - ti, 3);
+    const from = new THREE.Vector3(C.x - 44 * swap.dir, C.y + 7, C.z + 6);
+    recHolder.position.lerpVectors(from, C, e); recHolder.position.y += Math.sin(ti * Math.PI) * .6 * (1 - ti);
+    recHolder.rotation.z = .12 * swap.dir * (1 - e);
+    if (ti >= 1) { recHolder.position.copy(C); recHolder.rotation.z = 0; swap = null; }
+  }
+}
+function deferIfSwapping(f) { if (swap && !swap.swapped) pending.push(f); else f(); }
+
 /* ---------------- cover loading ---------------- */
 let coverToken = 0;
-function setCover(url) {
+function setCover(url) { deferIfSwapping(() => setCoverNow(url)); }
+function setCoverNow(url) {
   const tok = ++coverToken;
   if (!url) { labelState.img = null; drawLabel(); return; }
   const img = new Image(); img.crossOrigin = 'anonymous';
@@ -420,7 +459,7 @@ function setCover(url) {
   img.onerror = () => { if (tok !== coverToken) return; labelState.img = null; drawLabel(); };
   img.src = url;
 }
-function setLabel({ name, sub, color }) { labelState = { ...labelState, name, sub, color, img: null }; coverToken++; drawLabel(); }
+function setLabel({ name, sub, color }) { deferIfSwapping(() => { labelState = { ...labelState, name, sub, color, img: null }; coverToken++; drawLabel(); }); }
 
 /* ---------------- init ---------------- */
 export function init(el, opts = {}) {
@@ -464,7 +503,7 @@ export function init(el, opts = {}) {
     const r = renderer.domElement.getBoundingClientRect();
     v.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     ray.setFromCamera(v, camera);
-    const hit = ray.intersectObjects([spinGroup, startBtn], true)[0];
+    const hit = ray.intersectObjects([spinGroup, recHolder, startBtn], true)[0];
     if (hit && tapHandler) {
       if (hit.object === startBtn) { startBtn.position.y = TOP + .08; setTimeout(() => { startBtn.position.y = TOP + .2; requestRender(); }, 160); }
       tapHandler();
@@ -480,7 +519,7 @@ export function init(el, opts = {}) {
 }
 
 const api = {
-  setPlaying, setCover, setLabel, setView,
+  setPlaying, setCover, setLabel, setView, swapRecord,
   onTap(fn) { tapHandler = fn; },
   pause(p) { paused = p; if (!p) { last = performance.now(); requestRender(); } },
 };

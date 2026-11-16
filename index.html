@@ -263,9 +263,9 @@ body.solo #soloExit{opacity:.75;pointer-events:auto}
           <div class="np-artist" id="npArtist">Πάτα πάνω στο βινύλιο ή σε ένα εξώφυλλο δεξιά</div>
         </div>
         <div class="ctrls">
-          <button class="cbtn" id="prev" aria-label="Προηγούμενος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+          <button class="cbtn" id="prev" aria-label="Προηγούμενος δίσκος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
           <button class="cbtn big" id="play" aria-label="Αναπαραγωγή"><svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
-          <button class="cbtn" id="next" aria-label="Επόμενος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+          <button class="cbtn" id="next" aria-label="Επόμενος δίσκος"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
           <button class="cbtn" id="soloBtn" aria-label="Μόνο το πικάπ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
           <button class="cbtn" id="airplay" aria-label="AirPlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="M12 15l5 6H7z" fill="currentColor"/></svg></button>
         </div>
@@ -398,7 +398,7 @@ function setPlayingUI(p){playing=p;window.tt3d&&tt3d.setPlaying(p);$('#vinyl').c
   $('#now').classList.toggle('paused',!p);
   $('#playIcon').innerHTML=p?'<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>':'<path d="M8 5v14l11-7z"/>';}
 
-function select(s,autoplay){const changed=!cur||cur.id!==s.id;cur=s;store.set('station',s.id);
+function select(s,autoplay,dir){const changed=!cur||cur.id!==s.id;if(changed&&cur&&window.tt3d)tt3d.swapRecord(dir||1);cur=s;store.set('station',s.id);
   renderCrate();applyStationLabel();
   if(changed){meta={title:'',artist:'',cover:''};lastKey='';setCover('');$('#npTitle').textContent=s.name;$('#npArtist').textContent=s.sub;
     switching=Date.now();tryIdx=0;audio.src=s.streams[0];}
@@ -412,7 +412,7 @@ function pause(){audio.pause();setPlayingUI(false);
   // drop the live buffer so resume is "live" again
   setTimeout(()=>{if(!playing){audio.removeAttribute('src');audio.load();}},400);}
 function toggle(){playing?pause():play()}
-function step(d){const l=crateList();let i=cur?l.findIndex(s=>s.id===cur.id):-1;i=(i+d+l.length)%l.length;select(l[i],playing||true)}
+function step(d){const l=crateList();if(!l.length)return;let i=cur?l.findIndex(s=>s.id===cur.id):-1;i=(i+d+l.length)%l.length;select(l[i],true,d)}
 $('#play').onclick=toggle;$('#platter').onclick=toggle;$('#next').onclick=()=>step(1);$('#prev').onclick=()=>step(-1);
 function outState(){const wl=!!audio.webkitCurrentPlaybackTargetIsWireless;$('#out').classList.toggle('wl',wl);$('#airplay').classList.toggle('wl',wl);
   $('#outTxt').textContent=wl?'AirPlay · συνδεδεμένο':'Ηχεία iPad';}
