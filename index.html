@@ -10,6 +10,7 @@
 <meta name="theme-color" content="#16110d">
 <link rel="apple-touch-icon" href="icon.png">
 <title>Desk Hub</title>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -54,6 +55,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:20px}
 main{display:grid;grid-template-columns:1fr 370px;gap:22px;min-height:0}
 .deck{display:flex;flex-direction:column;min-height:0;min-width:0}
 .stage{flex:1;min-height:0;position:relative}
+.stage.has3d .tt{display:none}
+.stage canvas{animation:fadein 1.2s ease both}@keyframes fadein{from{opacity:0}to{opacity:1}}
 .tt{position:absolute;left:50%;top:50%;width:680px;height:540px;transform-origin:0 0}
 .plinth{position:absolute;inset:0;border-radius:28px;
   background:
@@ -318,9 +321,9 @@ function shade(hex,p){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b
 
 /* ---------- Turntable ---------- */
 function applyStationLabel(){const s=cur||crateList()[0];
-  $('#label').style.setProperty('--labelc',s.c);$('#lblName').textContent=s.name;$('#lblSub').textContent=s.sub;
+  $('#label').style.setProperty('--labelc',s.c);window.tt3d&&tt3d.setLabel({name:s.name,sub:s.sub,color:s.c});$('#lblName').textContent=s.name;$('#lblSub').textContent=s.sub;
   $('#npStation').textContent=cur?cur.name:'';}
-function setPlayingUI(p){playing=p;$('#vinyl').classList.toggle('playing',p);$('#arm').classList.toggle('down',p);$('#led').classList.toggle('on',p);
+function setPlayingUI(p){playing=p;window.tt3d&&tt3d.setPlaying(p);$('#vinyl').classList.toggle('playing',p);$('#arm').classList.toggle('down',p);$('#led').classList.toggle('on',p);
   $('#now').classList.toggle('paused',!p);
   $('#playIcon').innerHTML=p?'<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>':'<path d="M8 5v14l11-7z"/>';}
 
@@ -373,7 +376,7 @@ async function pollMeta(now){clearTimeout(metaTimer);if(!cur)return;const s=cur;
         let cv=m.cover||'';if(!cv&&m.artist&&m.title)cv=await itunesCover(m.artist,m.title);if(s===cur){meta.cover=cv;setCover(cv);mediaSession();}}}}
   catch(e){}
   if(playing) metaTimer=setTimeout(()=>pollMeta(),15000);}
-function setCover(url){const img=$('#cover');img.classList.remove('show');
+function setCover(url){window.tt3d&&tt3d.setCover(url);const img=$('#cover');img.classList.remove('show');
   const np=$('#idleNp');
   if(!url){np.innerHTML=cur&&playing?`<span>${esc(cur.name)}</span>`:'';tint(cur?cur.c:null);return;}
   const probe=new Image();probe.crossOrigin='anonymous';
@@ -435,7 +438,7 @@ $('#endBtn').onclick=()=>{clearInterval(tInt);tRun=false;tPhase='focus';tLeft=tL
 $('#eodClose').onclick=()=>$('#eod').classList.remove('on');
 
 /* ---------- Idle ---------- */
-let idleT;function wake(){$('#idle').classList.remove('on');clearTimeout(idleT);idleT=setTimeout(()=>$('#idle').classList.add('on'),4*60*1000);}
+let idleT;function wake(){$('#idle').classList.remove('on');window.tt3d&&tt3d.pause(false);clearTimeout(idleT);idleT=setTimeout(()=>{$('#idle').classList.add('on');window.tt3d&&tt3d.pause(true);},4*60*1000);}
 ['pointerdown','touchstart','keydown'].forEach(e=>addEventListener(e,wake,{passive:true}));
 $('#idle').addEventListener('pointerdown',e=>{e.stopPropagation();wake();});
 
@@ -468,11 +471,20 @@ if(location.hash==='#diag'){
     a.removeAttribute('src');a.load();out('\nΤέλος ελέγχου.');};
 }
 
+window.hub={toggle,sync(){applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
 /* init */
 setMode(mode);setPlayingUI(false);drawTimer();applyStationLabel();if(cur){$('#npTitle').textContent=cur.name;$('#npArtist').textContent=cur.sub;$('#npStation').textContent=cur.name;}
 requestAnimationFrame(()=>{fit();setMode(mode);});wake();
 if(location.hash==='#demo'){cur=STATIONS[3];applyStationLabel();setPlayingUI(true);$('#npTitle').textContent='Safe From Harm';$('#npArtist').textContent='Massive Attack';}
 })();
+</script>
+<script type="module">
+import { init } from './turntable3d.js';
+try {
+  const st = document.getElementById('stage');
+  const t = init(st); window.tt3d = t; st.classList.add('has3d');
+  t.onTap(() => window.hub.toggle()); window.hub.sync();
+} catch (e) { console.error('3D init failed', e); }
 </script>
 </body>
 </html>
