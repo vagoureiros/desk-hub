@@ -541,7 +541,7 @@ $('#endBtn').onclick=()=>{clearInterval(tInt);tRun=false;tPhase='focus';tLeft=tL
 $('#eodClose').onclick=()=>$('#eod').classList.remove('on');
 
 /* ---------- Idle ---------- */
-let idleT;function wake(){if(typeof onAir!=='undefined'&&onAir)return;$('#idle').classList.remove('on');window.tt3d&&tt3d.pause(false);clearTimeout(idleT);idleT=setTimeout(()=>{if(typeof onAir!=='undefined'&&onAir)return;$('#idle').classList.add('on');window.tt3d&&tt3d.pause(true);},4*60*1000);}
+let idleT;function wake(){if(typeof onAir!=='undefined'&&onAir)return;$('#idle').classList.remove('on');window.tt3d&&tt3d.pause(false);clearTimeout(idleT);idleT=setTimeout(()=>{if(onAir||solo)return;$('#idle').classList.add('on');window.tt3d&&tt3d.pause(true);},4*60*1000);}
 ['pointerdown','touchstart','keydown'].forEach(e=>addEventListener(e,wake,{passive:true}));
 $('#idle').addEventListener('pointerdown',e=>{e.stopPropagation();wake();});
 
@@ -583,13 +583,13 @@ function enterSolo(){if(solo||!window.tt3d)return;solo=true;const st=$('#stage')
   document.body.classList.add('solo');
   requestAnimationFrame(()=>rectStyle(st,{left:0,top:0,width:innerWidth,height:innerHeight}));
   tt3d.setView('top');}
-function exitSolo(){if(!solo)return;solo=false;const st=$('#stage');const r=ph.getBoundingClientRect();
+function exitSolo(){if(!solo)return;solo=false;setTimeout(wake,1000);const st=$('#stage');const r=ph.getBoundingClientRect();
   document.body.classList.remove('solo');rectStyle(st,r);tt3d.setView('angled');
   setTimeout(()=>{if(solo)return;st.classList.remove('fly');st.removeAttribute('style');ph&&ph.remove();ph=null;},950);}
 $('#soloBtn').onclick=enterSolo;$('#soloExit').onclick=exitSolo;
 addEventListener('resize',()=>{if(solo)rectStyle($('#stage'),{left:0,top:0,width:innerWidth,height:innerHeight});});
 /* ---------- Station search (radio-browser.info) ---------- */
-const HUB_V='17';
+const HUB_V='18';
 const RB=['https://de1.api.radio-browser.info','https://fi1.api.radio-browser.info','https://de2.api.radio-browser.info'];
 let grOnly=true,qT=null,qSeq=0;
 function openSheet(){$('#sheet').classList.add('on');$('#q').value='';search('');setTimeout(()=>$('#q').focus(),350);}
