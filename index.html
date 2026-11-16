@@ -265,24 +265,20 @@ const store={get(k,d){try{const v=localStorage.getItem('hub.'+k);return v==null?
 
 /* ---------- Stations ---------- */
 const STATIONS=[
- {id:'groovesalad',name:'Groove Salad',sub:'downtempo',c:'#5f7a4a',mode:'work',src:'soma'},
- {id:'fluid',name:'Fluid',sub:'instrumental hip-hop',c:'#3f6f86',mode:'work',src:'soma'},
- {id:'dronezone',name:'Drone Zone',sub:'ambient focus',c:'#4b4f7a',mode:'work',src:'soma'},
- {id:'deepspaceone',name:'Deep Space',sub:'deep ambient',c:'#2f3d5a',mode:'work',src:'soma'},
- {id:'rp-mellow',name:'Mellow Mix',sub:'radio paradise',c:'#a8693a',mode:'work',src:'rp',chan:1,stream:'https://stream.radioparadise.com/mellow-128'},
- {id:'cliqhop',name:'Cliqhop',sub:'idm · beats',c:'#6c5a86',mode:'work',src:'soma'},
- {id:'rp-main',name:'Main Mix',sub:'radio paradise',c:'#b5533a',mode:'chill',src:'rp',chan:0,stream:'https://stream.radioparadise.com/mp3-128'},
- {id:'sonicuniverse',name:'Sonic Universe',sub:'jazz',c:'#7a3b3b',mode:'chill',src:'soma'},
- {id:'7soul',name:'Seven Inch Soul',sub:'vintage soul',c:'#a2782e',mode:'chill',src:'soma'},
- {id:'lush',name:'Lush',sub:'vocal chill',c:'#8a4a6a',mode:'chill',src:'soma'},
- {id:'secretagent',name:'Secret Agent',sub:'lounge',c:'#2f5450',mode:'chill',src:'soma'},
- {id:'rp-global',name:'Global Mix',sub:'radio paradise',c:'#7a6a2e',mode:'chill',src:'rp',chan:3,stream:'https://stream.radioparadise.com/global-128'},
+ {id:'trito',name:'ΕΡΤ Τρίτο',sub:'κλασική · 90,9',c:'#4b5a7a',mode:'work',streams:['https://radiostreaming.ert.gr/ert-trito']},
+ {id:'ertjazz',name:'ΕΡΤ Jazz',sub:'jazz · web radio',c:'#7a3b3b',mode:'work',streams:['https://radiostreaming.ert.gr/ert-webjazz']},
+ {id:'kosmos',name:'ΕΡΤ Κόσμος',sub:'world · 93,6',c:'#3f6f86',mode:'work',streams:['https://radiostreaming.ert.gr/ert-kosmos']},
+ {id:'playlounge',name:'Play Lounge',sub:'lounge',c:'#2f5450',mode:'work',rj:'n6frf0ct274tv',streams:['https://stream.radiojar.com/n6frf0ct274tv']},
+ {id:'deluxe',name:'Akous Deluxe',sub:'lounge · chill',c:'#6c5a86',mode:'work',streams:['https://live.akous.gr/akousdeluxe']},
+ {id:'imagine',name:'Imagine',sub:'89,7 · θεσσαλονίκη',c:'#5f7a4a',mode:'work',streams:['https://imagine897.radioca.st/stream']},
+ {id:'enlefko',name:'Εν Λευκώ',sub:'87,7',c:'#a8693a',mode:'chill',rj:'enlefko877',streams:['https://stream.radiojar.com/enlefko877']},
+ {id:'pepper',name:'Pepper',sub:'96,6',c:'#b5533a',mode:'chill',rj:'pepper',streams:['https://stream.radiojar.com/pepper','https://netradio.live24.gr/pepper9660']},
+ {id:'best',name:'Best',sub:'92,6',c:'#a2782e',mode:'chill',streams:['https://best.live24.gr/best1222']},
+ {id:'melodia',name:'Μελωδία',sub:'99,2',c:'#8a4a6a',mode:'chill',streams:['https://stream.rcs.revma.com/8tdwa6ez1duvv']},
+ {id:'menta',name:'Μέντα',sub:'88 · έντεχνο',c:'#3f7a62',mode:'chill',streams:['https://netradio.live24.gr/menta88ath']},
+ {id:'diesi',name:'Δίεση',sub:'101,3',c:'#7a6a2e',mode:'chill',streams:['https://stream.rcs.revma.com/gkfwrhqxbfhvv','https://n05a-eu.rcs.revma.com/gkfwrhqxbfhvv']},
 ];
-STATIONS.forEach(s=>{
-  if(s.src==='soma') s.streams=['ice1','ice2','ice4','ice6'].flatMap(h=>[`https://${h}.somafm.com/${s.id}-128-mp3`]).concat(['ice1','ice4'].map(h=>`https://${h}.somafm.com/${s.id}-128-aac`));
-  else { const base=s.stream.replace('-128',''); s.streams=[s.stream, s.stream.replace('-128','-192'), base.replace('mp3','aac')+'-128'].filter((v,i,a)=>a.indexOf(v)===i); }
-  s.stream=s.streams[0];
-});
+STATIONS.forEach(s=>{s.stream=s.streams[0];});
 let tryIdx=0;
 
 const audio=$('#audio');
@@ -361,11 +357,11 @@ audio.addEventListener('play',()=>setPlayingUI(true));
 /* ---------- Now playing metadata ---------- */
 async function getJSON(u){const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw 0;return r.json();}
 async function fetchMeta(s){
-  if(s.src==='rp'){const j=await getJSON(`https://api.radioparadise.com/api/now_playing?chan=${s.chan}`);return {title:j.title,artist:j.artist,album:j.album,cover:j.cover};}
-  try{const j=await getJSON(`https://somafm.com/songs/${s.id}.json`);const t=j.songs&&j.songs[0];if(t)return {title:t.title,artist:t.artist,album:t.album};}catch(e){}
-  const j=await getJSON('https://api.somafm.com/channels.json');const ch=j.channels.find(c=>c.id===s.id);
-  if(ch&&ch.lastPlaying){const [a,...t]=ch.lastPlaying.split(' - ');return {title:t.join(' - ')||a,artist:t.length?a:''};}
-  return null;}
+  if(!s.rj) return null;
+  const j=await getJSON(`https://www.radiojar.com/api/stations/${s.rj}/now_playing/`);
+  if(!j||!j.title) return null;
+  const tc=t=>t&&t===t.toUpperCase()&&/[a-zα-ω]/i.test(t)?t.toLowerCase().replace(/(^|\s)(\S)/g,(m,a,b)=>a+b.toUpperCase()):t;
+  return {title:tc(j.title),artist:tc(j.artist||''),album:j.album||'',cover:j.thumb||''};}
 function itunesCover(artist,title){return new Promise(res=>{const cb='itc'+Date.now()+Math.floor(Math.random()*1e4);const sc=document.createElement('script');
   const done=v=>{delete window[cb];sc.remove();res(v)};const to=setTimeout(()=>done(''),6000);
   window[cb]=d=>{clearTimeout(to);const r=d&&d.results&&d.results[0];done(r?r.artworkUrl100.replace('100x100bb','600x600bb'):'')};
@@ -434,7 +430,7 @@ function stopBreath(){clearInterval(bInt);clearTimeout(bTO);bInt=null;$('#orb').
 $('#endBtn').onclick=()=>{clearInterval(tInt);tRun=false;tPhase='focus';tLeft=tLen*60;drawTimer();
   const s=stats();$('#eodTxt').innerHTML=s.n?`Σήμερα έκανες <b>${s.n}</b> ${s.n===1?'κύκλο':'κύκλους'} συγκέντρωσης · ${Math.floor(s.min/60)?Math.floor(s.min/60)+' ώρ. ':''}${s.min%60} λεπτά.<br>Κλείσε το laptop. Τα υπόλοιπα αύριο.`:'Κλείσε το laptop. Τα υπόλοιπα αύριο.';
   setMode('chill');
-  select(STATIONS.find(x=>x.id==='sonicuniverse'),true);
+  select(STATIONS.find(x=>x.id==='enlefko'),true);
   $('#eod').classList.add('on');};
 $('#eodClose').onclick=()=>$('#eod').classList.remove('on');
 
@@ -459,10 +455,10 @@ if(location.hash==='#diag'){
   const out=t=>{$('#dout').textContent+=t+'\n'};
   $('#dgo').onclick=async()=>{ $('#dgo').disabled=true;
     out('UA: '+navigator.userAgent);out('online: '+navigator.onLine+'  standalone: '+(navigator.standalone||matchMedia('(display-mode: standalone)').matches));
-    for(const u of ['https://somafm.com/songs/groovesalad.json','https://api.somafm.com/channels.json','https://api.radioparadise.com/api/now_playing?chan=1']){
+    for(const u of ['https://www.radiojar.com/api/stations/pepper/now_playing/','https://itunes.apple.com/search?term=massive+attack&limit=1']){
       const ac=new AbortController();const t=setTimeout(()=>ac.abort(),8000);
       try{const r=await fetch(u,{signal:ac.signal,cache:'no-store'});out('API  '+r.status+'  '+u)}catch(e){out('API  FAIL ('+e.name+': '+e.message+')  '+u)}clearTimeout(t);}
-    const urls=['https://ice1.somafm.com/groovesalad-128-mp3','https://ice2.somafm.com/groovesalad-128-mp3','https://ice4.somafm.com/groovesalad-128-aac','https://stream.radioparadise.com/mp3-128','https://stream.radioparadise.com/aac-128'];
+    const urls=STATIONS.map(x=>x.streams[0]);
     const a=new Audio();a.muted=true;a.playsInline=true;
     for(const u of urls){out('…  '+u);const r=await new Promise(res=>{let done=false;const fin=v=>{if(done)return;done=true;clearTimeout(to);res(v)};
         const to=setTimeout(()=>fin('TIMEOUT rs='+a.readyState+' ns='+a.networkState),9000);
@@ -475,7 +471,7 @@ if(location.hash==='#diag'){
 /* init */
 setMode(mode);setPlayingUI(false);drawTimer();applyStationLabel();if(cur){$('#npTitle').textContent=cur.name;$('#npArtist').textContent=cur.sub;$('#npStation').textContent=cur.name;}
 requestAnimationFrame(()=>{fit();setMode(mode);});wake();
-if(location.hash==='#demo'){cur=STATIONS[0];applyStationLabel();setPlayingUI(true);$('#npTitle').textContent='Sunset Pier';$('#npArtist').textContent='Bonobo · Black Sands';}
+if(location.hash==='#demo'){cur=STATIONS[3];applyStationLabel();setPlayingUI(true);$('#npTitle').textContent='Safe From Harm';$('#npArtist').textContent='Massive Attack';}
 })();
 </script>
 </body>
