@@ -119,6 +119,10 @@ aside{display:flex;flex-direction:column;gap:14px;min-height:0}
 .card h3{margin:0 0 12px;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700;display:flex;justify-content:space-between;align-items:center}
 .crate{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-height:226px;overflow-y:auto;padding:4px;margin:-4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .crate::-webkit-scrollbar{display:none}
+.crate.more{-webkit-mask-image:linear-gradient(180deg,#000 82%,transparent);mask-image:linear-gradient(180deg,#000 82%,transparent)}
+.sleeve.flash{animation:flash 1.6s ease}
+@keyframes flash{0%,100%{box-shadow:0 6px 16px rgba(0,0,0,.35)}30%,60%{box-shadow:0 0 0 3px var(--accent),0 0 24px rgba(var(--glow),.6)}}
+.res .act button.done{cursor:pointer}
 .sleeve.add{background:transparent;border:1.5px dashed rgba(255,232,204,.22);box-shadow:none;align-items:center;justify-content:center;color:var(--muted)}
 .sleeve.add::before,.sleeve.add::after{display:none}
 .sleeve.add b{font-size:30px;font-weight:300;line-height:1}
@@ -389,13 +393,13 @@ function setMode(m,silent){mode=m;store.set('mode',m);document.body.className=m;
   const on=$(`#modes button[data-mode="${m}"]`);const p=$('#pill');p.style.left=on.offsetLeft+'px';p.style.width=on.offsetWidth+'px';
   $('#pWork').classList.toggle('on',m==='work');$('#pChill').classList.toggle('on',m==='chill');
   $('#endBtn').style.display=m==='work'?'flex':'none';
-  $('#crateTitle').textContent=m==='work'?'Δίσκοι για συγκέντρωση':'Δίσκοι για χαλάρωση';
+  
   renderCrate(); if(!cur||!playing) applyStationLabel();
 }
 $$('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 
 function crateList(){return STATIONS.filter(s=>s.mode===mode)}
-function renderCrate(){const c=$('#crate');c.innerHTML='';
+function renderCrate(){const c=$('#crate');c.innerHTML='';c.onscroll=crateFade;
   crateList().forEach(s=>{const b=document.createElement('div');b.setAttribute('role','button');b.className='sleeve'+(cur&&cur.id===s.id?' cur':'');b.style.setProperty('--c',`linear-gradient(150deg,${s.c},${shade(s.c,-35)})`);
     b.innerHTML=`<span>${esc(s.name)}</span><em>${esc(s.sub||'')}</em><div class="rm"><i>Αφαίρεση</i><u>Άκυρο</u></div>`;
     let lp=null,longed=false;
@@ -406,8 +410,13 @@ function renderCrate(){const c=$('#crate');c.innerHTML='';
       if(b.classList.contains('ask')){if(e.target.tagName==='I')removeStation(s);else b.classList.remove('ask');return;}
       select(s,true)};
     c.appendChild(b);});
+  const n=crateList().length;$('#crateTitle').textContent=(mode==='work'?'Συγκέντρωση':'Χαλάρωση')+' · '+n+(n===1?' δίσκος':' δίσκοι');
   const a=document.createElement('button');a.className='sleeve add';a.innerHTML='<b>+</b><em>Προσθήκη</em>';a.onclick=openSheet;c.appendChild(a);
-  $('#crateHint').textContent=cur?'κράτα πατημένο για αφαίρεση':'πάτα για να παίξει';}
+  $('#crateHint').textContent=cur?'κράτα πατημένο για αφαίρεση':'πάτα για να παίξει';
+  requestAnimationFrame(crateFade);}
+function crateFade(){const c=$('#crate');c.classList.toggle('more',c.scrollHeight-c.scrollTop-c.clientHeight>8);}
+function showInCrate(id){const l=crateList();const i=l.findIndex(x=>x.id===id);if(i<0)return;const el=$('#crate').children[i];if(!el)return;
+  el.scrollIntoView({block:'nearest',behavior:'smooth'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
 function removeStation(s){if(s.id.startsWith('c_')){store.set('custom',store.get('custom',[]).filter(x=>x.id!==s.id));}
   else{const h=store.get('hidden',[]);h.push(s.id);store.set('hidden',h);}
   loadStations();if(cur&&cur.id===s.id&&!playing)cur=null;renderCrate();toast('Ο σταθμός αφαιρέθηκε');}
@@ -580,6 +589,7 @@ function exitSolo(){if(!solo)return;solo=false;const st=$('#stage');const r=ph.g
 $('#soloBtn').onclick=enterSolo;$('#soloExit').onclick=exitSolo;
 addEventListener('resize',()=>{if(solo)rectStyle($('#stage'),{left:0,top:0,width:innerWidth,height:innerHeight});});
 /* ---------- Station search (radio-browser.info) ---------- */
+const HUB_V='17';
 const RB=['https://de1.api.radio-browser.info','https://fi1.api.radio-browser.info','https://de2.api.radio-browser.info'];
 let grOnly=true,qT=null,qSeq=0;
 function openSheet(){$('#sheet').classList.add('on');$('#q').value='';search('');setTimeout(()=>$('#q').focus(),350);}
@@ -591,7 +601,7 @@ async function rbFetch(path){for(const h of RB){try{const r=await fetch(h+path);
 async function search(q){const seq=++qSeq;const res=$('#results');res.innerHTML='<div class="empty">Ψάχνω…</div>';
   const params=new URLSearchParams({hidebroken:'true',order:'clickcount',reverse:'true',limit:'60'});
   if(q)params.set('name',q);if(grOnly)params.set('countrycode','GR');
-  $('#shSub').innerHTML=`Θα μπει στους δίσκους για <b>${mode==='work'?'Δουλειά':'Χαλάρωση'}</b>`+(q?'':(grOnly?' · οι πιο δημοφιλείς ελληνικοί σταθμοί':' · οι πιο δημοφιλείς σταθμοί'))+'<br>Για αφαίρεση δίσκου: κράτα τον πατημένο.';
+  $('#shSub').innerHTML=`Θα μπει στους δίσκους για <b>${mode==='work'?'Δουλειά':'Χαλάρωση'}</b>`+(q?'':(grOnly?' · οι πιο δημοφιλείς ελληνικοί σταθμοί':' · οι πιο δημοφιλείς σταθμοί'))+'<br>Για αφαίρεση δίσκου: κράτα τον πατημένο. <span style="opacity:.45">· v'+HUB_V+'</span>';
   let list=[];try{list=await rbFetch('/json/stations/search?'+params)}catch(e){if(seq===qSeq)res.innerHTML='<div class="empty">Δεν μπόρεσα να φέρω σταθμούς. Δοκίμασε ξανά σε λίγο.</div>';return;}
   if(seq!==qSeq)return;
   const by=new Map();list.forEach(x=>{const k=(x.name||'').trim().toLowerCase();if(!k)return;const u=(x.url_resolved||x.url||'');const p=by.get(k);
@@ -603,13 +613,14 @@ async function search(q){const seq=++qSeq;const res=$('#results');res.innerHTML=
     const have=crateList().some(s=>s.streams.includes(url));const other=!have&&STATIONS.find(s=>s.mode!==mode&&s.streams.includes(url));const col=hashColor(name);
     const row=document.createElement('div');row.className='res'+(ok?'':' na');row.style.setProperty('--c',col);
     const tags=(x.tags||'').split(',').filter(Boolean).slice(0,3).join(' · ');
-    row.innerHTML=`<div class="fav">${esc(name[0]||'♪')}</div><div style="min-width:0"><div class="nm">${esc(name)}</div><div class="tg">${esc([x.state,tags,x.bitrate?x.bitrate+' kbps':''].filter(Boolean).join(' · ')||'—')}${other?' · υπάρχει ήδη στη '+(other.mode==='work'?'Δουλειά':'Χαλάρωση'):''}${upg&&!other?' · πάτα πρώτα Δοκιμή':''}</div></div><div class="act">${ok?(have?'<button class="done" disabled>Υπάρχει ✓</button>':'<button class="try">Δοκιμή</button><button class="add">Προσθήκη</button>'):''}</div>`;
+    row.innerHTML=`<div class="fav">${esc(name[0]||'♪')}</div><div style="min-width:0"><div class="nm">${esc(name)}</div><div class="tg">${esc([x.state,tags,x.bitrate?x.bitrate+' kbps':''].filter(Boolean).join(' · ')||'—')}${other?' · υπάρχει ήδη στη '+(other.mode==='work'?'Δουλειά':'Χαλάρωση'):''}${upg&&!other?' · πάτα πρώτα Δοκιμή':''}</div></div><div class="act">${ok?(have?'<button class="done show">Υπάρχει ✓ · Δες τον</button>':'<button class="try">Δοκιμή</button><button class="add">Προσθήκη</button>'):''}</div>`;
     if(x.favicon&&x.favicon.startsWith('https://')){const im=new Image();im.onload=()=>{const f=row.querySelector('.fav');f.textContent='';f.appendChild(im)};im.src=x.favicon;}
     const st=()=>({id:'c_'+x.stationuuid+'_'+mode,name:name.replace(/\s*[-–|].*$/,'').slice(0,28)||name,sub:(x.state||tags.split(' · ')[0]||'web radio').toLowerCase().slice(0,26),c:col,mode,streams:[url],rj:(url.match(/stream\.radiojar\.com\/([a-z0-9]+)/i)||[])[1]});
     const tryB=row.querySelector('.try'),addB=row.querySelector('.add');
+    const showB=row.querySelector('.show');if(showB)showB.onclick=()=>{const h=crateList().find(s=>s.streams.includes(url));closeSheet();if(h)setTimeout(()=>showInCrate(h.id),380);};
     if(tryB)tryB.onclick=()=>{const t=st();t.stream=url;select(t,true);toast('Δοκιμή: '+t.name);};
     if(addB)addB.onclick=()=>{const t=st();const c=store.get('custom',[]);c.push(t);store.set('custom',c);loadStations();
-      const added=STATIONS.find(s=>s.id===t.id);select(added,true);addB.parentNode.innerHTML='<button class="done" disabled>Προστέθηκε ✓</button>';toast('Προστέθηκε στους δίσκους σου');};
+      const added=STATIONS.find(s=>s.id===t.id);select(added,true);addB.parentNode.innerHTML='<button class="done" disabled>Προστέθηκε ✓</button>';toast('Προστέθηκε στο τέλος της λίστας σου');setTimeout(()=>showInCrate(t.id),100);};
     res.appendChild(row);});}
 /* ---------- On Air (meeting) ---------- */
 let onAir=false,oaStart=0,oaResume=false,oaAskT=null,oaInt=null;
