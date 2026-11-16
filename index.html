@@ -450,6 +450,28 @@ addEventListener('pointerdown',keepAwake,{once:true});
 
 let tt;function toast(m,ms=2200){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),ms);}
 
+
+/* ---------- Diagnostics (#diag) ---------- */
+if(location.hash==='#diag'){
+  const d=document.createElement('div');d.style.cssText='position:fixed;inset:0;z-index:50;background:#0d0907;color:#f3e7d6;padding:40px;overflow:auto;font:15px/1.6 Manrope,system-ui';
+  d.innerHTML='<h2 style="font-family:Fraunces,serif;font-weight:400;margin:0 0 6px">Έλεγχος σύνδεσης</h2><p style="color:#a8968a;margin:0 0 18px">Πάτα το κουμπί και περίμενε ~30 δευτ. Μετά στείλε μου screenshot.</p><button id="dgo" class="chip solid">Ξεκίνα τον έλεγχο</button><pre id="dout" style="white-space:pre-wrap;font:13px/1.55 ui-monospace,Menlo,monospace;margin-top:20px"></pre>';
+  document.body.appendChild(d);
+  const out=t=>{$('#dout').textContent+=t+'\n'};
+  $('#dgo').onclick=async()=>{ $('#dgo').disabled=true;
+    out('UA: '+navigator.userAgent);out('online: '+navigator.onLine+'  standalone: '+(navigator.standalone||matchMedia('(display-mode: standalone)').matches));
+    for(const u of ['https://somafm.com/songs/groovesalad.json','https://api.somafm.com/channels.json','https://api.radioparadise.com/api/now_playing?chan=1']){
+      const ac=new AbortController();const t=setTimeout(()=>ac.abort(),8000);
+      try{const r=await fetch(u,{signal:ac.signal,cache:'no-store'});out('API  '+r.status+'  '+u)}catch(e){out('API  FAIL ('+e.name+': '+e.message+')  '+u)}clearTimeout(t);}
+    const urls=['https://ice1.somafm.com/groovesalad-128-mp3','https://ice2.somafm.com/groovesalad-128-mp3','https://ice4.somafm.com/groovesalad-128-aac','https://stream.radioparadise.com/mp3-128','https://stream.radioparadise.com/aac-128'];
+    const a=new Audio();a.muted=true;a.playsInline=true;
+    for(const u of urls){out('…  '+u);const r=await new Promise(res=>{let done=false;const fin=v=>{if(done)return;done=true;clearTimeout(to);res(v)};
+        const to=setTimeout(()=>fin('TIMEOUT rs='+a.readyState+' ns='+a.networkState),9000);
+        a.onplaying=()=>fin('OK playing');a.oncanplay=()=>fin('OK canplay');a.onerror=()=>fin('ERROR code '+(a.error&&a.error.code)+' '+(a.error&&a.error.message||''));
+        a.src=u;a.load();const p=a.play();if(p&&p.catch)p.catch(e=>{if(e.name!=='AbortError')fin('play() '+e.name+': '+e.message)});});
+      $('#dout').textContent=$('#dout').textContent.replace('…  '+u+'\n','');out('AUD  '+r+'  '+u);a.pause();}
+    a.removeAttribute('src');a.load();out('\nΤέλος ελέγχου.');};
+}
+
 /* init */
 setMode(mode);setPlayingUI(false);drawTimer();applyStationLabel();if(cur){$('#npTitle').textContent=cur.name;$('#npArtist').textContent=cur.sub;$('#npStation').textContent=cur.name;}
 requestAnimationFrame(()=>{fit();setMode(mode);});wake();
