@@ -119,8 +119,9 @@ function contactShadowTex() {
 /* ---------------- label ---------------- */
 const labelCanvas = canvas(1024), labelTex = new THREE.CanvasTexture(labelCanvas);
 labelTex.colorSpace = THREE.SRGBColorSpace; labelTex.anisotropy = 8;
-let labelState = { name: '', sub: '', color: '#a8693a', img: null };
+let labelState = { name: '', sub: '', color: '#a8693a', img: null }, labelStyle = 'classic';
 function drawLabel() {
+  if (labelStyle === 'dot') return drawDotLabel();
   const c = labelCanvas, x = c.getContext('2d'), N = c.width, R = N / 2, s = labelState;
   x.clearRect(0, 0, N, N);
   x.save(); x.beginPath(); x.arc(R, R, R, 0, Math.PI * 2); x.clip();
@@ -150,6 +151,43 @@ function drawLabel() {
   const h = x.createRadialGradient(R, R, 0, R, R, N * .05);
   h.addColorStop(0, 'rgba(0,0,0,.6)'); h.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = h;
   x.beginPath(); x.arc(R, R, N * .05, 0, Math.PI * 2); x.fill();
+  labelTex.needsUpdate = true; requestRender();
+}
+// Dot-matrix label: monochrome, halftone cover, dotted type (works for any script)
+function dotText(x, text, cx, cy, size, color, pitch, weight = 800) {
+  const W = 1024, H = Math.ceil(size * 1.6), o = canvas(W, H), g = o.getContext('2d');
+  g.font = `${weight} ${size}px Inter, Manrope, Helvetica, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#fff';
+  let f = size; while (g.measureText(text).width > W * .66 && f > 30) { f -= 4; g.font = `${weight} ${f}px Inter, Manrope, Helvetica, sans-serif`; }
+  g.fillText(text, W / 2, H / 2);
+  const d = g.getImageData(0, 0, W, H).data; x.fillStyle = color;
+  for (let y = pitch / 2; y < H; y += pitch) for (let xx = pitch / 2; xx < W; xx += pitch) {
+    const a = d[(Math.floor(y) * W + Math.floor(xx)) * 4 + 3];
+    if (a > 110) { x.beginPath(); x.arc(cx - W / 2 + xx, cy - H / 2 + y, pitch * .38, 0, Math.PI * 2); x.fill(); }
+  }
+}
+function drawDotLabel() {
+  const c = labelCanvas, x = c.getContext('2d'), N = c.width, R = N / 2, s = labelState;
+  x.clearRect(0, 0, N, N); x.save(); x.beginPath(); x.arc(R, R, R, 0, Math.PI * 2); x.clip();
+  x.fillStyle = '#0b0b0b'; x.fillRect(0, 0, N, N);
+  if (s.img) {
+    // halftone of the cover: white dots sized by brightness
+    const G = 56, o = canvas(G), g = o.getContext('2d'); g.drawImage(s.img, 0, 0, G, G);
+    const d = g.getImageData(0, 0, G, G).data, step = N / G; x.fillStyle = '#f2f2f2';
+    for (let j = 0; j < G; j++) for (let i = 0; i < G; i++) {
+      const k = (j * G + i) * 4, l = (.299 * d[k] + .587 * d[k + 1] + .114 * d[k + 2]) / 255;
+      const r = Math.pow(l, 1.1) * step * .5; if (r > .6) { x.beginPath(); x.arc(i * step + step / 2, j * step + step / 2, r, 0, Math.PI * 2); x.fill(); }
+    }
+  } else {
+    x.strokeStyle = 'rgba(255,255,255,.18)'; x.lineWidth = 2;
+    x.setLineDash([2, 12]); x.beginPath(); x.arc(R, R, R * .9, 0, Math.PI * 2); x.stroke(); x.setLineDash([]);
+    dotText(x, s.name || '', R, R - N * .13, 150, '#f2f2f2', 12);
+    dotText(x, (s.sub || '').toUpperCase(), R, R + N * .14, 70, 'rgba(242,242,242,.6)', 8, 700);
+    x.fillStyle = '#d71921'; x.beginPath(); x.arc(R + N * .3, R, N * .022, 0, Math.PI * 2); x.fill();
+    x.fillStyle = 'rgba(242,242,242,.5)'; x.font = '600 24px "JetBrains Mono", monospace'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillText('33 1/3', R - N * .3, R);
+  }
+  x.restore();
+  x.fillStyle = '#d6d6d6'; x.beginPath(); x.arc(R, R, N * .022, 0, Math.PI * 2); x.fill();
   labelTex.needsUpdate = true; requestRender();
 }
 function spaced(t) { return t.split('').join(' '); }
@@ -199,6 +237,9 @@ function buildMaterials() {
   M.walnut = new THREE.MeshPhysicalMaterial({ map: wood, roughness: .48, clearcoat: .55, clearcoatRoughness: .28, envMapIntensity: .8 });
   M.walnutTop = M.walnut.clone();
   M.acrylic = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0, roughness: .06, transmission: 1, thickness: 3.5, ior: 1.49, clearcoat: 1, clearcoatRoughness: .05, attenuationColor: new THREE.Color(0xd8e6ec), attenuationDistance: 60, specularIntensity: 1 });
+  M.mono = new THREE.MeshPhysicalMaterial({ color: 0xe8e8e5, roughness: .55, clearcoat: .25, clearcoatRoughness: .5, envMapIntensity: .6 });
+  M.monoTop = M.mono.clone();
+  M.red = new THREE.MeshPhysicalMaterial({ color: 0xd71921, roughness: .35, clearcoat: .5 });
   M.pcb = new THREE.MeshStandardMaterial({ color: 0x0f2a22, roughness: .55, metalness: .1 });
   M.copper = new THREE.MeshStandardMaterial({ color: 0xb87333, roughness: .35, metalness: 1 });
   M.print = new THREE.MeshBasicMaterial({ color: 0x8b8b8b, transparent: true });
@@ -449,14 +490,17 @@ function frame(now) {
 let skin = 'black';
 function setSkin(name) {
   skin = name; const acr = name === 'acrylic';
-  SK.plinth.material = name === 'walnut' ? M.walnut : acr ? M.acrylic : M.plinth;
-  SK.inlay.material = name === 'walnut' ? M.walnutTop : M.plinthTop;
+  const mono = name === 'mono';
+  SK.plinth.material = name === 'walnut' ? M.walnut : acr ? M.acrylic : mono ? M.mono : M.plinth;
+  SK.inlay.material = name === 'walnut' ? M.walnutTop : mono ? M.monoTop : M.plinthTop;
+  startBtn.material = mono ? M.red : M.button;
   SK.inlay.visible = !acr;
   SK.plinth.castShadow = !acr;
   SK.inner.visible = acr;
   SK.feet.forEach(f => f.material = acr ? M.chrome : M.rubber);
   M.button.color.set(name === 'walnut' ? 0x16110d : 0x1b1c1e);
-  SK.prints.forEach(p => p.material.color.set(acr ? 0x2a2a2a : 0xffffff));
+  SK.prints.forEach(p => p.material.color.set(acr || mono ? 0x2a2a2a : 0xffffff));
+  M.button.color.set(mono ? 0xcfcfcc : name === 'walnut' ? 0x16110d : 0x1b1c1e);
   requestRender();
 }
 
@@ -565,6 +609,7 @@ export function init(el, opts = {}) {
 
 const api = {
   setPlaying, setCover, setLabel, setView, swapRecord, setSkin,
+  setLabelStyle(st) { labelStyle = st; drawLabel(); },
   onTap(fn) { tapHandler = fn; },
   pause(p) { paused = p; if (!p) { last = performance.now(); requestRender(); } },
 };
