@@ -522,6 +522,7 @@ body::before{background:
 #wave{display:block;width:min(420px,100%);height:64px;margin:0 0 14px -2px}
 #wave{width:min(260px,100%)}
 .np-station .dots{display:none}
+#wave{margin:4px auto 12px;flex:none}
 </style>
 </head>
 <body class="chill">
@@ -578,9 +579,9 @@ body::before{background:
           <div class="rpm"><span class="led" id="led"></span>33⅓ RPM</div>
         </div>
       </div>
+      <canvas id="wave"></canvas>
       <div class="now" id="now">
         <div style="min-width:0">
-          <canvas id="wave"></canvas>
           <div class="np-station"><span class="dots"><i></i><i></i><i></i></span><span id="npStation"></span></div>
           <div class="np-row"><div class="np-title" id="npTitle">Pick a record</div><button id="likeBtn" aria-label="Like"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.4 7.6 3.6 4 7.1 4c2 0 3.6 1.1 4.9 2.8C13.3 5.1 14.9 4 16.9 4c3.5 0 5.7 3.6 4.4 7.1-1.8 4.8-9.3 9.4-9.3 9.4z"/></svg></button></div>
           <div class="np-artist" id="npArtist">Tap the vinyl or a record on the right</div>
@@ -999,7 +1000,7 @@ addEventListener('resize',size);size();
 function frame(){requestAnimationFrame(frame);if(document.hidden)return;
   const on=!now.classList.contains('paused');amp+=((on?1:0)-amp)*.06;t+=.016;
   const w=c.clientWidth,h=c.clientHeight,gap=w/N,bw=Math.max(2,gap*.42);x.clearRect(0,0,w,h);
-  for(let i=0;i<N;i++){const f=(i+.5)/N;const env=Math.min(1,f*14)*Math.pow(1-f,1.15);
+  for(let i=0;i<N;i++){const env=Math.sin(Math.PI*(i+.5)/N)**.8;
     const v=.5+.5*Math.sin(t*sp[i]*3+ph[i])*Math.sin(t*1.3+i*.35);
     const bh=Math.max(2,(.12+.88*v*env)*h*.92*amp+2*(1-amp));
     const a=.35+.6*env;x.fillStyle=`rgba(243,238,233,${a*(.4+.6*amp)})`;
