@@ -443,6 +443,40 @@ body::before{background:
 body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.12;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .card{background:rgba(24,25,27,.62);border-color:rgba(255,255,255,.07)}
+/* v5: Nothing-style — solid near-black widgets on a light smoky wallpaper */
+body::before{background:
+  radial-gradient(58% 44% at 4% 4%,rgba(22,25,28,.95),transparent 74%),
+  radial-gradient(38% 34% at 96% 30%,rgba(34,39,44,.55),transparent 70%),
+  radial-gradient(48% 40% at 6% 104%,rgba(60,28,50,.85),transparent 72%),
+  radial-gradient(40% 36% at 70% 105%,rgba(40,44,52,.5),transparent 70%),
+  radial-gradient(55% 50% at 55% 48%,rgba(196,214,220,.75),transparent 75%),
+  linear-gradient(170deg,#7d878c 0%,#a7b3b7 42%,#98a6ab 70%,#6f7378 100%)}
+body::after{opacity:.16}
+.card,.modes,.hbtn,.oa-btn,.cbtn,.endday,.skins,.sheet,#soloExit,.sleeve{-webkit-backdrop-filter:none;backdrop-filter:none}
+.card{background:#1b1b1b;border:0;box-shadow:0 18px 40px -22px rgba(0,0,0,.55)}
+.grow.card{background:radial-gradient(90% 70% at 50% 40%,rgba(124,82,190,.22),rgba(124,82,190,0) 70%),#1b1b1b;border:0}
+.sleeve{background:#262626!important;border:0}
+.sleeve.cur{background:#f3eee9!important}
+.sleeve.add{border:1.5px dashed rgba(255,255,255,.14)!important}
+.modes{background:#1b1b1b;border:0}
+.hbtn,.oa-btn{background:#1b1b1b;border:0}
+.cbtn{background:#1b1b1b;border:0}
+.cbtn.big{background:#f3eee9}
+#soloExit{background:#1b1b1b;border:0}
+.endday{background:#262626;border:0}
+.skins,.sheet{background:#1b1b1b;border:0}
+.sh-search input{background:#262626;border:0}
+.res .act button{background:#262626;border:0}
+.chip{border:0;background:#262626}
+.grow.card .chip{background:rgba(255,255,255,.07);border:0}
+.grow.card .chip.on{background:rgba(255,255,255,.16)}
+#likeBtn{background:#1b1b1b;border:0}
+/* text sitting directly on the wallpaper */
+#clock{text-shadow:0 1px 18px rgba(0,0,0,.25)}
+#date{color:rgba(243,238,233,.75)}
+.np-station{color:rgba(243,238,233,.75)}
+.np-artist{color:rgba(243,238,233,.72)}
+.np-title{text-shadow:0 1px 20px rgba(0,0,0,.25)}
 </style>
 </head>
 <body class="chill">
