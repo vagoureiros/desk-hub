@@ -524,6 +524,14 @@ body::before{background:
 .np-station .dots{display:none}
 #wave{margin:4px auto 12px;flex:none}
 #wave{width:208px;height:51px}
+#songLine{display:flex;align-items:center;justify-content:center;gap:8px;min-height:30px;margin:-4px auto 10px;max-width:80%;opacity:0;transform:translateY(4px);transition:all .4s ease;font-size:14px;color:rgba(243,238,233,.85)}
+#songLine.on{opacity:1;transform:none}
+#songLine .sl-t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#songLine .sl-a{color:rgba(243,238,233,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#songLine .sl-a:not(:empty)::before{content:"· ";}
+#songLine #likeBtn{width:30px;height:30px;margin:0 0 0 4px;flex:none}
+#songLine #likeBtn svg{width:15px;height:15px}
+#songLine:not(.on) #likeBtn{display:none}
 </style>
 </head>
 <body class="chill">
@@ -1009,10 +1017,21 @@ function frame(){requestAnimationFrame(frame);if(document.hidden)return;
 frame();})();
 </script>
 <script>
-/* Hide the small station label when it just repeats the big title */
-(()=>{const st=document.getElementById('npStation'),ti=document.getElementById('npTitle');if(!st||!ti)return;const row=st.closest('.np-station');
-const upd=()=>{const same=!st.textContent.trim()||st.textContent.trim().toLowerCase()===ti.textContent.trim().toLowerCase();row.style.display=same?'none':''};
-new MutationObserver(upd).observe(ti,{childList:true,characterData:true,subtree:true});new MutationObserver(upd).observe(st,{childList:true,characterData:true,subtree:true});upd();})();
+/* Big title = station. When the station shares the song, show it in a centered line under the waveform. */
+(()=>{const st=document.getElementById('npStation'),ti=document.getElementById('npTitle'),ar=document.getElementById('npArtist'),wave=document.getElementById('wave');
+if(!st||!ti||!ar||!wave)return;const row=st.closest('.np-station');row.style.display='none';
+const line=document.createElement('div');line.id='songLine';line.innerHTML='<span class="sl-t"></span><span class="sl-a"></span>';
+wave.insertAdjacentElement('afterend',line);const like=document.getElementById('likeBtn');if(like)line.appendChild(like);
+let busy=false;
+function curSub(){const c=document.querySelector('.sleeve.cur em');return c?c.textContent:'';}
+function upd(){if(busy)return;const sn=st.textContent.trim(),t=ti.textContent.trim();
+  if(sn&&t&&t!==sn){busy=true;line.querySelector('.sl-t').textContent=t;line.querySelector('.sl-a').textContent=ar.textContent.trim();
+    line.classList.add('on');ti.textContent=sn;ar.textContent=curSub();busy=false;}
+  else if(t===sn&&!line.dataset.keep){/* station view; keep song line only while same station plays */}
+}
+let lastStation='';new MutationObserver(()=>{const sn=st.textContent.trim();if(sn!==lastStation){lastStation=sn;line.classList.remove('on');}upd();}).observe(st,{childList:true,characterData:true,subtree:true});
+new MutationObserver(upd).observe(ti,{childList:true,characterData:true,subtree:true});
+upd();})();
 </script>
 
 </body>
