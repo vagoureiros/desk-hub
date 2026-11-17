@@ -94,13 +94,13 @@ function matTexture() {
   for (let i = 0; i < 26000; i++) { const a = r() * Math.PI * 2, d = Math.sqrt(r()) * R; const v = 20 + r() * 14; x.fillStyle = `rgb(${v},${v},${v})`; x.fillRect(R + Math.cos(a) * d, R + Math.sin(a) * d, 1.4, 1.4); }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
-function woodTextures() {
-  const Wd = 2048, Hd = 1024, c = canvas(Wd, Hd), x = c.getContext('2d'), r = rng(21);
-  const g = x.createLinearGradient(0, 0, 0, Hd); g.addColorStop(0, '#45260f'); g.addColorStop(.5, '#53301a'); g.addColorStop(1, '#3f2210');
+function woodTextures(pal = ['#45260f', '#53301a', '#3f2210'], dark = 'rgba(30,14,5,', light = 'rgba(160,98,52,', seed = 21) {
+  const Wd = 2048, Hd = 1024, c = canvas(Wd, Hd), x = c.getContext('2d'), r = rng(seed);
+  const g = x.createLinearGradient(0, 0, 0, Hd); g.addColorStop(0, pal[0]); g.addColorStop(.5, pal[1]); g.addColorStop(1, pal[2]);
   x.fillStyle = g; x.fillRect(0, 0, Wd, Hd);
   for (let i = 0; i < 900; i++) {
-    const y0 = r() * Hd, amp = 6 + r() * 26, fr = .002 + r() * .004, ph = r() * 6.28, dark = r() < .55;
-    x.strokeStyle = dark ? `rgba(30,14,5,${.06 + r() * .16})` : `rgba(160,98,52,${.04 + r() * .1})`;
+    const y0 = r() * Hd, amp = 6 + r() * 26, fr = .002 + r() * .004, ph = r() * 6.28, isDark = r() < .55;
+    x.strokeStyle = isDark ? `${dark}${.06 + r() * .16})` : `${light}${.04 + r() * .1})`;
     x.lineWidth = .6 + r() * 2.6; x.beginPath();
     for (let xx = 0; xx <= Wd; xx += 16) { const y = y0 + Math.sin(xx * fr + ph) * amp + Math.sin(xx * fr * 3.1 + ph * 2) * amp * .25; xx ? x.lineTo(xx, y) : x.moveTo(xx, y); }
     x.stroke();
@@ -236,6 +236,8 @@ function buildMaterials() {
   const wood = woodTextures();
   M.walnut = new THREE.MeshPhysicalMaterial({ map: wood, roughness: .48, clearcoat: .55, clearcoatRoughness: .28, envMapIntensity: .8 });
   M.walnutTop = M.walnut.clone();
+  M.maple = new THREE.MeshPhysicalMaterial({ map: woodTextures(['#b98a55', '#c99a63', '#ad7f4c'], 'rgba(90,55,25,', 'rgba(235,200,150,', 33), roughness: .5, clearcoat: .5, clearcoatRoughness: .3, envMapIntensity: .8 });
+  M.rosewood = new THREE.MeshPhysicalMaterial({ map: woodTextures(['#2a120a', '#36180d', '#241008'], 'rgba(8,2,0,', 'rgba(120,52,28,', 47), roughness: .42, clearcoat: .65, clearcoatRoughness: .22, envMapIntensity: .8 });
   M.acrylic = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0, roughness: .06, transmission: 1, thickness: 3.5, ior: 1.49, clearcoat: 1, clearcoatRoughness: .05, attenuationColor: new THREE.Color(0xd8e6ec), attenuationDistance: 60, specularIntensity: 1 });
   M.mono = new THREE.MeshPhysicalMaterial({ color: 0xe8e8e5, roughness: .55, clearcoat: .25, clearcoatRoughness: .5, envMapIntensity: .6 });
   M.monoTop = M.mono.clone();
@@ -491,8 +493,9 @@ let skin = 'black';
 function setSkin(name) {
   skin = name; const acr = name === 'acrylic';
   const mono = name === 'mono';
-  SK.plinth.material = name === 'walnut' ? M.walnut : acr ? M.acrylic : mono ? M.mono : M.plinth; // noir uses black plinth
-  SK.inlay.material = name === 'walnut' ? M.walnutTop : mono ? M.monoTop : M.plinthTop;
+  const woods = { walnut: M.walnut, maple: M.maple, rosewood: M.rosewood };
+  SK.plinth.material = woods[name] ? woods[name] : acr ? M.acrylic : mono ? M.mono : M.plinth; // noir uses black plinth
+  SK.inlay.material = woods[name] ? woods[name] : mono ? M.monoTop : M.plinthTop;
   const noir = name === 'noir';
   startBtn.material = M.button;
   SK.cwRing.material = mono || noir ? M.red : M.satin; // discreet red detail on the counterweight
@@ -502,7 +505,7 @@ function setSkin(name) {
   SK.feet.forEach(f => f.material = acr ? M.chrome : M.rubber);
   M.button.color.set(name === 'walnut' ? 0x16110d : 0x1b1c1e);
   SK.prints.forEach(p => p.material.color.set(acr || mono ? 0x2a2a2a : 0xffffff));
-  M.button.color.set(mono ? 0xcfcfcc : name === 'walnut' ? 0x16110d : 0x1b1c1e);
+  M.button.color.set(mono ? 0xcfcfcc : woods[name] ? 0x16110d : 0x1b1c1e);
   requestRender();
 }
 

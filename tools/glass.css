@@ -1,0 +1,255 @@
+
+/* ================= DARK GLASS theme ================= */
+:root{--bg:#121010;--panel:rgba(255,255,255,.06);--line:rgba(255,255,255,.10);--ink:#f3eee9;--muted:#a19891;--faint:#6d6560;
+  --accent:#f3eee9;--accent2:#f3eee9;--glow:243,140,70;--r:30px;--hot:#ff6a3d;
+  --m1:#f08a4b;--m2:#b0654a;--m3:#7d5fae;--m4:#3e8f8a}
+body.work{--m1:#3e8f8a;--m2:#4f6aa8;--m3:#7d5fae;--m4:#b0654a;--glow:120,170,190}
+body.chill{--m1:#f08a4b;--m2:#c25a4a;--m3:#9a5aa8;--m4:#d39a4e;--glow:243,140,70}
+html,body{background:var(--bg);color:var(--ink);font-family:Urbanist,Inter,system-ui,sans-serif;letter-spacing:-.01em}
+.grain{opacity:.06}
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;filter:blur(80px) saturate(1.1);opacity:.55}
+.mesh i{position:absolute;border-radius:50%;transition:background 2.5s ease;will-change:transform}
+.mesh .b1{width:58vw;height:58vw;left:-12vw;top:22vh;background:var(--m1);animation:drift1 38s ease-in-out infinite alternate}
+.mesh .b2{width:44vw;height:44vw;left:30vw;top:-22vh;background:var(--m2);animation:drift2 44s ease-in-out infinite alternate}
+.mesh .b3{width:44vw;height:44vw;right:-12vw;top:34vh;background:var(--m3);animation:drift3 50s ease-in-out infinite alternate}
+.mesh .b4{width:32vw;height:32vw;left:24vw;bottom:-24vh;background:var(--m4);animation:drift1 46s ease-in-out infinite alternate-reverse}
+@keyframes drift1{to{transform:translate(8vw,-6vh) scale(1.08)}}
+@keyframes drift2{to{transform:translate(-6vw,8vh) scale(.94)}}
+@keyframes drift3{to{transform:translate(-8vw,-4vh) scale(1.1)}}
+.ambient{z-index:0;filter:blur(40px);opacity:.7}
+.card,.modes,.hbtn,.oa-btn,.cbtn,.chip,.endday,.skins,.sheet,.toast,#soloExit,.sleeve{
+  -webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4)}
+/* time — the serif from the idle screen, everywhere */
+#clock,#idle .ic,.ring .t b,.oa-meta .c{font-family:Fraunces,Georgia,serif!important;font-weight:300!important;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#clock{font-size:54px;color:var(--ink)}
+#date{font-size:14px;color:var(--muted)}
+/* header */
+.modes{background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.modes button{color:#a19891;font-weight:500;font-size:14px}
+.modes button.on{color:#141110}
+.modes .pill{background:#f3eee9;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.hbtn{background:rgba(255,255,255,.06);border:1px solid var(--line);color:#d8d1cb}
+.oa-btn{background:rgba(255,255,255,.06);border:1px solid var(--line);color:#e8e2dc;font-weight:600;letter-spacing:.06em}
+.oa-btn i{background:var(--hot);box-shadow:none}
+#skinBtn.on,#histBtn:active{border-color:rgba(255,255,255,.35);color:#fff}
+/* right panel: scrollable */
+aside{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:8px;margin-right:-6px;padding-right:6px;border-radius:32px}
+aside::-webkit-scrollbar{display:none}
+aside>.card{flex:none}
+.grow{flex:none!important;min-height:430px}
+/* cards */
+.card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:32px;box-shadow:0 24px 60px -24px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08)}
+.card h3{color:var(--muted);font-weight:500;letter-spacing:.01em;text-transform:none;font-size:14px}
+#crateAdd{color:#141110!important;background:#f3eee9;border-radius:999px;padding:6px 12px!important;font-size:12.5px!important;letter-spacing:0!important}
+.grow.card{background:linear-gradient(160deg,rgba(255,150,90,.14),rgba(255,255,255,.04) 55%,rgba(130,100,200,.10));border-color:rgba(255,255,255,.1)}
+.grow.card .chip{color:rgba(243,238,233,.7);border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
+.grow.card .chip.on{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.2)}
+.grow.card .chip.solid{background:#f3eee9;color:#141110}
+.ring .t b{font-size:58px;color:#fff}
+.ring .t small{color:rgba(243,238,233,.55);font-size:12px;letter-spacing:.06em;text-transform:none}
+.sess i{background:rgba(255,255,255,.16)}.sess i.done{background:var(--hot)}
+.endday{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#f3eee9;font-weight:500}
+.breath .orb{background:radial-gradient(circle at 40% 35%,#ffd2b3,#f08a52 70%);box-shadow:0 0 40px rgba(240,138,82,.25)}
+.breath .halo{border:1px dashed rgba(255,255,255,.2)}
+#breathTxt{font-family:Urbanist,Inter,sans-serif;font-weight:300;font-size:22px;color:#f3eee9}
+/* crate tiles */
+.sleeve{background:rgba(255,255,255,.06)!important;border:1px solid rgba(255,255,255,.08);border-radius:22px;box-shadow:none;padding:12px;justify-content:space-between}
+.sleeve::before,.sleeve::after{display:none}
+.sleeve .chipc{position:relative;z-index:1;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.45),transparent 55%),var(--c);display:block;flex:none}
+.sleeve span{color:var(--ink);font-family:Urbanist,Inter,sans-serif;font-weight:500;font-size:14px;margin-top:auto}
+.sleeve em{color:var(--muted);font-size:10.5px;letter-spacing:0;text-transform:none}
+.sleeve.cur{outline:none;background:#f3eee9!important;border-color:transparent}
+.sleeve.cur span{color:#141110}.sleeve.cur em{color:#6d6560}
+.sleeve.add{border:1.5px dashed rgba(255,255,255,.16)!important;background:transparent!important;align-items:center;justify-content:center}
+.sleeve.add b,.sleeve.add em{color:var(--muted)}
+.sleeve .rm{background:rgba(18,16,16,.9);border-radius:22px}
+/* now playing */
+.np-station{color:var(--muted);font-weight:600;letter-spacing:.08em}
+.dots i{background:var(--hot)}
+.np-title{font-family:Urbanist,Inter,sans-serif;font-weight:300;font-size:34px;letter-spacing:-.03em;color:var(--ink)}
+.np-artist{color:var(--muted);font-size:15px}
+.cbtn{background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--ink)}
+.cbtn.big{background:#f3eee9;color:#141110;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+#likeBtn{border-color:rgba(255,255,255,.14);color:#a19891;background:rgba(255,255,255,.05)}
+#likeBtn.on{color:var(--hot);border-color:rgba(255,106,61,.45)}
+.stage .loader{border-color:rgba(255,255,255,.1);border-top-color:#f3eee9}
+/* popovers & sheets */
+.skins{background:rgba(30,26,25,.82);border:1px solid rgba(255,255,255,.1);box-shadow:0 20px 50px -15px rgba(0,0,0,.6)}
+.skins button{color:var(--muted)}.skins button.on{color:var(--ink)}.skins button.on .sw{border-color:#f3eee9}
+#sheet,#hist{background:rgba(10,8,8,.55)}
+.sheet{background:rgba(32,28,27,.82);border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 90px -20px rgba(0,0,0,.7)}
+.sh-top h2{font-family:Urbanist,Inter,sans-serif;font-weight:300;font-size:30px;letter-spacing:-.02em}
+.sh-top button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--muted)}
+.sh-search input{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--ink)}
+.sh-search input:focus{border-color:rgba(255,255,255,.5)}
+.sh-sub{color:var(--muted)}.sh-sub b{color:var(--ink)}
+.sh-head{border-bottom-color:rgba(255,255,255,.07)}
+.chip{border-color:rgba(255,255,255,.14);color:var(--muted);background:rgba(255,255,255,.04)}
+.chip.on{background:#f3eee9;color:#141110;border-color:#f3eee9}
+.chip.solid{background:#f3eee9;color:#141110}
+.res:active{background:rgba(255,255,255,.06)}
+.res .fav{border-radius:14px}
+.res .act button{border-color:rgba(255,255,255,.14);color:var(--ink);background:rgba(255,255,255,.05)}
+.res .act button.add{background:#f3eee9;color:#141110}
+.res .act button.done{color:var(--muted);background:transparent}
+.hrow .links a{color:var(--ink)}
+.hrow .hv{color:#6d6560}.hrow .hv.on{color:var(--hot)}
+.hrow .cv{border-radius:12px}
+.empty{color:var(--muted)}
+.toast{background:rgba(243,238,233,.94);color:#141110;border:0}
+#soloExit{background:rgba(255,255,255,.07);border-color:var(--line);color:var(--ink)}
+/* idle */
+#idle{background:radial-gradient(60% 60% at 70% 35%,rgba(240,138,75,.28),transparent 70%),radial-gradient(50% 60% at 20% 80%,rgba(125,95,174,.22),transparent 70%),#0e0c0c}
+#idle .ic{font-size:190px;color:#f3eee9}
+#idle .id{color:rgba(243,238,233,.6);font-size:20px;font-weight:300}
+#idle .inp{color:rgba(243,238,233,.6)}
+#idle.night{background:#080707}
+#idle.night .ic{color:rgba(243,238,233,.35)}
+/* call */
+#onair{background:radial-gradient(60% 70% at 50% 45%,#d9563a 0%,#8a2f26 45%,#2a1412 85%,#140b0a 100%)}
+#onair::after{box-shadow:none}
+.sign{border:0;background:none;box-shadow:none;padding:0;flex-direction:column;gap:18px}
+.sign svg{color:#fff;width:46px;height:46px;opacity:.9}
+.sign b{font-family:Urbanist,Inter,sans-serif;font-weight:200;font-size:120px;letter-spacing:-.04em;color:#fff;text-shadow:none}
+#onair.on .sign{animation:fadeup .8s ease both}
+@keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.oa-meta{margin-top:30px}
+.oa-meta .c{font-size:56px;color:#fff}
+.oa-meta .e{color:rgba(255,255,255,.75)}
+#oaEnd{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#fff;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+#eod{background:radial-gradient(60% 60% at 50% 40%,rgba(240,138,75,.45),transparent 70%),radial-gradient(50% 60% at 80% 80%,rgba(125,95,174,.35),transparent 70%),#0e0c0c}
+#eod h1{font-family:Fraunces,Georgia,serif;font-weight:300;font-size:72px;letter-spacing:-.03em;color:#fff}
+#eod p{color:rgba(255,255,255,.8)}
+#eod .chip.solid{background:#f3eee9;color:#141110}
+/* v2: mostly dark — no background mesh, purple only behind the timer */
+.mesh,.ambient,.grain{display:none!important}
+html,body{background:#0e0d0d}
+.card{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.08)}
+.grow.card{background:radial-gradient(90% 70% at 50% 40%,rgba(124,82,190,.55),rgba(70,44,120,.35) 55%,rgba(255,255,255,.03) 100%);border-color:rgba(170,140,230,.18)}
+#idle{background:#0b0a0a}
+#eod{background:#0b0a0a}
+/* sans: Urbanist everywhere (times stay Fraunces) */
+html,body,button,input,.modes button,.oa-btn,.chip,.sleeve span,.sleeve em,.np-title,.np-artist,.np-station,.card h3,.sh-top h2,.sh-search input,.res .nm,.res .tg,.hrow .t,.hrow .a,.toast,.endday,#date,#idle .id,.oa-meta .e,.sign b,#breathTxt,.skins button{font-family:Urbanist,Inter,system-ui,sans-serif}
+.np-title{font-weight:400;letter-spacing:-.02em}
+.sign b{font-weight:300}
+.oa-btn{letter-spacing:.08em}
+/* v3: gradient black bg, subtler purple, tighter radii, station logos */
+html,body{background:#0d0c0c}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 90% at 85% 100%,#232120 0%,#171615 45%,#0b0a0a 100%)}
+.card{border-radius:22px}
+.grow.card{background:radial-gradient(90% 70% at 50% 40%,rgba(124,82,190,.28),rgba(70,44,120,.16) 55%,rgba(255,255,255,.03) 100%);border-color:rgba(170,140,230,.12)}
+.grow.card .chip.on{background:rgba(255,255,255,.12)}
+.sleeve{border-radius:15px}
+.sleeve .rm{border-radius:15px}
+.sleeve .chipc.img{width:30px;height:30px;border-radius:8px;background-size:cover;background-position:center;background-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.sheet{border-radius:24px}
+.skins{border-radius:16px}
+.skins .sw{border-radius:7px}
+.sh-search input{border-radius:12px}
+.res .fav{border-radius:10px}
+.hrow .cv{border-radius:9px}
+aside{border-radius:22px}
+.endday{border-radius:14px}
+#lenChips{gap:6px}
+#lenChips .chip{padding:8px 12px}
+/* v4: Nothing-style smoky dark wallpaper + film grain */
+body::before{background:
+  radial-gradient(55% 45% at 78% 22%,rgba(98,112,122,.38),transparent 70%),
+  radial-gradient(60% 50% at 30% 55%,rgba(70,86,94,.30),transparent 72%),
+  radial-gradient(45% 40% at 62% 70%,rgba(120,140,150,.16),transparent 70%),
+  radial-gradient(50% 45% at 8% 100%,rgba(92,40,72,.38),transparent 70%),
+  radial-gradient(40% 35% at 0% 10%,rgba(20,24,28,.9),transparent 70%),
+  linear-gradient(160deg,#0b0c0d 0%,#15181a 45%,#0d0e10 100%)}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.12;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.card{background:rgba(24,25,27,.62);border-color:rgba(255,255,255,.07)}
+/* v5: Nothing-style — solid near-black widgets on a light smoky wallpaper */
+body::before{background:
+  radial-gradient(58% 44% at 4% 4%,rgba(22,25,28,.95),transparent 74%),
+  radial-gradient(38% 34% at 96% 30%,rgba(34,39,44,.55),transparent 70%),
+  radial-gradient(48% 40% at 6% 104%,rgba(60,28,50,.85),transparent 72%),
+  radial-gradient(40% 36% at 70% 105%,rgba(40,44,52,.5),transparent 70%),
+  radial-gradient(55% 50% at 55% 48%,rgba(196,214,220,.75),transparent 75%),
+  linear-gradient(170deg,#7d878c 0%,#a7b3b7 42%,#98a6ab 70%,#6f7378 100%)}
+body::after{opacity:.16}
+.card,.modes,.hbtn,.oa-btn,.cbtn,.endday,.skins,.sheet,#soloExit,.sleeve{-webkit-backdrop-filter:none;backdrop-filter:none}
+.card{background:#1b1b1b;border:0;box-shadow:0 18px 40px -22px rgba(0,0,0,.55)}
+.grow.card{background:radial-gradient(90% 70% at 50% 40%,rgba(124,82,190,.22),rgba(124,82,190,0) 70%),#1b1b1b;border:0}
+.sleeve{background:#262626!important;border:0}
+.sleeve.cur{background:#f3eee9!important}
+.sleeve.add{border:1.5px dashed rgba(255,255,255,.14)!important}
+.modes{background:#1b1b1b;border:0}
+.hbtn,.oa-btn{background:#1b1b1b;border:0}
+.cbtn{background:#1b1b1b;border:0}
+.cbtn.big{background:#f3eee9}
+#soloExit{background:#1b1b1b;border:0}
+.endday{background:#262626;border:0}
+.skins,.sheet{background:#1b1b1b;border:0}
+.sh-search input{background:#262626;border:0}
+.res .act button{background:#262626;border:0}
+.chip{border:0;background:#262626}
+.grow.card .chip{background:rgba(255,255,255,.07);border:0}
+.grow.card .chip.on{background:rgba(255,255,255,.16)}
+#likeBtn{background:#1b1b1b;border:0}
+/* text sitting directly on the wallpaper */
+#clock{text-shadow:0 1px 18px rgba(0,0,0,.25)}
+#date{color:rgba(243,238,233,.75)}
+.np-station{color:rgba(243,238,233,.75)}
+.np-artist{color:rgba(243,238,233,.72)}
+.np-title{text-shadow:0 1px 20px rgba(0,0,0,.25)}
+/* v6: deep dark canvas with fine dot grid (ref 2/3), smaller radii, Spinetic-style purple timer */
+body::before{background:
+  radial-gradient(70% 45% at 60% -8%,rgba(92,60,170,.20),transparent 70%),
+  radial-gradient(50% 40% at 100% 100%,rgba(70,40,60,.18),transparent 70%),
+  radial-gradient(1px 1px at 1px 1px,rgba(255,255,255,.07) 1px,transparent 1.2px) 0 0/18px 18px,
+  linear-gradient(180deg,#121213 0%,#0c0c0d 60%,#090909 100%)}
+body::after{opacity:.10}
+#clock,.np-title{text-shadow:none}
+#date,.np-station,.np-artist{color:rgba(243,238,233,.6)}
+.card{border-radius:16px;background:linear-gradient(180deg,#1d1d1f,#18181a);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.8)}
+.sleeve{border-radius:11px;background:#252527!important}
+.sleeve .rm{border-radius:11px}
+.sleeve .chipc.img{border-radius:7px}
+.sheet{border-radius:18px}.skins{border-radius:12px}.skins .sw{border-radius:5px}
+.endday{border-radius:11px}.sh-search input{border-radius:10px}.res .fav{border-radius:8px}.hrow .cv{border-radius:7px}
+aside{border-radius:16px}
+/* timer — glowing magenta edges, deep violet core */
+.grow.card{background:
+  radial-gradient(65% 55% at 50% 52%,#1a0a26 0%,#3b1366 38%,rgba(120,40,170,.0) 70%),
+  radial-gradient(120% 100% at 50% 50%,#6a28b0 0%,#a33fc9 55%,#e35fd2 85%,#f07ad9 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,190,245,.25),inset 0 0 60px rgba(255,140,230,.35),0 24px 50px -24px rgba(160,50,200,.55)}
+.grow.card .chip{background:rgba(255,255,255,.14);color:#fff}
+.grow.card .chip.on{background:rgba(255,255,255,.32);color:#fff}
+.grow.card .chip.solid{background:#fff;color:#2a0f3d}
+.grow.card .endday{background:rgba(255,255,255,.12);color:#fff}
+.ring .t small{color:rgba(255,235,252,.75)}
+.sess i{background:rgba(255,255,255,.25)}.sess i.done{background:#fff}
+.breath .orb{background:radial-gradient(circle at 40% 35%,#fff,#f3a6ea 45%,#b04ad0 80%);box-shadow:0 0 40px rgba(240,120,220,.45)}
+.hbtn,.oa-btn,.modes,.cbtn:not(.big),#soloExit{background:#1d1d1f;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 0 0 1px rgba(255,255,255,.04)}
+/* v7: no dot grid; inverted, half-intensity purple; borderless station tiles; waveform */
+body::before{background:
+  radial-gradient(70% 45% at 60% -8%,rgba(92,60,170,.16),transparent 70%),
+  radial-gradient(50% 40% at 100% 100%,rgba(70,40,60,.14),transparent 70%),
+  linear-gradient(180deg,#121213 0%,#0c0c0d 60%,#090909 100%)}
+.grow.card{background:
+  radial-gradient(75% 60% at 50% 50%,rgba(214,96,205,.55) 0%,rgba(140,60,190,.42) 40%,rgba(60,24,96,.35) 75%,rgba(28,14,40,.6) 100%),#18141c;
+  box-shadow:inset 0 0 0 1px rgba(230,170,240,.12),0 20px 44px -26px rgba(140,50,180,.45)}
+.sleeve{background:transparent!important;box-shadow:none!important;border:0!important;padding:10px 8px}
+.sleeve:active{background:rgba(255,255,255,.05)!important}
+.sleeve.cur{background:rgba(255,255,255,.07)!important}
+.sleeve.cur span{color:#fff}.sleeve.cur em{color:rgba(243,238,233,.6)}
+.sleeve.add{border:1.5px dashed rgba(255,255,255,.12)!important}
+#wave{display:block;width:min(420px,100%);height:64px;margin:0 0 14px -2px}
+#wave{width:min(260px,100%)}
+.np-station .dots{display:none}
+#wave{margin:4px auto 12px;flex:none}
+#wave{width:208px;height:51px}
+#songLine{display:flex;align-items:center;justify-content:center;gap:8px;min-height:30px;margin:-4px auto 10px;max-width:80%;opacity:0;transform:translateY(4px);transition:all .4s ease;font-size:14px;color:rgba(243,238,233,.85)}
+#songLine.on{opacity:1;transform:none}
+#songLine .sl-t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#songLine .sl-a{color:rgba(243,238,233,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#songLine .sl-a:not(:empty)::before{content:"· ";}
+#songLine #likeBtn{width:30px;height:30px;margin:0 0 0 4px;flex:none}
+#songLine #likeBtn svg{width:15px;height:15px}
+#songLine:not(.on) #likeBtn{display:none}
+.ring .t b{font-size:41px}
