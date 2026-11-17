@@ -477,6 +477,35 @@ body::after{opacity:.16}
 .np-station{color:rgba(243,238,233,.75)}
 .np-artist{color:rgba(243,238,233,.72)}
 .np-title{text-shadow:0 1px 20px rgba(0,0,0,.25)}
+/* v6: deep dark canvas with fine dot grid (ref 2/3), smaller radii, Spinetic-style purple timer */
+body::before{background:
+  radial-gradient(70% 45% at 60% -8%,rgba(92,60,170,.20),transparent 70%),
+  radial-gradient(50% 40% at 100% 100%,rgba(70,40,60,.18),transparent 70%),
+  radial-gradient(1px 1px at 1px 1px,rgba(255,255,255,.07) 1px,transparent 1.2px) 0 0/18px 18px,
+  linear-gradient(180deg,#121213 0%,#0c0c0d 60%,#090909 100%)}
+body::after{opacity:.10}
+#clock,.np-title{text-shadow:none}
+#date,.np-station,.np-artist{color:rgba(243,238,233,.6)}
+.card{border-radius:16px;background:linear-gradient(180deg,#1d1d1f,#18181a);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.8)}
+.sleeve{border-radius:11px;background:#252527!important}
+.sleeve .rm{border-radius:11px}
+.sleeve .chipc.img{border-radius:7px}
+.sheet{border-radius:18px}.skins{border-radius:12px}.skins .sw{border-radius:5px}
+.endday{border-radius:11px}.sh-search input{border-radius:10px}.res .fav{border-radius:8px}.hrow .cv{border-radius:7px}
+aside{border-radius:16px}
+/* timer — glowing magenta edges, deep violet core */
+.grow.card{background:
+  radial-gradient(65% 55% at 50% 52%,#1a0a26 0%,#3b1366 38%,rgba(120,40,170,.0) 70%),
+  radial-gradient(120% 100% at 50% 50%,#6a28b0 0%,#a33fc9 55%,#e35fd2 85%,#f07ad9 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,190,245,.25),inset 0 0 60px rgba(255,140,230,.35),0 24px 50px -24px rgba(160,50,200,.55)}
+.grow.card .chip{background:rgba(255,255,255,.14);color:#fff}
+.grow.card .chip.on{background:rgba(255,255,255,.32);color:#fff}
+.grow.card .chip.solid{background:#fff;color:#2a0f3d}
+.grow.card .endday{background:rgba(255,255,255,.12);color:#fff}
+.ring .t small{color:rgba(255,235,252,.75)}
+.sess i{background:rgba(255,255,255,.25)}.sess i.done{background:#fff}
+.breath .orb{background:radial-gradient(circle at 40% 35%,#fff,#f3a6ea 45%,#b04ad0 80%);box-shadow:0 0 40px rgba(240,120,220,.45)}
+.hbtn,.oa-btn,.modes,.cbtn:not(.big),#soloExit{background:#1d1d1f;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 0 0 1px rgba(255,255,255,.04)}
 </style>
 </head>
 <body class="chill">
