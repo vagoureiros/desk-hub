@@ -1008,6 +1008,12 @@ function frame(){requestAnimationFrame(frame);if(document.hidden)return;
     const xx=i*gap+(gap-bw)/2,y=(h-bh)/2;x.beginPath();x.roundRect?x.roundRect(xx,y,bw,bh,bw/2):x.rect(xx,y,bw,bh);x.fill();}}
 frame();})();
 </script>
+<script>
+/* Hide the small station label when it just repeats the big title */
+(()=>{const st=document.getElementById('npStation'),ti=document.getElementById('npTitle');if(!st||!ti)return;const row=st.closest('.np-station');
+const upd=()=>{const same=!st.textContent.trim()||st.textContent.trim().toLowerCase()===ti.textContent.trim().toLowerCase();row.style.display=same?'none':''};
+new MutationObserver(upd).observe(ti,{childList:true,characterData:true,subtree:true});new MutationObserver(upd).observe(st,{childList:true,characterData:true,subtree:true});upd();})();
+</script>
 
 </body>
 </html>
