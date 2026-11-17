@@ -375,7 +375,7 @@ aside>.card{flex:none}
 <button id="soloExit" aria-label="Επιστροφή"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
 <div id="onair"><div class="sign"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg><b>ΣΕ ΚΛΗΣΗ</b></div>
   <div class="oa-meta"><span class="c" id="oaClock"></span><span class="e" id="oaElapsed"></span></div>
-  <button id="oaEnd">Τέλος κλήσης</button></div>
+  <button id="oaEnd">Τελείωσε η κλήση · Κλείσιμο</button></div>
 <div class="ov" id="idle"><div class="ic" id="idleClock"></div><div class="id" id="idleDate"></div><div class="inp" id="idleNp"></div></div>
 <div class="ov" id="eod"><h1>Τέλος για σήμερα.</h1><p id="eodTxt"></p><button class="chip solid" id="eodClose">Καλή ξεκούραση</button></div>
 <div id="sheet"><div class="sheet">
@@ -652,7 +652,7 @@ function exitSolo(){if(!solo)return;solo=false;setTimeout(wake,1000);const st=$(
 $('#soloBtn').onclick=enterSolo;$('#soloExit').onclick=exitSolo;
 addEventListener('resize',()=>{if(solo)rectStyle($('#stage'),{left:0,top:0,width:innerWidth,height:innerHeight});});
 /* ---------- Station search (radio-browser.info) ---------- */
-const HUB_V='24';
+const HUB_V='25';
 const RB=['https://de1.api.radio-browser.info','https://fi1.api.radio-browser.info','https://de2.api.radio-browser.info'];
 let grOnly=true,qT=null,qSeq=0;
 function openSheet(){$('#sheet').classList.add('on');$('#q').value='';search('');setTimeout(()=>$('#q').focus(),350);}
