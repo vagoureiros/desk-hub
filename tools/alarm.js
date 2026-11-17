@@ -89,9 +89,13 @@ render();
 })();
 </script>
 <style>
-#alarmBtn{width:auto;min-width:42px;padding:0 11px;gap:6px;display:flex;align-items:center;justify-content:center}
-#alarmBtn .ab-t{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
-#alarmBtn.has{color:#fff}
+#alarmBtn{outline:none;-webkit-tap-highlight-color:transparent;transition:all .25s ease}
+#alarmBtn:focus,#alarmBtn:focus-visible{outline:none}
+#alarmBtn .ab-t{display:none}
+#alarmBtn.has{width:auto;height:42px;padding:0 16px 0 13px;border-radius:999px;display:flex;align-items:center;gap:8px;
+  background:rgba(255,106,61,.12)!important;box-shadow:inset 0 0 0 1px rgba(255,106,61,.35)!important;color:#ffb59c}
+#alarmBtn.has svg{width:17px;height:17px}
+#alarmBtn.has .ab-t{display:inline;font-size:13.5px;font-weight:600;letter-spacing:.02em;font-variant-numeric:tabular-nums;color:#ffd9cb}
 #alarmSheet{position:fixed;inset:0;z-index:26;background:rgba(10,8,8,.55);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
 #alarmSheet.on{opacity:1;pointer-events:auto}
 #alarmSheet .as-box{width:min(520px,92vw);height:auto;max-height:86vh}
