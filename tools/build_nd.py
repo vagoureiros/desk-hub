@@ -33,3 +33,11 @@ theme=open('/home/claude/tools/glass.css').read()
 s=s.replace("</style>",theme+"</style>",1)
 open(root+'nd/index.html','w').write(s)
 print('built')
+
+# MAIN_FROM_ND: the ND build is now the main version at the site root
+m=s.replace('"three":"../vendor/three.module.min.js"','"three":"./vendor/three.module.min.js"')
+m=m.replace("import { init } from '../turntable3d.js';","import { init } from './turntable3d.js';")
+m=m.replace('href="../icon.png"','href="icon.png"').replace('href="../manifest.webmanifest"','href="manifest.webmanifest"').replace('href="fonts.css"','href="nd/fonts.css"')
+open(root+'index.html','w').write(m)
+open(root+'nd/index.html','w').write('<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=../"><title>Desk Hub</title><script>location.replace("../")</script></head><body></body></html>')
+print('main written')

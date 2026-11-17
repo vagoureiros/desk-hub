@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -7,14 +7,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Desk Hub">
-<meta name="theme-color" content="#16110d">
+<meta name="theme-color" content="#121010">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <title>Desk Hub</title>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="nd/fonts.css" rel="stylesheet">
 <style>
 :root{
   --bg:#15100c; --bg2:#1d1611; --panel:rgba(255,240,220,.045); --line:rgba(255,232,204,.10);
@@ -279,95 +279,264 @@ aside>.card{flex:none}
   #clock{font-size:44px}
 }
 
-/* ===================== WOOD · classic iOS (skeuomorphic) ===================== */
-:root{--ink:#f1ece4;--muted:#b9b0a4;--faint:#7d756b;--accent:#e9c58f;--glow:233,197,143;--r:10px;
-  --gloss:linear-gradient(180deg,#5d5d62 0%,#3c3c41 49%,#2b2b2f 51%,#202023 100%);
-  --gloss-hi:inset 0 1px 0 rgba(255,255,255,.28),0 1px 0 rgba(255,255,255,.07),0 2px 4px rgba(0,0,0,.35);
-  --wood:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.004 0.09' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .32  0 0 0 0 .17  0 0 0 0 .06  0 0 0 1.4 -.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
-  --linen:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .06' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.06 .9' numOctaves='2' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E")}
-body.work,body.chill{--accent:#e9c58f;--glow:233,197,143}
-html,body{background:#2c2c2e var(--linen);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
-.ambient{display:none}
-.grain{opacity:.05}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(0,0,0,.45))}
-/* letterpress type */
-#clock,#idle .ic,.ring .t b,.oa-meta .c{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif!important;font-weight:200!important;letter-spacing:-.01em}
-#clock{font-size:54px;color:#f4f0ea;text-shadow:0 -1px 0 rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.08)}
-#date{color:#b9b0a4;font-size:15px;text-shadow:0 -1px 0 rgba(0,0,0,.7)}
-.np-title{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:500;font-size:28px;text-shadow:0 -1px 0 rgba(0,0,0,.75)}
-.np-artist,.np-station{text-shadow:0 -1px 0 rgba(0,0,0,.7)}
-.np-station{color:#e9c58f}
-/* glossy controls */
-.hbtn,.oa-btn,.cbtn:not(.big),.endday,#soloExit{background:var(--gloss);border:1px solid #0e0e10;border-radius:8px;box-shadow:var(--gloss-hi);color:#f2f2f2;text-shadow:0 -1px 0 rgba(0,0,0,.6)}
-.hbtn{border-radius:8px}
-.oa-btn{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.04em}
-.oa-btn i{background:radial-gradient(circle at 40% 35%,#ff9b8a,#d62a1a 60%,#8a1208);box-shadow:0 0 0 1px rgba(0,0,0,.5)}
-.modes{background:var(--gloss);border:1px solid #0e0e10;border-radius:9px;padding:3px;box-shadow:var(--gloss-hi)}
-.modes button{color:#eee;text-shadow:0 -1px 0 rgba(0,0,0,.6);border-radius:6px;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:600}
-.modes button.on{color:#fff}
-.modes .pill{top:3px;bottom:3px;border-radius:6px;background:linear-gradient(180deg,#151517,#2a2a2e);box-shadow:inset 0 2px 5px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.1)}
-.cbtn.big{background:radial-gradient(circle at 50% 30%,#ffffff,#e4e4e4 45%,#b9b9b9 100%);color:#2a2a2a;border:1px solid #6d6d6d;box-shadow:inset 0 1px 0 #fff,inset 0 -3px 6px rgba(0,0,0,.18),0 6px 14px rgba(0,0,0,.5)}
-.cbtn.big svg{filter:drop-shadow(0 1px 0 rgba(255,255,255,.8))}
-/* right panel: the shelf */
-aside>.card:first-child{border:0;border-radius:10px;padding:0;overflow:hidden;
-  background:linear-gradient(90deg,rgba(0,0,0,.18),transparent 6%,transparent 94%,rgba(0,0,0,.18)),var(--wood),linear-gradient(180deg,#c48e57,#b9824c);
-  box-shadow:0 0 0 1px rgba(40,20,5,.7),0 10px 26px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,230,190,.4)}
-aside>.card:first-child h3{margin:0;padding:12px 16px;background:linear-gradient(180deg,rgba(255,235,200,.28),rgba(0,0,0,.06)),var(--wood),#c08a53;border-bottom:1px solid rgba(60,30,10,.55);box-shadow:0 1px 0 rgba(255,225,180,.35);
-  color:#5a3216;text-shadow:0 1px 0 rgba(255,230,190,.55);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.02em;text-transform:none;font-size:15px;font-weight:700}
-#crateAdd{color:#5a3216!important;text-shadow:0 1px 0 rgba(255,235,200,.6);background:linear-gradient(180deg,#e8c99c,#c99a63);border:1px solid rgba(90,50,20,.65);border-radius:6px;padding:5px 10px!important;box-shadow:inset 0 1px 0 rgba(255,245,225,.7),0 1px 2px rgba(0,0,0,.25);font-weight:700!important;letter-spacing:0!important}
-.crate{padding:14px 16px 0;margin:0;max-height:264px;gap:10px 14px;grid-auto-rows:112px;
-  background:repeating-linear-gradient(180deg,transparent 0 92px,#d8a873 92px,#c99560 95px,#b07c47 104px,#7a4c25 106px,rgba(0,0,0,.28) 106px,rgba(0,0,0,0) 122px);background-attachment:local;background-position:0 14px}
-.crate.more{-webkit-mask-image:none;mask-image:none}
-.crate>.sleeve{height:90px;align-self:start;width:90px;justify-self:center;border-radius:2px;outline:0;
-  box-shadow:0 1px 0 rgba(255,255,255,.25) inset,2px 4px 6px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.25)}
-.crate>.sleeve span{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:700;font-size:12.5px;text-shadow:0 1px 2px rgba(0,0,0,.6)}
-.crate>.sleeve em{font-size:8.5px}
-.crate>.sleeve.cur{box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(233,197,143,.9),2px 6px 10px rgba(0,0,0,.5)}
-.crate>.sleeve.add{background:rgba(70,40,15,.18)!important;border:1.5px dashed rgba(70,40,15,.45);box-shadow:none;color:#5a3216}
-.crate>.sleeve.add b,.crate>.sleeve.add em{color:#5a3216;text-shadow:0 1px 0 rgba(255,230,190,.5)}
-.sleeve .rm{border-radius:2px}
-/* timer: stitched leather */
-.grow.card{position:relative;border:0;border-radius:10px;color:#f4ece0;
-  background:radial-gradient(120% 90% at 50% 0%,rgba(255,255,255,.08),transparent 60%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='k'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .5 -.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23k)'/%3E%3C/svg%3E"),linear-gradient(180deg,#4a3324,#35241a);
-  box-shadow:0 0 0 1px rgba(0,0,0,.6),0 10px 26px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,220,180,.18)}
-.grow.card::before{content:"";position:absolute;inset:7px;border:2px dashed rgba(240,215,175,.38);border-radius:7px;pointer-events:none;box-shadow:0 1px 0 rgba(0,0,0,.35)}
-.ring .t b{color:#f8f1e6;text-shadow:0 -1px 0 rgba(0,0,0,.7)}
-.ring .t small{color:rgba(240,220,190,.7)}
-#ringArc{stroke:#e9c58f}
-.grow.card .chip{background:var(--gloss);border:1px solid #0e0e10;color:#eee;border-radius:7px;box-shadow:var(--gloss-hi);text-shadow:0 -1px 0 rgba(0,0,0,.6)}
-.grow.card .chip.on{background:linear-gradient(180deg,#e8c99c,#c99a63);color:#4a2a10;text-shadow:0 1px 0 rgba(255,240,215,.6);border-color:rgba(70,40,15,.8)}
-.grow.card .chip.solid{background:linear-gradient(180deg,#e8c99c,#c99a63);color:#4a2a10;text-shadow:0 1px 0 rgba(255,240,215,.6);border:1px solid rgba(70,40,15,.8)}
-.sess i{background:rgba(0,0,0,.35);box-shadow:inset 0 1px 1px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.1)}
-.sess i.done{background:radial-gradient(circle at 40% 35%,#ffe2b0,#d9a35a)}
-#breathTxt{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:300;text-shadow:0 -1px 0 rgba(0,0,0,.6)}
-/* popovers & sheets: iBooks cream */
-.skins,.sheet{background:#f4f0e7;border:1px solid #cdbf a6;border:1px solid #cbbda3;border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.6),inset 0 1px 0 #fff}
-.skins button{color:#6b5a45}.skins button.on{color:#3c2a18}.skins button.on .sw{border-color:#8a6a45}
-#sheet,#hist{background:rgba(0,0,0,.45)}
-.sh-head{border-bottom:1px solid #ddd2bd}
-.sh-top h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;color:#4a3826;font-size:28px}
-.sh-top button{background:linear-gradient(180deg,#fff,#e9e2d4);border:1px solid #cbbda3;color:#6b5a45}
-.sh-search input{background:#fff;border:1px solid #cbbda3;color:#3c2a18;box-shadow:inset 0 1px 3px rgba(0,0,0,.15)}
-.sh-sub{color:#8a7a62}.sh-sub b{color:#4a3826}
-.chip{background:linear-gradient(180deg,#fff,#ebe4d6);border:1px solid #cbbda3;color:#6b5a45;border-radius:7px}
-.chip.on{background:linear-gradient(180deg,#8a6a45,#6b4f30);color:#fff;border-color:#5a4026;text-shadow:0 -1px 0 rgba(0,0,0,.4)}
-.res{border-bottom:1px solid #e4dbc9;border-radius:0}.res:active{background:#ebe3d3}
-.res .nm{color:#3c2a18}.res .tg{color:#8a7a62}
-.res .act button{background:linear-gradient(180deg,#fff,#ebe4d6);border:1px solid #cbbda3;color:#4a3826;border-radius:7px}
-.res .act button.add{background:linear-gradient(180deg,#e8c99c,#c99a63);border-color:#9a7244;color:#4a2a10}
-.res .act button.done{background:transparent;border-color:transparent;color:#8a7a62}
-.hrow{border-bottom:1px solid #e4dbc9;border-radius:0}.hrow .t{color:#3c2a18}.hrow .a{color:#8a7a62}.hrow .links a{color:#8a5a2a}
-.empty{color:#8a7a62}
-.toast{background:rgba(20,20,22,.85);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;box-shadow:0 8px 20px rgba(0,0,0,.5)}
+/* ================= DARK GLASS theme ================= */
+:root{--bg:#121010;--panel:rgba(255,255,255,.06);--line:rgba(255,255,255,.10);--ink:#f3eee9;--muted:#a19891;--faint:#6d6560;
+  --accent:#f3eee9;--accent2:#f3eee9;--glow:243,140,70;--r:30px;--hot:#ff6a3d;
+  --m1:#f08a4b;--m2:#b0654a;--m3:#7d5fae;--m4:#3e8f8a}
+body.work{--m1:#3e8f8a;--m2:#4f6aa8;--m3:#7d5fae;--m4:#b0654a;--glow:120,170,190}
+body.chill{--m1:#f08a4b;--m2:#c25a4a;--m3:#9a5aa8;--m4:#d39a4e;--glow:243,140,70}
+html,body{background:var(--bg);color:var(--ink);font-family:Urbanist,Inter,system-ui,sans-serif;letter-spacing:-.01em}
+.grain{opacity:.06}
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;filter:blur(80px) saturate(1.1);opacity:.55}
+.mesh i{position:absolute;border-radius:50%;transition:background 2.5s ease;will-change:transform}
+.mesh .b1{width:58vw;height:58vw;left:-12vw;top:22vh;background:var(--m1);animation:drift1 38s ease-in-out infinite alternate}
+.mesh .b2{width:44vw;height:44vw;left:30vw;top:-22vh;background:var(--m2);animation:drift2 44s ease-in-out infinite alternate}
+.mesh .b3{width:44vw;height:44vw;right:-12vw;top:34vh;background:var(--m3);animation:drift3 50s ease-in-out infinite alternate}
+.mesh .b4{width:32vw;height:32vw;left:24vw;bottom:-24vh;background:var(--m4);animation:drift1 46s ease-in-out infinite alternate-reverse}
+@keyframes drift1{to{transform:translate(8vw,-6vh) scale(1.08)}}
+@keyframes drift2{to{transform:translate(-6vw,8vh) scale(.94)}}
+@keyframes drift3{to{transform:translate(-8vw,-4vh) scale(1.1)}}
+.ambient{z-index:0;filter:blur(40px);opacity:.7}
+.card,.modes,.hbtn,.oa-btn,.cbtn,.chip,.endday,.skins,.sheet,.toast,#soloExit,.sleeve{
+  -webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4)}
+/* time — the serif from the idle screen, everywhere */
+#clock,#idle .ic,.ring .t b,.oa-meta .c{font-family:Fraunces,Georgia,serif!important;font-weight:300!important;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#clock{font-size:54px;color:var(--ink)}
+#date{font-size:14px;color:var(--muted)}
+/* header */
+.modes{background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.modes button{color:#a19891;font-weight:500;font-size:14px}
+.modes button.on{color:#141110}
+.modes .pill{background:#f3eee9;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.hbtn{background:rgba(255,255,255,.06);border:1px solid var(--line);color:#d8d1cb}
+.oa-btn{background:rgba(255,255,255,.06);border:1px solid var(--line);color:#e8e2dc;font-weight:600;letter-spacing:.06em}
+.oa-btn i{background:var(--hot);box-shadow:none}
+#skinBtn.on,#histBtn:active{border-color:rgba(255,255,255,.35);color:#fff}
+/* right panel: scrollable */
+aside{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:8px;margin-right:-6px;padding-right:6px;border-radius:32px}
+aside::-webkit-scrollbar{display:none}
+aside>.card{flex:none}
+.grow{flex:none!important;min-height:430px}
+/* cards */
+.card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:32px;box-shadow:0 24px 60px -24px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08)}
+.card h3{color:var(--muted);font-weight:500;letter-spacing:.01em;text-transform:none;font-size:14px}
+#crateAdd{color:#141110!important;background:#f3eee9;border-radius:999px;padding:6px 12px!important;font-size:12.5px!important;letter-spacing:0!important}
+.grow.card{background:linear-gradient(160deg,rgba(255,150,90,.14),rgba(255,255,255,.04) 55%,rgba(130,100,200,.10));border-color:rgba(255,255,255,.1)}
+.grow.card .chip{color:rgba(243,238,233,.7);border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
+.grow.card .chip.on{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.2)}
+.grow.card .chip.solid{background:#f3eee9;color:#141110}
+.ring .t b{font-size:58px;color:#fff}
+.ring .t small{color:rgba(243,238,233,.55);font-size:12px;letter-spacing:.06em;text-transform:none}
+.sess i{background:rgba(255,255,255,.16)}.sess i.done{background:var(--hot)}
+.endday{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#f3eee9;font-weight:500}
+.breath .orb{background:radial-gradient(circle at 40% 35%,#ffd2b3,#f08a52 70%);box-shadow:0 0 40px rgba(240,138,82,.25)}
+.breath .halo{border:1px dashed rgba(255,255,255,.2)}
+#breathTxt{font-family:Urbanist,Inter,sans-serif;font-weight:300;font-size:22px;color:#f3eee9}
+/* crate tiles */
+.sleeve{background:rgba(255,255,255,.06)!important;border:1px solid rgba(255,255,255,.08);border-radius:22px;box-shadow:none;padding:12px;justify-content:space-between}
+.sleeve::before,.sleeve::after{display:none}
+.sleeve .chipc{position:relative;z-index:1;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.45),transparent 55%),var(--c);display:block;flex:none}
+.sleeve span{color:var(--ink);font-family:Urbanist,Inter,sans-serif;font-weight:500;font-size:14px;margin-top:auto}
+.sleeve em{color:var(--muted);font-size:10.5px;letter-spacing:0;text-transform:none}
+.sleeve.cur{outline:none;background:#f3eee9!important;border-color:transparent}
+.sleeve.cur span{color:#141110}.sleeve.cur em{color:#6d6560}
+.sleeve.add{border:1.5px dashed rgba(255,255,255,.16)!important;background:transparent!important;align-items:center;justify-content:center}
+.sleeve.add b,.sleeve.add em{color:var(--muted)}
+.sleeve .rm{background:rgba(18,16,16,.9);border-radius:22px}
+/* now playing */
+.np-station{color:var(--muted);font-weight:600;letter-spacing:.08em}
+.dots i{background:var(--hot)}
+.np-title{font-family:Urbanist,Inter,sans-serif;font-weight:300;font-size:34px;letter-spacing:-.03em;color:var(--ink)}
+.np-artist{color:var(--muted);font-size:15px}
+.cbtn{background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--ink)}
+.cbtn.big{background:#f3eee9;color:#141110;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+#likeBtn{border-color:rgba(255,255,255,.14);color:#a19891;background:rgba(255,255,255,.05)}
+#likeBtn.on{color:var(--hot);border-color:rgba(255,106,61,.45)}
+.stage .loader{border-color:rgba(255,255,255,.1);border-top-color:#f3eee9}
+/* popovers & sheets */
+.skins{background:rgba(30,26,25,.82);border:1px solid rgba(255,255,255,.1);box-shadow:0 20px 50px -15px rgba(0,0,0,.6)}
+.skins button{color:var(--muted)}.skins button.on{color:var(--ink)}.skins button.on .sw{border-color:#f3eee9}
+#sheet,#hist{background:rgba(10,8,8,.55)}
+.sheet{background:rgba(32,28,27,.82);border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 90px -20px rgba(0,0,0,.7)}
+.sh-top h2{font-family:Urbanist,Inter,sans-serif;font-weight:300;font-size:30px;letter-spacing:-.02em}
+.sh-top button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--muted)}
+.sh-search input{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--ink)}
+.sh-search input:focus{border-color:rgba(255,255,255,.5)}
+.sh-sub{color:var(--muted)}.sh-sub b{color:var(--ink)}
+.sh-head{border-bottom-color:rgba(255,255,255,.07)}
+.chip{border-color:rgba(255,255,255,.14);color:var(--muted);background:rgba(255,255,255,.04)}
+.chip.on{background:#f3eee9;color:#141110;border-color:#f3eee9}
+.chip.solid{background:#f3eee9;color:#141110}
+.res:active{background:rgba(255,255,255,.06)}
+.res .fav{border-radius:14px}
+.res .act button{border-color:rgba(255,255,255,.14);color:var(--ink);background:rgba(255,255,255,.05)}
+.res .act button.add{background:#f3eee9;color:#141110}
+.res .act button.done{color:var(--muted);background:transparent}
+.hrow .links a{color:var(--ink)}
+.hrow .hv{color:#6d6560}.hrow .hv.on{color:var(--hot)}
+.hrow .cv{border-radius:12px}
+.empty{color:var(--muted)}
+.toast{background:rgba(243,238,233,.94);color:#141110;border:0}
+#soloExit{background:rgba(255,255,255,.07);border-color:var(--line);color:var(--ink)}
 /* idle */
-#idle{background:#202022 var(--linen)}
-#idle .ic{font-size:200px;color:#f1ece4;text-shadow:0 -2px 0 rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.06)}
-#idle .id{color:#9c958b;text-shadow:0 -1px 0 rgba(0,0,0,.8)}
-#idle.night{background:#0d0d0e var(--linen)}
-#likeBtn{background:var(--gloss);border:1px solid #0e0e10;box-shadow:var(--gloss-hi)}
+#idle{background:radial-gradient(60% 60% at 70% 35%,rgba(240,138,75,.28),transparent 70%),radial-gradient(50% 60% at 20% 80%,rgba(125,95,174,.22),transparent 70%),#0e0c0c}
+#idle .ic{font-size:190px;color:#f3eee9}
+#idle .id{color:rgba(243,238,233,.6);font-size:20px;font-weight:300}
+#idle .inp{color:rgba(243,238,233,.6)}
+#idle.night{background:#080707}
+#idle.night .ic{color:rgba(243,238,233,.35)}
+/* call */
+#onair{background:radial-gradient(60% 70% at 50% 45%,#d9563a 0%,#8a2f26 45%,#2a1412 85%,#140b0a 100%)}
+#onair::after{box-shadow:none}
+.sign{border:0;background:none;box-shadow:none;padding:0;flex-direction:column;gap:18px}
+.sign svg{color:#fff;width:46px;height:46px;opacity:.9}
+.sign b{font-family:Urbanist,Inter,sans-serif;font-weight:200;font-size:120px;letter-spacing:-.04em;color:#fff;text-shadow:none}
+#onair.on .sign{animation:fadeup .8s ease both}
+@keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.oa-meta{margin-top:30px}
+.oa-meta .c{font-size:56px;color:#fff}
+.oa-meta .e{color:rgba(255,255,255,.75)}
+#oaEnd{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#fff;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+#eod{background:radial-gradient(60% 60% at 50% 40%,rgba(240,138,75,.45),transparent 70%),radial-gradient(50% 60% at 80% 80%,rgba(125,95,174,.35),transparent 70%),#0e0c0c}
+#eod h1{font-family:Fraunces,Georgia,serif;font-weight:300;font-size:72px;letter-spacing:-.03em;color:#fff}
+#eod p{color:rgba(255,255,255,.8)}
+#eod .chip.solid{background:#f3eee9;color:#141110}
+/* v2: mostly dark — no background mesh, purple only behind the timer */
+.mesh,.ambient,.grain{display:none!important}
+html,body{background:#0e0d0d}
+.card{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.08)}
+.grow.card{background:radial-gradient(90% 70% at 50% 40%,rgba(124,82,190,.55),rgba(70,44,120,.35) 55%,rgba(255,255,255,.03) 100%);border-color:rgba(170,140,230,.18)}
+#idle{background:#0b0a0a}
+#eod{background:#0b0a0a}
+/* sans: Urbanist everywhere (times stay Fraunces) */
+html,body,button,input,.modes button,.oa-btn,.chip,.sleeve span,.sleeve em,.np-title,.np-artist,.np-station,.card h3,.sh-top h2,.sh-search input,.res .nm,.res .tg,.hrow .t,.hrow .a,.toast,.endday,#date,#idle .id,.oa-meta .e,.sign b,#breathTxt,.skins button{font-family:Urbanist,Inter,system-ui,sans-serif}
+.np-title{font-weight:400;letter-spacing:-.02em}
+.sign b{font-weight:300}
+.oa-btn{letter-spacing:.08em}
+/* v3: gradient black bg, subtler purple, tighter radii, station logos */
+html,body{background:#0d0c0c}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 90% at 85% 100%,#232120 0%,#171615 45%,#0b0a0a 100%)}
+.card{border-radius:22px}
+.grow.card{background:radial-gradient(90% 70% at 50% 40%,rgba(124,82,190,.28),rgba(70,44,120,.16) 55%,rgba(255,255,255,.03) 100%);border-color:rgba(170,140,230,.12)}
+.grow.card .chip.on{background:rgba(255,255,255,.12)}
+.sleeve{border-radius:15px}
+.sleeve .rm{border-radius:15px}
+.sleeve .chipc.img{width:30px;height:30px;border-radius:8px;background-size:cover;background-position:center;background-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.sheet{border-radius:24px}
+.skins{border-radius:16px}
+.skins .sw{border-radius:7px}
+.sh-search input{border-radius:12px}
+.res .fav{border-radius:10px}
+.hrow .cv{border-radius:9px}
+aside{border-radius:22px}
+.endday{border-radius:14px}
+#lenChips{gap:6px}
+#lenChips .chip{padding:8px 12px}
+/* v4: Nothing-style smoky dark wallpaper + film grain */
+body::before{background:
+  radial-gradient(55% 45% at 78% 22%,rgba(98,112,122,.38),transparent 70%),
+  radial-gradient(60% 50% at 30% 55%,rgba(70,86,94,.30),transparent 72%),
+  radial-gradient(45% 40% at 62% 70%,rgba(120,140,150,.16),transparent 70%),
+  radial-gradient(50% 45% at 8% 100%,rgba(92,40,72,.38),transparent 70%),
+  radial-gradient(40% 35% at 0% 10%,rgba(20,24,28,.9),transparent 70%),
+  linear-gradient(160deg,#0b0c0d 0%,#15181a 45%,#0d0e10 100%)}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.12;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.card{background:rgba(24,25,27,.62);border-color:rgba(255,255,255,.07)}
+/* v5: Nothing-style — solid near-black widgets on a light smoky wallpaper */
+body::before{background:
+  radial-gradient(58% 44% at 4% 4%,rgba(22,25,28,.95),transparent 74%),
+  radial-gradient(38% 34% at 96% 30%,rgba(34,39,44,.55),transparent 70%),
+  radial-gradient(48% 40% at 6% 104%,rgba(60,28,50,.85),transparent 72%),
+  radial-gradient(40% 36% at 70% 105%,rgba(40,44,52,.5),transparent 70%),
+  radial-gradient(55% 50% at 55% 48%,rgba(196,214,220,.75),transparent 75%),
+  linear-gradient(170deg,#7d878c 0%,#a7b3b7 42%,#98a6ab 70%,#6f7378 100%)}
+body::after{opacity:.16}
+.card,.modes,.hbtn,.oa-btn,.cbtn,.endday,.skins,.sheet,#soloExit,.sleeve{-webkit-backdrop-filter:none;backdrop-filter:none}
+.card{background:#1b1b1b;border:0;box-shadow:0 18px 40px -22px rgba(0,0,0,.55)}
+.grow.card{background:radial-gradient(90% 70% at 50% 40%,rgba(124,82,190,.22),rgba(124,82,190,0) 70%),#1b1b1b;border:0}
+.sleeve{background:#262626!important;border:0}
+.sleeve.cur{background:#f3eee9!important}
+.sleeve.add{border:1.5px dashed rgba(255,255,255,.14)!important}
+.modes{background:#1b1b1b;border:0}
+.hbtn,.oa-btn{background:#1b1b1b;border:0}
+.cbtn{background:#1b1b1b;border:0}
+.cbtn.big{background:#f3eee9}
+#soloExit{background:#1b1b1b;border:0}
+.endday{background:#262626;border:0}
+.skins,.sheet{background:#1b1b1b;border:0}
+.sh-search input{background:#262626;border:0}
+.res .act button{background:#262626;border:0}
+.chip{border:0;background:#262626}
+.grow.card .chip{background:rgba(255,255,255,.07);border:0}
+.grow.card .chip.on{background:rgba(255,255,255,.16)}
+#likeBtn{background:#1b1b1b;border:0}
+/* text sitting directly on the wallpaper */
+#clock{text-shadow:0 1px 18px rgba(0,0,0,.25)}
+#date{color:rgba(243,238,233,.75)}
+.np-station{color:rgba(243,238,233,.75)}
+.np-artist{color:rgba(243,238,233,.72)}
+.np-title{text-shadow:0 1px 20px rgba(0,0,0,.25)}
+/* v6: deep dark canvas with fine dot grid (ref 2/3), smaller radii, Spinetic-style purple timer */
+body::before{background:
+  radial-gradient(70% 45% at 60% -8%,rgba(92,60,170,.20),transparent 70%),
+  radial-gradient(50% 40% at 100% 100%,rgba(70,40,60,.18),transparent 70%),
+  radial-gradient(1px 1px at 1px 1px,rgba(255,255,255,.07) 1px,transparent 1.2px) 0 0/18px 18px,
+  linear-gradient(180deg,#121213 0%,#0c0c0d 60%,#090909 100%)}
+body::after{opacity:.10}
+#clock,.np-title{text-shadow:none}
+#date,.np-station,.np-artist{color:rgba(243,238,233,.6)}
+.card{border-radius:16px;background:linear-gradient(180deg,#1d1d1f,#18181a);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.8)}
+.sleeve{border-radius:11px;background:#252527!important}
+.sleeve .rm{border-radius:11px}
+.sleeve .chipc.img{border-radius:7px}
+.sheet{border-radius:18px}.skins{border-radius:12px}.skins .sw{border-radius:5px}
+.endday{border-radius:11px}.sh-search input{border-radius:10px}.res .fav{border-radius:8px}.hrow .cv{border-radius:7px}
+aside{border-radius:16px}
+/* timer — glowing magenta edges, deep violet core */
+.grow.card{background:
+  radial-gradient(65% 55% at 50% 52%,#1a0a26 0%,#3b1366 38%,rgba(120,40,170,.0) 70%),
+  radial-gradient(120% 100% at 50% 50%,#6a28b0 0%,#a33fc9 55%,#e35fd2 85%,#f07ad9 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,190,245,.25),inset 0 0 60px rgba(255,140,230,.35),0 24px 50px -24px rgba(160,50,200,.55)}
+.grow.card .chip{background:rgba(255,255,255,.14);color:#fff}
+.grow.card .chip.on{background:rgba(255,255,255,.32);color:#fff}
+.grow.card .chip.solid{background:#fff;color:#2a0f3d}
+.grow.card .endday{background:rgba(255,255,255,.12);color:#fff}
+.ring .t small{color:rgba(255,235,252,.75)}
+.sess i{background:rgba(255,255,255,.25)}.sess i.done{background:#fff}
+.breath .orb{background:radial-gradient(circle at 40% 35%,#fff,#f3a6ea 45%,#b04ad0 80%);box-shadow:0 0 40px rgba(240,120,220,.45)}
+.hbtn,.oa-btn,.modes,.cbtn:not(.big),#soloExit{background:#1d1d1f;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 0 0 1px rgba(255,255,255,.04)}
+/* v7: no dot grid; inverted, half-intensity purple; borderless station tiles; waveform */
+body::before{background:
+  radial-gradient(70% 45% at 60% -8%,rgba(92,60,170,.16),transparent 70%),
+  radial-gradient(50% 40% at 100% 100%,rgba(70,40,60,.14),transparent 70%),
+  linear-gradient(180deg,#121213 0%,#0c0c0d 60%,#090909 100%)}
+.grow.card{background:
+  radial-gradient(75% 60% at 50% 50%,rgba(214,96,205,.55) 0%,rgba(140,60,190,.42) 40%,rgba(60,24,96,.35) 75%,rgba(28,14,40,.6) 100%),#18141c;
+  box-shadow:inset 0 0 0 1px rgba(230,170,240,.12),0 20px 44px -26px rgba(140,50,180,.45)}
+.sleeve{background:transparent!important;box-shadow:none!important;border:0!important;padding:10px 8px}
+.sleeve:active{background:rgba(255,255,255,.05)!important}
+.sleeve.cur{background:rgba(255,255,255,.07)!important}
+.sleeve.cur span{color:#fff}.sleeve.cur em{color:rgba(243,238,233,.6)}
+.sleeve.add{border:1.5px dashed rgba(255,255,255,.12)!important}
+#wave{display:block;width:min(420px,100%);height:64px;margin:0 0 14px -2px}
+#wave{width:min(260px,100%)}
+.np-station .dots{display:none}
+#wave{margin:4px auto 12px;flex:none}
+#wave{width:208px;height:51px}
+#songLine{display:flex;align-items:center;justify-content:center;gap:8px;min-height:30px;margin:-4px auto 10px;max-width:80%;opacity:0;transform:translateY(4px);transition:all .4s ease;font-size:14px;color:rgba(243,238,233,.85)}
+#songLine.on{opacity:1;transform:none}
+#songLine .sl-t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#songLine .sl-a{color:rgba(243,238,233,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#songLine .sl-a:not(:empty)::before{content:"· ";}
+#songLine #likeBtn{width:30px;height:30px;margin:0 0 0 4px;flex:none}
+#songLine #likeBtn svg{width:15px;height:15px}
+#songLine:not(.on) #likeBtn{display:none}
+.ring .t b{font-size:41px}
 </style>
 </head>
 <body class="chill">
+<div class="mesh"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i></div>
 <div class="ambient" id="ambient"></div>
 <div class="grain"></div>
 
@@ -376,17 +545,19 @@ aside>.card:first-child h3{margin:0;padding:12px 16px;background:linear-gradient
     <div class="time"><div id="clock">--:--</div><div id="date"></div></div>
     <div class="hright">
         <div class="skins" id="skins">
-          <button data-skin="maple"><span class="sw" style="background:repeating-linear-gradient(170deg,#c99a63 0 5px,#b98a55 5px 8px,#d6aa72 8px 11px)"></span>Σφένδαμος</button>
-          <button data-skin="walnut"><span class="sw" style="background:repeating-linear-gradient(170deg,#6a3d1e 0 5px,#55301a 5px 8px,#7a4824 8px 11px)"></span>Καρυδιά</button>
-          <button data-skin="rosewood"><span class="sw" style="background:repeating-linear-gradient(170deg,#36180d 0 5px,#2a120a 5px 8px,#4a2414 8px 11px)"></span>Τριανταφυλλιά</button>
+          <button data-skin="noir"><span class="sw" style="background:#141414;position:relative"><i style="position:absolute;left:8px;bottom:7px;width:7px;height:7px;border-radius:50%;background:#d71921"></i></span>Black · red</button>
+          <button data-skin="mono"><span class="sw" style="background:#efefec;position:relative"><i style="position:absolute;left:8px;bottom:7px;width:7px;height:7px;border-radius:50%;background:#d71921"></i></span>White · red</button>
+          <button data-skin="black"><span class="sw" style="background:linear-gradient(150deg,#2a2a2c,#0b0b0c)"></span>Black</button>
+          <button data-skin="walnut"><span class="sw" style="background:repeating-linear-gradient(170deg,#6a3d1e 0 5px,#55301a 5px 8px,#7a4824 8px 11px)"></span>Walnut</button>
+          <button data-skin="acrylic"><span class="sw" style="background:linear-gradient(150deg,rgba(220,235,240,.5),rgba(255,255,255,.08));border-color:rgba(255,255,255,.25)"></span>Clear</button>
         </div>
-    <button class="hbtn" id="histBtn" aria-label="Τι έπαιξε"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h11M4 12h11M4 18h7"/><circle cx="18" cy="17" r="2.5"/><path d="M20.5 17V6.5l-2.5 1"/></svg></button>
-    <button class="hbtn" id="skinBtn" aria-label="Εμφάνιση πικάπ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3a9 9 0 0 1 9 9"/></svg></button>
-    <button class="oa-btn" id="oaBtn" aria-label="Σε κλήση"><i></i>ΣΕ ΚΛΗΣΗ</button>
+    <button class="hbtn" id="histBtn" aria-label="Recently played"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h11M4 12h11M4 18h7"/><circle cx="18" cy="17" r="2.5"/><path d="M20.5 17V6.5l-2.5 1"/></svg></button>
+    <button class="hbtn" id="skinBtn" aria-label="Turntable look"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    <button class="oa-btn" id="oaBtn" aria-label="On call"><i></i>ON CALL</button>
     <div class="modes" id="modes">
       <div class="pill" id="pill"></div>
-      <button data-mode="work"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Δουλειά</button>
-      <button data-mode="chill"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>Χαλάρωση</button>
+      <button data-mode="work"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Focus</button>
+      <button data-mode="chill"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>Chill</button>
     </div>
     </div>
   </header>
@@ -418,16 +589,17 @@ aside>.card:first-child h3{margin:0;padding:12px 16px;background:linear-gradient
           <div class="rpm"><span class="led" id="led"></span>33⅓ RPM</div>
         </div>
       </div>
+      <canvas id="wave"></canvas>
       <div class="now" id="now">
         <div style="min-width:0">
           <div class="np-station"><span class="dots"><i></i><i></i><i></i></span><span id="npStation"></span></div>
-          <div class="np-row"><div class="np-title" id="npTitle">Διάλεξε έναν δίσκο</div><button id="likeBtn" aria-label="Μου αρέσει"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.4 7.6 3.6 4 7.1 4c2 0 3.6 1.1 4.9 2.8C13.3 5.1 14.9 4 16.9 4c3.5 0 5.7 3.6 4.4 7.1-1.8 4.8-9.3 9.4-9.3 9.4z"/></svg></button></div>
-          <div class="np-artist" id="npArtist">Πάτα πάνω στο βινύλιο ή σε ένα εξώφυλλο δεξιά</div>
+          <div class="np-row"><div class="np-title" id="npTitle">Pick a record</div><button id="likeBtn" aria-label="Like"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.4 7.6 3.6 4 7.1 4c2 0 3.6 1.1 4.9 2.8C13.3 5.1 14.9 4 16.9 4c3.5 0 5.7 3.6 4.4 7.1-1.8 4.8-9.3 9.4-9.3 9.4z"/></svg></button></div>
+          <div class="np-artist" id="npArtist">Tap the vinyl or a record on the right</div>
         </div>
         <div class="ctrls">
           
-          <button class="cbtn" id="soloBtn" aria-label="Μόνο το πικάπ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
-          <button class="cbtn big" id="play" aria-label="Αναπαραγωγή"><svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
+          <button class="cbtn" id="soloBtn" aria-label="Turntable only"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+          <button class="cbtn big" id="play" aria-label="Play"><svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
         </div>
 
       </div>
@@ -435,49 +607,50 @@ aside>.card:first-child h3{margin:0;padding:12px 16px;background:linear-gradient
 
     <aside>
       <div class="card">
-        <h3><span id="crateTitle">Δίσκοι</span><button id="crateAdd" style="letter-spacing:.04em;text-transform:none;font-weight:700;font-size:12.5px;color:var(--accent);padding:4px 2px">+ Σταθμός</button><span id="crateHint" style="display:none"></span></h3>
+        <h3><span id="crateTitle">Records</span><button id="crateAdd" style="letter-spacing:.04em;text-transform:none;font-weight:700;font-size:12.5px;color:var(--accent);padding:4px 2px">+ Station</button><span id="crateHint" style="display:none"></span></h3>
         <div class="crate" id="crate"></div>
       </div>
       <div class="card grow">
         <div class="panel" id="pWork">
-          <div class="row" id="lenChips"><button class="chip on" data-len="25">25′</button><button class="chip" data-len="50">50′</button></div>
+          <div class="row" id="lenChips"><button class="chip" data-len="5">5′</button><button class="chip" data-len="15">15′</button><button class="chip on" data-len="25">25′</button><button class="chip" data-len="50">50′</button></div>
           <div class="ring">
-            <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="88" fill="none" stroke="rgba(255,232,204,.08)" stroke-width="8"/>
-              <circle id="ringArc" cx="100" cy="100" r="88" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" stroke-dasharray="553" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear"/></svg>
-            <div class="t"><b id="tTime">25:00</b><small id="tPhase">Συγκέντρωση</small></div>
+            <svg viewBox="0 0 200 200"><defs><mask id="rm"><circle id="ringArc" cx="100" cy="100" r="88" fill="none" stroke="#fff" stroke-width="14" stroke-dasharray="553" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear"/></mask></defs>
+              <circle cx="100" cy="100" r="88" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="0 7.37"/>
+              <circle cx="100" cy="100" r="88" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="0 7.37" mask="url(#rm)"/></svg>
+            <div class="t"><b id="tTime">25:00</b><small id="tPhase">Focus</small></div>
           </div>
           <div class="sess" id="sess"></div>
-          <div class="row"><button class="chip solid" id="tStart">Έναρξη</button><button class="chip" id="tReset">Μηδενισμός</button></div>
+          <div class="row"><button class="chip solid" id="tStart">Start</button><button class="chip" id="tReset">Reset</button></div>
         </div>
         <div class="panel" id="pChill">
           <div class="breath"><div class="halo"></div><div class="orb" id="orb"></div></div>
-          <div id="breathTxt">Μια ανάσα;</div>
-          <div class="row"><button class="chip solid" id="bStart">Ξεκίνα · 1 λεπτό</button></div>
+          <div id="breathTxt">Take a breath?</div>
+          <div class="row"><button class="chip solid" id="bStart">Start · 1 min</button></div>
         </div>
-        <button class="endday" id="endBtn"><span>Τέλος δουλειάς για σήμερα</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <button class="endday" id="endBtn"><span>Done for today</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       </div>
     </aside>
   </main>
 </div>
 
-<button id="soloExit" aria-label="Επιστροφή"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
-<div id="onair"><div class="sign"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg><b>ΣΕ ΚΛΗΣΗ</b></div>
+<button id="soloExit" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
+<div id="onair"><div class="sign"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg><b>On call</b></div>
   <div class="oa-meta"><span class="c" id="oaClock"></span><span class="e" id="oaElapsed"></span></div>
-  <button id="oaEnd">Τελείωσε η κλήση · Κλείσιμο</button></div>
+  <button id="oaEnd">Call’s over · Close</button></div>
 <div class="ov" id="idle"><div class="ic" id="idleClock"></div><div class="id" id="idleDate"></div><div class="inp" id="idleNp"></div></div>
-<div class="ov" id="eod"><h1>Τέλος για σήμερα.</h1><p id="eodTxt"></p><button class="chip solid" id="eodClose">Καλή ξεκούραση</button></div>
+<div class="ov" id="eod"><h1>That’s it for today.</h1><p id="eodTxt"></p><button class="chip solid" id="eodClose">Enjoy your evening</button></div>
 <div id="sheet"><div class="sheet">
   <div class="sh-head">
-    <div class="sh-top"><h2>Πρόσθεσε σταθμό</h2><button id="shClose" aria-label="Κλείσιμο">×</button></div>
-    <div class="sh-search"><input id="q" type="search" placeholder="Όνομα σταθμού, π.χ. Kiss, Rock FM, jazz…" autocomplete="off" autocorrect="off" spellcheck="false"><button class="chip on" id="grOnly">Μόνο Ελλάδα</button></div>
+    <div class="sh-top"><h2>Add station</h2><button id="shClose" aria-label="Close">×</button></div>
+    <div class="sh-search"><input id="q" type="search" placeholder="Station name, e.g. Kiss, Rock FM, jazz…" autocomplete="off" autocorrect="off" spellcheck="false"><button class="chip on" id="grOnly">Greece only</button></div>
     <div class="sh-sub" id="shSub"></div>
   </div>
   <div id="results"></div>
 </div></div>
 <div id="hist"><div class="sheet">
   <div class="sh-head">
-    <div class="sh-top"><h2>Τι έπαιξε</h2><button id="hClose" aria-label="Κλείσιμο">×</button></div>
-    <div class="tabs"><button class="chip on" data-tab="recent">Πρόσφατα</button><button class="chip" data-tab="liked">♥ Αγαπημένα</button></div>
+    <div class="sh-top"><h2>Recently played</h2><button id="hClose" aria-label="Close">×</button></div>
+    <div class="tabs"><button class="chip on" data-tab="recent">Recent</button><button class="chip" data-tab="liked">♥ Favourites</button></div>
   </div>
   <div id="hList" style="flex:1;overflow-y:auto;padding:8px 12px 16px;-webkit-overflow-scrolling:touch"></div>
 </div></div>
@@ -491,18 +664,18 @@ const store={get(k,d){try{const v=localStorage.getItem('hub.'+k);return v==null?
 
 /* ---------- Stations ---------- */
 const STATIONS=[
- {id:'trito',name:'ΕΡΤ Τρίτο',sub:'κλασική · 90,9',c:'#4b5a7a',mode:'work',streams:['https://radiostreaming.ert.gr/ert-trito']},
- {id:'ertjazz',name:'ΕΡΤ Jazz',sub:'jazz · web radio',c:'#7a3b3b',mode:'work',streams:['https://radiostreaming.ert.gr/ert-webjazz']},
- {id:'kosmos',name:'ΕΡΤ Κόσμος',sub:'world · 93,6',c:'#3f6f86',mode:'work',streams:['https://radiostreaming.ert.gr/ert-kosmos']},
+ {id:'trito',name:'ERT Trito',sub:'classical · 90.9',c:'#4b5a7a',mode:'work',streams:['https://radiostreaming.ert.gr/ert-trito']},
+ {id:'ertjazz',name:'ERT Jazz',sub:'jazz · web radio',c:'#7a3b3b',mode:'work',streams:['https://radiostreaming.ert.gr/ert-webjazz']},
+ {id:'kosmos',name:'ERT Kosmos',sub:'world · 93.6',c:'#3f6f86',mode:'work',streams:['https://radiostreaming.ert.gr/ert-kosmos']},
  {id:'playlounge',name:'Play Lounge',sub:'lounge',c:'#2f5450',mode:'work',rj:'n6frf0ct274tv',streams:['https://stream.radiojar.com/n6frf0ct274tv']},
  {id:'deluxe',name:'Akous Deluxe',sub:'lounge · chill',c:'#6c5a86',mode:'work',streams:['https://live.akous.gr/akousdeluxe']},
- {id:'imagine',name:'Imagine',sub:'89,7 · θεσσαλονίκη',c:'#5f7a4a',mode:'work',streams:['https://imagine897.radioca.st/stream']},
- {id:'enlefko',name:'Εν Λευκώ',sub:'87,7',c:'#a8693a',mode:'chill',rj:'enlefko877',streams:['https://stream.radiojar.com/enlefko877']},
- {id:'pepper',name:'Pepper',sub:'96,6',c:'#b5533a',mode:'chill',rj:'pepper',streams:['https://stream.radiojar.com/pepper','https://netradio.live24.gr/pepper9660']},
- {id:'best',name:'Best',sub:'92,6',c:'#a2782e',mode:'chill',streams:['https://best.live24.gr/best1222']},
- {id:'melodia',name:'Μελωδία',sub:'99,2',c:'#8a4a6a',mode:'chill',streams:['https://stream.rcs.revma.com/8tdwa6ez1duvv']},
- {id:'menta',name:'Μέντα',sub:'88 · έντεχνο',c:'#3f7a62',mode:'chill',streams:['https://netradio.live24.gr/menta88ath']},
- {id:'diesi',name:'Δίεση',sub:'101,3',c:'#7a6a2e',mode:'chill',streams:['https://stream.rcs.revma.com/gkfwrhqxbfhvv','https://n05a-eu.rcs.revma.com/gkfwrhqxbfhvv']},
+ {id:'imagine',name:'Imagine',sub:'89.7 · thessaloniki',c:'#5f7a4a',mode:'work',streams:['https://imagine897.radioca.st/stream']},
+ {id:'enlefko',name:'En Lefko',sub:'87.7',c:'#a8693a',mode:'chill',rj:'enlefko877',streams:['https://stream.radiojar.com/enlefko877']},
+ {id:'pepper',name:'Pepper',sub:'96.6',c:'#b5533a',mode:'chill',rj:'pepper',streams:['https://stream.radiojar.com/pepper','https://netradio.live24.gr/pepper9660']},
+ {id:'best',name:'Best',sub:'92.6',c:'#a2782e',mode:'chill',streams:['https://best.live24.gr/best1222']},
+ {id:'melodia',name:'Melodia',sub:'99.2',c:'#8a4a6a',mode:'chill',streams:['https://stream.rcs.revma.com/8tdwa6ez1duvv']},
+ {id:'menta',name:'Menta',sub:'88 · greek',c:'#3f7a62',mode:'chill',streams:['https://netradio.live24.gr/menta88ath']},
+ {id:'diesi',name:'Diesi',sub:'101.3',c:'#7a6a2e',mode:'chill',streams:['https://stream.rcs.revma.com/gkfwrhqxbfhvv','https://n05a-eu.rcs.revma.com/gkfwrhqxbfhvv']},
 ];
 STATIONS.forEach(s=>{s.stream=s.streams[0];});
 const DEFAULTS=STATIONS.slice();
@@ -525,8 +698,8 @@ function fit(){const st=$('#stage'),tt=$('#tt');const w=st.clientWidth,h=st.clie
 addEventListener('resize',fit);
 
 /* ---------- Clock ---------- */
-function tick(){const d=new Date();const t=d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',hour12:false});
-  const ds=d.toLocaleDateString('el-GR',{weekday:'long',day:'numeric',month:'long'});
+function tick(){const d=new Date();const t=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false});
+  const ds=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
   $('#clock').textContent=t;$('#date').textContent=ds;$('#idleClock').textContent=t;$('#idleDate').textContent=ds;
   $('#idle').classList.toggle('night',d.getHours()>=23||d.getHours()<6);}
 setInterval(tick,1000);tick();
@@ -544,8 +717,8 @@ $$('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 
 function crateList(){return STATIONS.filter(s=>s.mode===mode)}
 function renderCrate(){const c=$('#crate');c.innerHTML='';c.onscroll=crateFade;
-  crateList().forEach(s=>{const b=document.createElement('div');b.setAttribute('role','button');b.className='sleeve'+(cur&&cur.id===s.id?' cur':'');b.style.setProperty('--c',`linear-gradient(150deg,${s.c},${shade(s.c,-35)})`);
-    b.innerHTML=`<span>${esc(s.name)}</span><em>${esc(s.sub||'')}</em><div class="rm"><i>Αφαίρεση</i><u>Άκυρο</u></div>`;
+  crateList().forEach(s=>{const b=document.createElement('div');b.setAttribute('role','button');b.className='sleeve'+(cur&&cur.id===s.id?' cur':'');b.style.setProperty('--c',s.c);
+    b.innerHTML=`<i class="chipc"></i><span>${esc(s.name)}</span><em>${esc(s.sub||'')}</em><div class="rm"><i>Remove</i><u>Cancel</u></div>`;
     let lp=null,longed=false;
     b.addEventListener('pointerdown',()=>{longed=false;lp=setTimeout(()=>{longed=true;$$('.sleeve.ask').forEach(x=>x.classList.remove('ask'));b.classList.add('ask');},600);});
     ['pointerup','pointerleave','pointercancel'].forEach(e=>b.addEventListener(e,()=>clearTimeout(lp)));
@@ -555,9 +728,9 @@ function renderCrate(){const c=$('#crate');c.innerHTML='';c.onscroll=crateFade;
       select(s,true)};
     const cc=b.querySelector('.chipc');if(cc)setChipImg(cc,s);
     c.appendChild(b);});
-  const n=crateList().length;$('#crateTitle').textContent=(mode==='work'?'Συγκέντρωση':'Χαλάρωση')+' · '+n+(n===1?' δίσκος':' δίσκοι');
-  const a=document.createElement('button');a.className='sleeve add';a.innerHTML='<b>+</b><em>Προσθήκη</em>';a.onclick=openSheet;c.appendChild(a);
-  $('#crateHint').textContent=cur?'κράτα πατημένο για αφαίρεση':'πάτα για να παίξει';
+  const n=crateList().length;$('#crateTitle').textContent=(mode==='work'?'Focus':'Chill')+' · '+n+(n===1?' record':' records');
+  const a=document.createElement('button');a.className='sleeve add';a.innerHTML='<b>+</b><em>Add</em>';a.onclick=openSheet;c.appendChild(a);
+  $('#crateHint').textContent=cur?'long-press to remove':'tap to play';
   requestAnimationFrame(crateFade);}
 function crateFade(){const c=$('#crate');c.classList.toggle('more',c.scrollHeight-c.scrollTop-c.clientHeight>8);}
 function showInCrate(id){const l=crateList();const i=l.findIndex(x=>x.id===id);if(i<0)return;const el=$('#crate').children[i];if(!el)return;
@@ -575,7 +748,7 @@ async function lookupImg(s){const k=s.streams[0];if(imgQ.has(k))return;imgQ.add(
   if(fav){clearTimeout(imgT);imgT=setTimeout(renderCrate,300);}}
 function removeStation(s){if(s.id.startsWith('c_')){store.set('custom',store.get('custom',[]).filter(x=>x.id!==s.id));}
   else{const h=store.get('hidden',[]);h.push(s.id);store.set('hidden',h);}
-  loadStations();if(cur&&cur.id===s.id&&!playing)cur=null;renderCrate();toast('Ο σταθμός αφαιρέθηκε');}
+  loadStations();if(cur&&cur.id===s.id&&!playing)cur=null;renderCrate();toast('Station removed');}
 function shade(hex,p){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=x=>Math.max(0,Math.min(255,Math.round(x+(p/100)*255)));return `rgb(${f(r)},${f(g)},${f(b)})`;}
 
 /* ---------- Turntable ---------- */
@@ -593,8 +766,8 @@ function select(s,autoplay,dir){const changed=!cur||cur.id!==s.id;if(changed&&cu
   if(autoplay) play(); }
 function play(){if(!cur){select(crateList()[0],false)}
   if(!audio.getAttribute('src')){tryIdx=0;audio.src=cur.streams[0];}
-  setPlayingUI(true);toast('Ο δίσκος μπαίνει…',1400);
-  const p=audio.play(); if(p&&p.catch) p.catch(err=>{if(err&&err.name==='AbortError')return;setPlayingUI(false);toast('Δεν ξεκίνησε η αναπαραγωγή ('+(err&&err.name)+')',4000);});
+  setPlayingUI(true);toast('Dropping the needle…',1400);
+  const p=audio.play(); if(p&&p.catch) p.catch(err=>{if(err&&err.name==='AbortError')return;setPlayingUI(false);toast('Playback didn’t start ('+(err&&err.name)+')',4000);});
   pollMeta(true);mediaSession();}
 function pause(){audio.pause();setPlayingUI(false);
   // drop the live buffer so resume is "live" again
@@ -605,7 +778,7 @@ $('#play').onclick=toggle;$('#platter').onclick=toggle;
 audio.addEventListener('error',()=>{if(!playing||!audio.getAttribute('src')||!cur)return;
   const code=audio.error?audio.error.code:'?';
   if(tryIdx<cur.streams.length-1){tryIdx++;switching=Date.now();audio.src=cur.streams[tryIdx];const p=audio.play();if(p&&p.catch)p.catch(()=>{});return;}
-  setPlayingUI(false);toast('Ο σταθμός δεν απαντά (κωδ. '+code+'), δοκίμασε άλλον δίσκο',4000)});
+  setPlayingUI(false);toast('Station not responding (code '+code+'), try another record',4000)});
 audio.addEventListener('pause',()=>{if(Date.now()-switching<2500)return;if(playing&&!audio.ended&&document.visibilityState==='visible'){/* paused externally (e.g. Control Center) */setPlayingUI(false)}});
 audio.addEventListener('play',()=>setPlayingUI(true));
 
@@ -659,13 +832,13 @@ function stats(){const s=store.get('stats',{});return s[today()]||{n:0,min:0}}
 function addSession(min){const s=store.get('stats',{});const t=s[today()]||{n:0,min:0};t.n++;t.min+=min;s[today()]=t;store.set('stats',s);}
 function drawTimer(){const m=Math.floor(tLeft/60),s=tLeft%60;$('#tTime').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   const total=(tPhase==='focus'?tLen:brk(tLen))*60;$('#ringArc').style.strokeDashoffset=C*(1-tLeft/total);
-  $('#tPhase').textContent=tPhase==='focus'?'Συγκέντρωση':'Διάλειμμα';
-  $('#tStart').textContent=tRun?'Παύση':(tLeft<total?'Συνέχεια':'Έναρξη');
+  $('#tPhase').textContent=tPhase==='focus'?'Focus':'Break';
+  $('#tStart').textContent=tRun?'Pause':(tLeft<total?'Resume':'Start');
   const n=stats().n;$('#sess').innerHTML=Array.from({length:Math.max(4,n)},(_,i)=>`<i class="${i<n?'done':''}"></i>`).join('');}
 function tStep(){tLeft=Math.max(0,Math.round((tEnd-Date.now())/1000));
   if(tLeft<=0){clearInterval(tInt);tRun=false;chime();
-    if(tPhase==='focus'){addSession(tLen);tPhase='break';tLeft=brk(tLen)*60;toast('Ώρα για διάλειμμα · σήκω, τεντώσου, κοίτα μακριά',5000);}
-    else{tPhase='focus';tLeft=tLen*60;toast('Πάμε για τον επόμενο κύκλο',3000);}}
+    if(tPhase==='focus'){addSession(tLen);tPhase='break';tLeft=brk(tLen)*60;toast('Break time · stand up, stretch, look away',5000);}
+    else{tPhase='focus';tLeft=tLen*60;toast('On to the next round',3000);}}
   drawTimer();}
 $('#tStart').onclick=()=>{unlockAudio();if(tRun){clearInterval(tInt);tRun=false;}else{tEnd=Date.now()+tLeft*1000;tRun=true;tInt=setInterval(tStep,500);}drawTimer();};
 $('#tReset').onclick=()=>{clearInterval(tInt);tRun=false;tPhase='focus';tLeft=tLen*60;drawTimer();};
@@ -678,14 +851,14 @@ function chime(){if(!actx)return;const t=actx.currentTime;[523.25,659.25,783.99]
 /* ---------- Breathing (box 4-4-4-4) ---------- */
 let bInt=null,bTO=null;
 $('#bStart').onclick=()=>{if(bInt){stopBreath();return;}
-  const steps=[['Εισπνοή',1.9],['Κράτα',1.9],['Εκπνοή',1],['Κράτα',1]];let i=0;const orb=$('#orb');
+  const steps=[['Breathe in',1.9],['Hold',1.9],['Breathe out',1],['Hold',1]];let i=0;const orb=$('#orb');
   const run=()=>{const [txt,sc]=steps[i%4];$('#breathTxt').textContent=txt;orb.style.transform=`scale(${sc})`;i++;};
-  run();bInt=setInterval(run,4000);$('#bStart').textContent='Σταμάτα';bTO=setTimeout(()=>{stopBreath();$('#breathTxt').textContent='Ωραία. ✦';},64000);};
-function stopBreath(){clearInterval(bInt);clearTimeout(bTO);bInt=null;$('#orb').style.transform='scale(1)';$('#breathTxt').textContent='Μια ανάσα;';$('#bStart').textContent='Ξεκίνα · 1 λεπτό';}
+  run();bInt=setInterval(run,4000);$('#bStart').textContent='Stop';bTO=setTimeout(()=>{stopBreath();$('#breathTxt').textContent='Nice. ✦';},64000);};
+function stopBreath(){clearInterval(bInt);clearTimeout(bTO);bInt=null;$('#orb').style.transform='scale(1)';$('#breathTxt').textContent='Take a breath?';$('#bStart').textContent='Start · 1 min';}
 
 /* ---------- End of day ---------- */
 $('#endBtn').onclick=()=>{clearInterval(tInt);tRun=false;tPhase='focus';tLeft=tLen*60;drawTimer();
-  const s=stats();$('#eodTxt').innerHTML=s.n?`Σήμερα έκανες <b>${s.n}</b> ${s.n===1?'κύκλο':'κύκλους'} συγκέντρωσης · ${Math.floor(s.min/60)?Math.floor(s.min/60)+' ώρ. ':''}${s.min%60} λεπτά.<br>Κλείσε το laptop. Τα υπόλοιπα αύριο.`:'Κλείσε το laptop. Τα υπόλοιπα αύριο.';
+  const s=stats();$('#eodTxt').innerHTML=s.n?`Today: <b>${s.n}</b> focus ${s.n===1?'round':'rounds'} · ${Math.floor(s.min/60)?Math.floor(s.min/60)+'h ':''}${s.min%60} min.<br>Close the laptop. The rest can wait for tomorrow.`:'Close the laptop. The rest can wait for tomorrow.';
   setMode('chill');
   select(STATIONS.find(x=>x.id==='enlefko'),true);
   $('#eod').classList.add('on');};
@@ -707,7 +880,7 @@ let tt;function toast(m,ms=2200){const t=$('#toast');t.textContent=m;t.classList
 /* ---------- Diagnostics (#diag) ---------- */
 if(location.hash==='#diag'){
   const d=document.createElement('div');d.style.cssText='position:fixed;inset:0;z-index:50;background:#0d0907;color:#f3e7d6;padding:40px;overflow:auto;font:15px/1.6 Manrope,system-ui';
-  d.innerHTML='<h2 style="font-family:Fraunces,serif;font-weight:400;margin:0 0 6px">Έλεγχος σύνδεσης</h2><p style="color:#a8968a;margin:0 0 18px">Πάτα το κουμπί και περίμενε ~30 δευτ. Μετά στείλε μου screenshot.</p><button id="dgo" class="chip solid">Ξεκίνα τον έλεγχο</button><pre id="dout" style="white-space:pre-wrap;font:13px/1.55 ui-monospace,Menlo,monospace;margin-top:20px"></pre>';
+  d.innerHTML='<h2 style="font-family:Fraunces,serif;font-weight:400;margin:0 0 6px">Connection check</h2><p style="color:#a8968a;margin:0 0 18px">Tap the button and wait ~30s, then send a screenshot.</p><button id="dgo" class="chip solid">Run check</button><pre id="dout" style="white-space:pre-wrap;font:13px/1.55 ui-monospace,Menlo,monospace;margin-top:20px"></pre>';
   document.body.appendChild(d);
   const out=t=>{$('#dout').textContent+=t+'\n'};
   $('#dgo').onclick=async()=>{ $('#dgo').disabled=true;
@@ -722,7 +895,7 @@ if(location.hash==='#diag'){
         a.onplaying=()=>fin('OK playing');a.oncanplay=()=>fin('OK canplay');a.onerror=()=>fin('ERROR code '+(a.error&&a.error.code)+' '+(a.error&&a.error.message||''));
         a.src=u;a.load();const p=a.play();if(p&&p.catch)p.catch(e=>{if(e.name!=='AbortError')fin('play() '+e.name+': '+e.message)});});
       $('#dout').textContent=$('#dout').textContent.replace('…  '+u+'\n','');out('AUD  '+r+'  '+u);a.pause();}
-    a.removeAttribute('src');a.load();out('\nΤέλος ελέγχου.');};
+    a.removeAttribute('src');a.load();out('\nCheck complete.');};
 }
 
 /* ---------- Solo view ---------- */
@@ -740,7 +913,7 @@ function exitSolo(){if(!solo)return;solo=false;setTimeout(wake,1000);const st=$(
 $('#soloBtn').onclick=enterSolo;$('#soloExit').onclick=exitSolo;
 addEventListener('resize',()=>{if(solo)rectStyle($('#stage'),{left:0,top:0,width:innerWidth,height:innerHeight});});
 /* ---------- Station search (radio-browser.info) ---------- */
-const HUB_V='W1';
+const HUB_V='G-'+'25';
 const RB=['https://de1.api.radio-browser.info','https://fi1.api.radio-browser.info','https://de2.api.radio-browser.info'];
 let grOnly=true,qT=null,qSeq=0;
 function openSheet(){$('#sheet').classList.add('on');$('#q').value='';search('');setTimeout(()=>$('#q').focus(),350);}
@@ -749,34 +922,34 @@ $('#shClose').onclick=closeSheet;$('#crateAdd').onclick=openSheet;$('#sheet').ad
 $('#grOnly').onclick=()=>{grOnly=!grOnly;$('#grOnly').classList.toggle('on',grOnly);search($('#q').value.trim())};
 $('#q').addEventListener('input',()=>{clearTimeout(qT);qT=setTimeout(()=>search($('#q').value.trim()),380)});
 async function rbFetch(path){for(const h of RB){try{const r=await fetch(h+path);if(r.ok)return await r.json()}catch(e){}}throw new Error('rb');}
-async function search(q){const seq=++qSeq;const res=$('#results');res.innerHTML='<div class="empty">Ψάχνω…</div>';
+async function search(q){const seq=++qSeq;const res=$('#results');res.innerHTML='<div class="empty">Searching…</div>';
   const params=new URLSearchParams({hidebroken:'true',order:'clickcount',reverse:'true',limit:'60'});
   if(q)params.set('name',q);if(grOnly)params.set('countrycode','GR');
-  $('#shSub').innerHTML=`Θα μπει στους δίσκους για <b>${mode==='work'?'Δουλειά':'Χαλάρωση'}</b>`+(q?'':(grOnly?' · οι πιο δημοφιλείς ελληνικοί σταθμοί':' · οι πιο δημοφιλείς σταθμοί'))+'<br>Για αφαίρεση δίσκου: κράτα τον πατημένο. <span style="opacity:.45">· v'+HUB_V+'</span>';
-  let list=[];try{list=await rbFetch('/json/stations/search?'+params)}catch(e){if(seq===qSeq)res.innerHTML='<div class="empty">Δεν μπόρεσα να φέρω σταθμούς. Δοκίμασε ξανά σε λίγο.</div>';return;}
+  $('#shSub').innerHTML=`Will be added to <b>${mode==='work'?'Focus':'Chill'}</b>`+(q?'':(grOnly?' · most popular Greek stations':' · most popular stations'))+'<br>To remove a record, long-press it. <span style="opacity:.45">· v'+HUB_V+'</span>';
+  let list=[];try{list=await rbFetch('/json/stations/search?'+params)}catch(e){if(seq===qSeq)res.innerHTML='<div class="empty">Couldn’t load stations. Try again in a moment.</div>';return;}
   if(seq!==qSeq)return;
   const by=new Map();list.forEach(x=>{const k=(x.name||'').trim().toLowerCase();if(!k)return;const u=(x.url_resolved||x.url||'');const p=by.get(k);
     if(!p)by.set(k,x);else if(!(p.url_resolved||p.url||'').startsWith('https://')&&u.startsWith('https://'))by.set(k,Object.assign(x,{clickcount:p.clickcount}));});
   list=[...by.values()];
-  if(!list.length){res.innerHTML='<div class="empty">Δεν βρέθηκε σταθμός. Δοκίμασε άλλο όνομα'+(grOnly?' ή βγάλε το «Μόνο Ελλάδα».':'.')+'</div>';return;}
+  if(!list.length){res.innerHTML='<div class="empty">No station found. Try another name'+(grOnly?' or turn off “Greece only”.':'.')+'</div>';return;}
   res.innerHTML='';
   list.forEach(x=>{const raw=(x.url_resolved||x.url||'').trim();const upg=raw.startsWith('http://');const url=raw.replace(/^http:\/\//,'https://');const ok=url.startsWith('https://');const name=x.name.trim();
     const have=crateList().some(s=>s.streams.includes(url));const other=!have&&STATIONS.find(s=>s.mode!==mode&&s.streams.includes(url));const col=hashColor(name);
     const row=document.createElement('div');row.className='res'+(ok?'':' na');row.style.setProperty('--c',col);
     const tags=(x.tags||'').split(',').filter(Boolean).slice(0,3).join(' · ');
-    row.innerHTML=`<div class="fav">${esc(name[0]||'♪')}</div><div style="min-width:0"><div class="nm">${esc(name)}</div><div class="tg">${esc([x.state,tags,x.bitrate?x.bitrate+' kbps':''].filter(Boolean).join(' · ')||'—')}${other?' · υπάρχει ήδη στη '+(other.mode==='work'?'Δουλειά':'Χαλάρωση'):''}${upg&&!other?' · πάτα πρώτα Δοκιμή':''}</div></div><div class="act">${ok?(have?'<button class="done show">Υπάρχει ✓ · Δες τον</button>':'<button class="try">Δοκιμή</button><button class="add">Προσθήκη</button>'):''}</div>`;
+    row.innerHTML=`<div class="fav">${esc(name[0]||'♪')}</div><div style="min-width:0"><div class="nm">${esc(name)}</div><div class="tg">${esc([x.state,tags,x.bitrate?x.bitrate+' kbps':''].filter(Boolean).join(' · ')||'—')}${other?' · already in '+(other.mode==='work'?'Focus':'Chill'):''}${upg&&!other?' · tap Try first':''}</div></div><div class="act">${ok?(have?'<button class="done show">In list ✓ · Show</button>':'<button class="try">Try</button><button class="add">Add</button>'):''}</div>`;
     if(x.favicon&&x.favicon.startsWith('https://')){const im=new Image();im.onload=()=>{const f=row.querySelector('.fav');f.textContent='';f.appendChild(im)};im.src=x.favicon;}
     const st=()=>({img:(x.favicon||'').replace(/^http:\/\//,'https://'),id:'c_'+x.stationuuid+'_'+mode,name:name.replace(/\s*[-–|].*$/,'').slice(0,28)||name,sub:(x.state||tags.split(' · ')[0]||'web radio').toLowerCase().slice(0,26),c:col,mode,streams:[url],rj:(url.match(/stream\.radiojar\.com\/([a-z0-9]+)/i)||[])[1]});
     const tryB=row.querySelector('.try'),addB=row.querySelector('.add');
     const showB=row.querySelector('.show');if(showB)showB.onclick=()=>{const h=crateList().find(s=>s.streams.includes(url));closeSheet();if(h)setTimeout(()=>showInCrate(h.id),380);};
-    if(tryB)tryB.onclick=()=>{const t=st();t.stream=url;select(t,true);toast('Δοκιμή: '+t.name);};
+    if(tryB)tryB.onclick=()=>{const t=st();t.stream=url;select(t,true);toast('Trying: '+t.name);};
     if(addB)addB.onclick=()=>{const t=st();const c=store.get('custom',[]);c.push(t);store.set('custom',c);loadStations();
-      const added=STATIONS.find(s=>s.id===t.id);select(added,true);addB.parentNode.innerHTML='<button class="done" disabled>Προστέθηκε ✓</button>';toast('Προστέθηκε στο τέλος της λίστας σου');setTimeout(()=>showInCrate(t.id),100);};
+      const added=STATIONS.find(s=>s.id===t.id);select(added,true);addB.parentNode.innerHTML='<button class="done" disabled>Added ✓</button>';toast('Added to the end of your list');setTimeout(()=>showInCrate(t.id),100);};
     res.appendChild(row);});}
 /* ---------- On Air (meeting) ---------- */
 let onAir=false,oaStart=0,oaResume=false,oaAskT=null,oaInt=null;
-function oaTick(){const d=new Date();$('#oaClock').textContent=d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',hour12:false});
-  const m=Math.floor((Date.now()-oaStart)/60000),h=Math.floor(m/60);$('#oaElapsed').textContent=m<1?'μόλις ξεκίνησε':'σε κλήση εδώ και '+(h?h+' ώρ. ':'')+(m%60)+' λεπ.';}
+function oaTick(){const d=new Date();$('#oaClock').textContent=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false});
+  const m=Math.floor((Date.now()-oaStart)/60000),h=Math.floor(m/60);$('#oaElapsed').textContent=m<1?'just started':'on call for '+(h?h+'h ':'')+(m%60)+' min';}
 function enterOnAir(){if(onAir)return;onAir=true;oaStart=Date.now();oaResume=playing;if(playing)pause();
   oaTick();oaInt=setInterval(oaTick,5000);$('#idle').classList.remove('on');$('#onair').classList.remove('ask');$('#onair').classList.add('on');
   window.tt3d&&tt3d.pause(true);keepAwake();}
@@ -787,8 +960,8 @@ $('#onair').addEventListener('pointerdown',e=>{e.stopPropagation();});
 $('#onair').addEventListener('click',e=>{if(e.target.id==='oaEnd'){exitOnAir();return;}
   $('#onair').classList.add('ask');clearTimeout(oaAskT);oaAskT=setTimeout(()=>$('#onair').classList.remove('ask'),4000);});
 /* ---------- Skins ---------- */
-let skinName=store.get('skin_wood','walnut');
-function applySkin(n){skinName=n;store.set('skin_wood',n);window.tt3d&&tt3d.setSkin(n);$$('#skins button').forEach(b=>b.classList.toggle('on',b.dataset.skin===n));}
+let skinName=store.get('skin_nd3','mono');
+function applySkin(n){skinName=n;store.set('skin_nd3',n);window.tt3d&&tt3d.setSkin(n);$$('#skins button').forEach(b=>b.classList.toggle('on',b.dataset.skin===n));}
 $('#skinBtn').onclick=e=>{e.stopPropagation();$('#skinBtn').classList.toggle('on',$('#skins').classList.toggle('on'));};
 $$('#skins button').forEach(b=>b.onclick=e=>{e.stopPropagation();applySkin(b.dataset.skin);setTimeout(()=>{$('#skins').classList.remove('on');$('#skinBtn').classList.remove('on');},350);});
 addEventListener('pointerdown',e=>{if(!e.target.closest('#skins')&&!e.target.closest('#skinBtn')){$('#skins').classList.remove('on');$('#skinBtn').classList.remove('on');}});
@@ -802,13 +975,13 @@ function isLiked(k){return liked().some(x=>x.k===k)}
 function toggleLike(e){let l=liked();if(l.some(x=>x.k===e.k))l=l.filter(x=>x.k!==e.k);else l.unshift({...e,likedAt:Date.now()});store.set('liked',l);updateLike();}
 function updateLike(){const b=$('#likeBtn');const k=lastKey;const ok=!!(meta&&meta.title&&k);b.classList.toggle('show',ok);b.classList.toggle('on',ok&&isLiked(k));}
 $('#likeBtn').onclick=()=>{const h=hist().find(x=>x.k===lastKey)||{k:lastKey,title:meta.title,artist:meta.artist||'',station:cur?cur.name:'',c:cur?cur.c:'#3a2a20',cover:meta.cover||'',ts:Date.now()};
-  if(!h.cover&&meta.cover)h.cover=meta.cover;const was=isLiked(lastKey);toggleLike(h);const b=$('#likeBtn');b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');toast(was?'Αφαιρέθηκε από τα αγαπημένα':'Στα αγαπημένα ♥');};
+  if(!h.cover&&meta.cover)h.cover=meta.cover;const was=isLiked(lastKey);toggleLike(h);const b=$('#likeBtn');b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');toast(was?'Removed from favourites':'Saved to favourites ♥');};
 let hTab='recent';
-function ago(ts){const m=Math.round((Date.now()-ts)/60000);if(m<1)return'τώρα';if(m<60)return m+'′ πριν';const d=new Date(ts);const t=d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',hour12:false});return(new Date().toDateString()===d.toDateString()?'':d.toLocaleDateString('el-GR',{day:'numeric',month:'short'})+' ')+t;}
+function ago(ts){const m=Math.round((Date.now()-ts)/60000);if(m<1)return'now';if(m<60)return m+'m ago';const d=new Date(ts);const t=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false});return(new Date().toDateString()===d.toDateString()?'':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' ')+t;}
 function renderHist(){const L=$('#hList');const l=hTab==='recent'?hist():liked();
-  if(!l.length){L.innerHTML='<div class="empty">'+(hTab==='recent'?'Ακόμα τίποτα. Τα τραγούδια εμφανίζονται εδώ όταν ο σταθμός λέει τι παίζει (π.χ. Εν Λευκώ, Pepper, Play Lounge).':'Πάτα την καρδιά δίπλα στον τίτλο του τραγουδιού για να το κρατήσεις εδώ.')+'</div>';return;}
+  if(!l.length){L.innerHTML='<div class="empty">'+(hTab==='recent'?'Nothing yet. Songs show up here when a station shares what’s playing (e.g. En Lefko, Pepper, Play Lounge).':'Tap the heart next to a song title to keep it here.')+'</div>';return;}
   L.innerHTML='';l.forEach(e=>{const q=encodeURIComponent((e.artist+' '+e.title).trim());const r=document.createElement('div');r.className='hrow';r.style.setProperty('--c',e.c||'#3a2a20');
-    r.innerHTML=`<div class="cv" style="${e.cover?`background-image:url('${e.cover.replace(/'/g,'%27')}')`:''}"></div><div style="min-width:0"><div class="t">${esc(e.title)}</div><div class="a">${esc([e.artist,e.station].filter(Boolean).join(' · '))} · ${ago(hTab==='liked'?(e.likedAt||e.ts):e.ts)}</div><div class="links"><a href="https://open.spotify.com/search/${q}" target="_blank" rel="noopener">Spotify</a><a href="https://music.youtube.com/search?q=${q}" target="_blank" rel="noopener">YouTube Music</a><a href="https://music.apple.com/search?term=${q}" target="_blank" rel="noopener">Apple Music</a></div></div><button class="hv${isLiked(e.k)?' on':''}" aria-label="Μου αρέσει">${HEART}</button>`;
+    r.innerHTML=`<div class="cv" style="${e.cover?`background-image:url('${e.cover.replace(/'/g,'%27')}')`:''}"></div><div style="min-width:0"><div class="t">${esc(e.title)}</div><div class="a">${esc([e.artist,e.station].filter(Boolean).join(' · '))} · ${ago(hTab==='liked'?(e.likedAt||e.ts):e.ts)}</div><div class="links"><a href="https://open.spotify.com/search/${q}" target="_blank" rel="noopener">Spotify</a><a href="https://music.youtube.com/search?q=${q}" target="_blank" rel="noopener">YouTube Music</a><a href="https://music.apple.com/search?term=${q}" target="_blank" rel="noopener">Apple Music</a></div></div><button class="hv${isLiked(e.k)?' on':''}" aria-label="Like">${HEART}</button>`;
     r.querySelector('.hv').onclick=()=>{toggleLike(e);renderHist();};L.appendChild(r);});}
 $('#histBtn').onclick=()=>{renderHist();$('#hist').classList.add('on');};
 $('#hClose').onclick=()=>$('#hist').classList.remove('on');$('#hist').addEventListener('click',e=>{if(e.target.id==='hist')$('#hist').classList.remove('on')});
@@ -828,5 +1001,40 @@ try {
   t.onTap(() => window.hub.toggle()); window.hub.sync();
 } catch (e) { console.error('3D init failed', e); document.getElementById('stage').classList.add('no3d'); }
 </script>
+<script>
+/* Decorative waveform: animates while a record plays, settles to a flat line when paused.
+   (Streams are cross-origin, so this is a stylised visual, not a real audio analysis.) */
+(()=>{const c=document.getElementById('wave');if(!c)return;const x=c.getContext('2d');const now=document.getElementById('now');
+const N=56;let amp=0,t=0,ph=[...Array(N)].map(()=>Math.random()*6.28),sp=[...Array(N)].map(()=>.6+Math.random()*1.6);
+function size(){const r=c.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);c.width=r.width*d;c.height=r.height*d;x.setTransform(d,0,0,d,0,0);}
+addEventListener('resize',size);size();
+function frame(){requestAnimationFrame(frame);if(document.hidden)return;
+  const on=!now.classList.contains('paused');amp+=((on?1:0)-amp)*.06;t+=.016;
+  const w=c.clientWidth,h=c.clientHeight,gap=w/N,bw=Math.max(2,gap*.42);x.clearRect(0,0,w,h);
+  for(let i=0;i<N;i++){const env=Math.sin(Math.PI*(i+.5)/N)**.8;
+    const v=.5+.5*Math.sin(t*sp[i]*3+ph[i])*Math.sin(t*1.3+i*.35);
+    const bh=Math.max(2,(.12+.88*v*env)*h*.92*amp+2*(1-amp));
+    const a=.35+.6*env;x.fillStyle=`rgba(243,238,233,${a*(.4+.6*amp)})`;
+    const xx=i*gap+(gap-bw)/2,y=(h-bh)/2;x.beginPath();x.roundRect?x.roundRect(xx,y,bw,bh,bw/2):x.rect(xx,y,bw,bh);x.fill();}}
+frame();})();
+</script>
+<script>
+/* Big title = station. When the station shares the song, show it in a centered line under the waveform. */
+(()=>{const st=document.getElementById('npStation'),ti=document.getElementById('npTitle'),ar=document.getElementById('npArtist'),wave=document.getElementById('wave');
+if(!st||!ti||!ar||!wave)return;const row=st.closest('.np-station');row.style.display='none';
+const line=document.createElement('div');line.id='songLine';line.innerHTML='<span class="sl-t"></span><span class="sl-a"></span>';
+wave.insertAdjacentElement('afterend',line);const like=document.getElementById('likeBtn');if(like)line.appendChild(like);
+let busy=false;
+function curSub(){const c=document.querySelector('.sleeve.cur em');return c?c.textContent:'';}
+function upd(){if(busy)return;const sn=st.textContent.trim(),t=ti.textContent.trim();
+  if(sn&&t&&t!==sn){busy=true;line.querySelector('.sl-t').textContent=t;line.querySelector('.sl-a').textContent=ar.textContent.trim();
+    line.classList.add('on');ti.textContent=sn;ar.textContent=curSub();busy=false;}
+  else if(t===sn&&!line.dataset.keep){/* station view; keep song line only while same station plays */}
+}
+let lastStation='';new MutationObserver(()=>{const sn=st.textContent.trim();if(sn!==lastStation){lastStation=sn;line.classList.remove('on');}upd();}).observe(st,{childList:true,characterData:true,subtree:true});
+new MutationObserver(upd).observe(ti,{childList:true,characterData:true,subtree:true});
+upd();})();
+</script>
+
 </body>
 </html>
