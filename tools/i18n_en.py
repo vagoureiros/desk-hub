@@ -59,4 +59,7 @@ T=[
 (">Μαύρο<",">Black<"),(">Καρυδιά<",">Walnut<"),(">Διάφανο<",">Clear<"),("Λευκό</button>","White</button>"),
 ]
 T.append(("· πάτα πρώτα Try","· tap Try first"))
+T+=[("(Math.floor(m/60)?Math.floor(m/60)+' ώρ. ':'')+(m%60)+' λεπτά'","(Math.floor(m/60)?Math.floor(m/60)+'h ':'')+(m%60)+' min'"),
+("`Σήμερα έκανες <b>${s.n}</b> ${s.n===1?'κύκλο':'κύκλους'} συγκέντρωσης · ${hm(s.min)}.<br>`","`Focus: <b>${s.n}</b> ${s.n===1?'round':'rounds'} · ${hm(s.min)}.<br>`"),
+("`Σε κλήση: <b>${hm(cm)}</b> · ${nc} ${nc===1?'κλήση':'κλήσεις'}.<br>`","`On call: <b>${hm(cm)}</b> · ${nc} ${nc===1?'call':'calls'}.<br>`")]
 for a,b in T: s=s.replace(a,b)

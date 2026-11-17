@@ -598,7 +598,10 @@ function stopBreath(){clearInterval(bInt);clearTimeout(bTO);bInt=null;$('#orb').
 
 /* ---------- End of day ---------- */
 $('#endBtn').onclick=()=>{clearInterval(tInt);tRun=false;tPhase='focus';tLeft=tLen*60;drawTimer();
-  const s=stats();$('#eodTxt').innerHTML=s.n?`Σήμερα έκανες <b>${s.n}</b> ${s.n===1?'κύκλο':'κύκλους'} συγκέντρωσης · ${Math.floor(s.min/60)?Math.floor(s.min/60)+' ώρ. ':''}${s.min%60} λεπτά.<br>Κλείσε το laptop. Τα υπόλοιπα αύριο.`:'Κλείσε το laptop. Τα υπόλοιπα αύριο.';
+  const s=stats();const cm=Math.round(((s.callMs||0)+(onAir?Date.now()-oaStart:0))/60000);const nc=(s.calls||0)+(onAir?1:0);const hm=m=>(Math.floor(m/60)?Math.floor(m/60)+' ώρ. ':'')+(m%60)+' λεπτά';
+  const focusTxt=s.n?`Σήμερα έκανες <b>${s.n}</b> ${s.n===1?'κύκλο':'κύκλους'} συγκέντρωσης · ${hm(s.min)}.<br>`:'';
+  const callTxt=nc?`Σε κλήση: <b>${hm(cm)}</b> · ${nc} ${nc===1?'κλήση':'κλήσεις'}.<br>`:'';
+  $('#eodTxt').innerHTML=focusTxt+callTxt+'Κλείσε το laptop. Τα υπόλοιπα αύριο.';
   setMode('chill');
   select(STATIONS.find(x=>x.id==='enlefko'),true);
   $('#eod').classList.add('on');};
@@ -693,7 +696,8 @@ function oaTick(){const d=new Date();$('#oaClock').textContent=d.toLocaleTimeStr
 function enterOnAir(){if(onAir)return;onAir=true;oaStart=Date.now();oaResume=playing;if(playing)pause();
   oaTick();oaInt=setInterval(oaTick,5000);$('#idle').classList.remove('on');$('#onair').classList.remove('ask');$('#onair').classList.add('on');
   window.tt3d&&tt3d.pause(true);keepAwake();}
-function exitOnAir(){if(!onAir)return;onAir=false;clearInterval(oaInt);$('#onair').classList.remove('on','ask');window.tt3d&&tt3d.pause(false);
+function addCall(ms){const s=store.get('stats',{});const t=s[today()]||{n:0,min:0};t.callMs=(t.callMs||0)+ms;t.calls=(t.calls||0)+1;s[today()]=t;store.set('stats',s);}
+function exitOnAir(){if(!onAir)return;onAir=false;addCall(Date.now()-oaStart);clearInterval(oaInt);$('#onair').classList.remove('on','ask');window.tt3d&&tt3d.pause(false);
   if(oaResume&&cur)play();wake();}
 $('#oaBtn').onclick=enterOnAir;
 $('#onair').addEventListener('pointerdown',e=>{e.stopPropagation();});
