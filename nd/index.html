@@ -532,6 +532,7 @@ body::before{background:
 #songLine #likeBtn{width:30px;height:30px;margin:0 0 0 4px;flex:none}
 #songLine #likeBtn svg{width:15px;height:15px}
 #songLine:not(.on) #likeBtn{display:none}
+.ring .t b{font-size:41px}
 </style>
 </head>
 <body class="chill">
@@ -544,8 +545,8 @@ body::before{background:
     <div class="time"><div id="clock">--:--</div><div id="date"></div></div>
     <div class="hright">
         <div class="skins" id="skins">
-          <button data-skin="noir"><span class="sw" style="background:#141414;position:relative"><i style="position:absolute;left:8px;bottom:7px;width:12px;height:7px;border-radius:2px;background:#d71921"></i></span>Black · red</button>
-          <button data-skin="mono"><span class="sw" style="background:#efefec;position:relative"><i style="position:absolute;left:8px;bottom:7px;width:12px;height:7px;border-radius:2px;background:#d71921"></i></span>White · red</button>
+          <button data-skin="noir"><span class="sw" style="background:#141414;position:relative"><i style="position:absolute;left:8px;bottom:7px;width:7px;height:7px;border-radius:50%;background:#d71921"></i></span>Black · red</button>
+          <button data-skin="mono"><span class="sw" style="background:#efefec;position:relative"><i style="position:absolute;left:8px;bottom:7px;width:7px;height:7px;border-radius:50%;background:#d71921"></i></span>White · red</button>
           <button data-skin="black"><span class="sw" style="background:linear-gradient(150deg,#2a2a2c,#0b0b0c)"></span>Black</button>
           <button data-skin="walnut"><span class="sw" style="background:repeating-linear-gradient(170deg,#6a3d1e 0 5px,#55301a 5px 8px,#7a4824 8px 11px)"></span>Walnut</button>
           <button data-skin="acrylic"><span class="sw" style="background:linear-gradient(150deg,rgba(220,235,240,.5),rgba(255,255,255,.08));border-color:rgba(255,255,255,.25)"></span>Clear</button>
@@ -958,8 +959,8 @@ $('#onair').addEventListener('pointerdown',e=>{e.stopPropagation();});
 $('#onair').addEventListener('click',e=>{if(e.target.id==='oaEnd'){exitOnAir();return;}
   $('#onair').classList.add('ask');clearTimeout(oaAskT);oaAskT=setTimeout(()=>$('#onair').classList.remove('ask'),4000);});
 /* ---------- Skins ---------- */
-let skinName=store.get('skin_nd2','noir');
-function applySkin(n){skinName=n;store.set('skin_nd2',n);window.tt3d&&tt3d.setSkin(n);$$('#skins button').forEach(b=>b.classList.toggle('on',b.dataset.skin===n));}
+let skinName=store.get('skin_nd3','mono');
+function applySkin(n){skinName=n;store.set('skin_nd3',n);window.tt3d&&tt3d.setSkin(n);$$('#skins button').forEach(b=>b.classList.toggle('on',b.dataset.skin===n));}
 $('#skinBtn').onclick=e=>{e.stopPropagation();$('#skinBtn').classList.toggle('on',$('#skins').classList.toggle('on'));};
 $$('#skins button').forEach(b=>b.onclick=e=>{e.stopPropagation();applySkin(b.dataset.skin);setTimeout(()=>{$('#skins').classList.remove('on');$('#skinBtn').classList.remove('on');},350);});
 addEventListener('pointerdown',e=>{if(!e.target.closest('#skins')&&!e.target.closest('#skinBtn')){$('#skins').classList.remove('on');$('#skinBtn').classList.remove('on');}});

@@ -329,7 +329,7 @@ function buildDeck() {
   // counterweight
   const stub = mesh(new THREE.CylinderGeometry(.34, .34, 5.4, 20), M.satin); stub.rotation.x = Math.PI / 2; stub.position.z = -3.5; armLift.add(stub);
   const cw = mesh(new THREE.CylinderGeometry(1.75, 1.75, 2.6, 56), M.darkMetal); cw.rotation.x = Math.PI / 2; cw.position.z = -4.6; armLift.add(cw);
-  const cwRing = mesh(new THREE.CylinderGeometry(1.82, 1.82, .5, 56), M.satin); cwRing.rotation.x = Math.PI / 2; cwRing.position.z = -3.3; armLift.add(cwRing);
+  const cwRing = mesh(new THREE.CylinderGeometry(1.82, 1.82, .5, 56), M.satin); cwRing.rotation.x = Math.PI / 2; cwRing.position.z = -3.3; armLift.add(cwRing); SK.cwRing = cwRing;
   const cwCap = mesh(new THREE.CylinderGeometry(1.2, 1.5, .5, 48), M.darkMetal); cwCap.rotation.x = Math.PI / 2; cwCap.position.z = -6.1; armLift.add(cwCap);
 
   // headshell oriented along end tangent
@@ -494,7 +494,8 @@ function setSkin(name) {
   SK.plinth.material = name === 'walnut' ? M.walnut : acr ? M.acrylic : mono ? M.mono : M.plinth; // noir uses black plinth
   SK.inlay.material = name === 'walnut' ? M.walnutTop : mono ? M.monoTop : M.plinthTop;
   const noir = name === 'noir';
-  startBtn.material = mono || noir ? M.red : M.button;
+  startBtn.material = M.button;
+  SK.cwRing.material = mono || noir ? M.red : M.satin; // discreet red detail on the counterweight
   SK.inlay.visible = !acr;
   SK.plinth.castShadow = !acr;
   SK.inner.visible = acr;
