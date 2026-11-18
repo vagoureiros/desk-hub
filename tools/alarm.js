@@ -28,7 +28,7 @@ const fire=document.createElement('div');fire.id='alarmFire';fire.innerHTML=`<di
 let ctx=null;function unlock(){try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();ctx.resume();}catch(e){}}
 function ring(){if(!ctx)return;const t=ctx.currentTime;[880,1174.66,880,1174.66].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f;
   const s=t+i*.22;g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.32,s+.02);g.gain.exponentialRampToValueAtTime(.0001,s+.5);o.connect(g).connect(ctx.destination);o.start(s);o.stop(s+.55);});}
-addEventListener('pointerdown',unlock,{once:true});
+// audio unlock happens only when you open the alarm sheet or set an alarm (never on the global first tap, so it can't interfere with radio playback)
 
 /* --- idle screen list --- */
 const idl=document.getElementById('idle');const ia=document.createElement('div');ia.id='idleAlarms';if(idl)idl.appendChild(ia);
