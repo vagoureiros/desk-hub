@@ -253,3 +253,17 @@ body::before{background:
 #songLine #likeBtn svg{width:15px;height:15px}
 #songLine:not(.on) #likeBtn{display:none}
 .ring .t b{font-size:41px}
+/* records on the shelf */
+.sleeve.recd{justify-content:flex-start;gap:6px}
+.sleeve.recd .chipc{width:58px;height:58px;border-radius:6px;background:linear-gradient(135deg,var(--c),#1b1b1b)}
+.sleeve.recd .chipc.img{width:58px;height:58px;border-radius:6px;box-shadow:0 8px 16px -8px rgba(0,0,0,.8)}
+.sleeve.recd span{margin-top:2px;font-size:13px;-webkit-line-clamp:1}
+.sleeve.recd em{font-size:10px}
+.crate{grid-auto-rows:122px}.crate>.sleeve{height:122px}
+.sleeve.wish .chipc{filter:grayscale(.65) brightness(.7)}
+.sleeve.wish em{color:#ffb59c}
+#radioBtn.on{background:#f3eee9!important;color:#141110}
+/* track controls in the song line */
+#songLine .tk{display:none;width:30px;height:30px;border-radius:50%;place-items:center;color:rgba(243,238,233,.75);flex:none}
+#songLine .tk svg{width:15px;height:15px}
+body.is-record #songLine .tk{display:grid}

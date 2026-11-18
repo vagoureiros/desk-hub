@@ -477,8 +477,8 @@ function frame(now) {
     if (t >= 1) { s.after && s.after(); seq.shift(); if (seq.length) seq[0].start = now; }
     needs = true;
   } else if (ARM.phase === 'groove') {
-    // slow inward tracking: ~6.5 cm over 25 minutes, then hold
-    const el = (now - ARM.grooveStart) / 1000, r = Math.max(7.4, 14.55 - el * (6.5 / 1500));
+    // album progress drives the arm when a real record plays; otherwise slow drift (radio)
+    const el = (now - ARM.grooveStart) / 1000, r = ARM.progress != null ? 14.55 - ARM.progress * 7.15 : Math.max(7.4, 14.55 - el * (6.5 / 1500));
     ARM.yaw = yawForRadius(r); needs = true;
   }
   if (viewT !== viewTo) { const t = Math.min(1, (now - viewStart) / VIEW_DUR); viewT = viewFrom + (viewTo - viewFrom) * t; fit(); needs = true; }
@@ -615,6 +615,7 @@ export function init(el, opts = {}) {
 const api = {
   setPlaying, setCover, setLabel, setView, swapRecord, setSkin,
   setLabelStyle(st) { labelStyle = st; drawLabel(); },
+  setProgress(p) { ARM.progress = p == null ? null : Math.max(0, Math.min(1, p)); requestRender(); },
   onTap(fn) { tapHandler = fn; },
   pause(p) { paused = p; if (!p) { last = performance.now(); requestRender(); } },
 };

@@ -21,6 +21,9 @@ frame();})();
 if(!st||!ti||!ar||!wave)return;const row=st.closest('.np-station');row.style.display='none';
 const line=document.createElement('div');line.id='songLine';line.innerHTML='<span class="sl-t"></span><span class="sl-a"></span>';
 wave.insertAdjacentElement('afterend',line);const like=document.getElementById('likeBtn');if(like)line.appendChild(like);
+const mk=(d,path)=>{const b=document.createElement('button');b.className='tk';b.setAttribute('aria-label',d<0?'Previous track':'Next track');b.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="'+path+'"/></svg>';b.onclick=()=>window.hub&&hub.trackStep(d);return b;};
+line.insertBefore(mk(-1,'M6 5h2v14H6zM20 5v14L9 12z'),line.firstChild);line.appendChild(mk(1,'M16 5h2v14h-2zM4 5v14l11-7z'));
+setInterval(()=>document.body.classList.toggle('is-record',!!(window.hub&&hub.isRecord&&hub.isRecord())),800);
 let busy=false;
 function curSub(){const c=document.querySelector('.sleeve.cur em');return c?c.textContent:'';}
 function upd(){if(busy)return;const sn=st.textContent.trim(),t=ti.textContent.trim();
