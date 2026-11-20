@@ -1,0 +1,55 @@
+/* ---------- Phone ---------- */
+body.phone{overflow:hidden}
+body.phone .app{height:100dvh;padding:calc(env(safe-area-inset-top) + 14px) 18px 0;grid-template-rows:auto 1fr}
+body.phone header{flex-wrap:wrap;gap:12px;align-items:center}
+body.phone #clock{font-size:40px}
+body.phone #date{font-size:12px}
+body.phone .hright{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px;width:100%;overflow-x:auto;scrollbar-width:none}
+body.phone .hright::-webkit-scrollbar{display:none}
+body.phone .hbtn{width:40px;height:40px;flex:none}
+body.phone #skinBtn,body.phone #skins,body.phone #soloBtn,body.phone .stage{display:none!important}
+body.phone .oa-btn{height:40px;padding:0 14px;font-size:12px;flex:none}
+body.phone .modes{margin-left:auto;flex:none}
+body.phone .modes button{padding:8px 12px;font-size:13px}
+body.phone main{display:flex;flex-direction:column;min-height:0;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+body.phone .deck{flex:1;justify-content:center;align-items:center;gap:6px}
+body.phone #mArt{position:relative;width:min(70vw,44vh,320px);aspect-ratio:1;border:0;padding:0;border-radius:14px;background:radial-gradient(120% 120% at 30% 20%,color-mix(in srgb,var(--c) 80%,#fff 8%),#141414);box-shadow:0 24px 50px rgba(0,0,0,.5);overflow:hidden;cursor:pointer;flex:none;margin-bottom:10px}
+body.phone #mArt .img{position:absolute;inset:0;background:center/cover no-repeat;opacity:0;transition:opacity .4s}
+body.phone #mArt.has .img{opacity:1}
+body.phone #mArt .disc{position:absolute;inset:16%;border-radius:50%;background:repeating-radial-gradient(circle,#111 0 2px,#1b1b1b 2px 4px);box-shadow:0 0 0 1px rgba(255,255,255,.05)}
+body.phone #mArt .disc::after{content:"";position:absolute;inset:36%;border-radius:50%;background:var(--c)}
+body.phone #mArt.playing .disc{animation:mspin 1.8s linear infinite}
+@keyframes mspin{to{transform:rotate(360deg)}}
+body.phone #wave{width:180px;height:40px;margin:4px auto 0}
+body.phone #songLine{max-width:100%;padding:0 4px}
+body.phone .now{width:100%;grid-template-columns:1fr auto;align-items:center;padding:6px 0 0}
+body.phone .np-title{font-size:24px!important;line-height:1.15}
+body.phone .np-artist{font-size:13px}
+body.phone .cbtn.big{width:62px;height:62px}
+/* drawer */
+body.phone aside{position:fixed;left:0;right:0;bottom:0;z-index:40;height:86dvh;display:block;overflow:hidden;
+  background:#151515;border-radius:22px 22px 0 0;box-shadow:0 -14px 40px rgba(0,0,0,.55);padding:0 12px calc(16px + env(safe-area-inset-bottom));
+  transform:translateY(calc(100% - 84px - env(safe-area-inset-bottom)));transition:transform .38s cubic-bezier(.2,.8,.2,1)}
+body.phone aside.open{transform:none;overflow-y:auto}
+body.phone aside>.card{margin-bottom:12px;flex:none}
+body.phone aside .grab{position:sticky;top:0;z-index:2;background:#151515;padding:10px 6px 14px;margin:0 -12px 6px;cursor:pointer;touch-action:none}
+body.phone aside .grab i{display:block;width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.25);margin:0 auto 12px}
+body.phone aside .grab .gl{display:flex;justify-content:space-between;align-items:center;padding:0 12px;font-size:15px;font-weight:600}
+body.phone aside .grab #gTimer{font-family:Fraunces,serif;font-weight:400;color:var(--muted,#aaa);font-size:15px}
+body.phone aside .grab #gTimer.run{color:#c9a7ff}
+body.phone aside .crate{grid-template-columns:repeat(3,1fr)}
+body.phone #mScrim{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .3s;z-index:39}
+body.phone.drawer-open #mScrim{opacity:1;pointer-events:auto}
+body.phone #idle{display:none!important}
+body.phone .toast{bottom:calc(100px + env(safe-area-inset-bottom))}
+body.phone .hright{flex-wrap:nowrap;gap:6px}
+body.phone .hbtn{width:38px;height:38px}
+body.phone .oa-btn{height:38px;padding:0 11px;font-size:11px;letter-spacing:.06em}
+body.phone .modes button{font-size:0;padding:8px 11px;gap:0}
+body.phone .modes button svg{width:17px;height:17px}
+body.phone .deck{justify-content:flex-start;padding-top:4vh}
+body.phone #mScrim{z-index:39}
+body.phone #pill{display:none}
+body.phone .modes{padding:3px}
+body.phone .modes button{border-radius:999px;color:var(--muted,#9a9a9a);display:grid;place-items:center}
+body.phone.work .modes [data-mode=work],body.phone.chill .modes [data-mode=chill]{background:#f3eee9;color:#141110}

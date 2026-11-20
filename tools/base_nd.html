@@ -805,7 +805,7 @@ function renderHist(){const L=$('#hList');const l=hTab==='recent'?hist():liked()
 $('#histBtn').onclick=()=>{renderHist();$('#hist').classList.add('on');};
 $('#hClose').onclick=()=>{stopPv();$('#hist').classList.remove('on')};$('#hist').addEventListener('click',e=>{if(e.target.id==='hist'){stopPv();$('#hist').classList.remove('on')}});
 $$('#hist .tabs .chip').forEach(b=>b.onclick=()=>{hTab=b.dataset.tab;$$('#hist .tabs .chip').forEach(x=>x.classList.toggle('on',x===b));renderHist();});
-window.hub={trackStep,setView,isRecord:()=>!!(cur&&cur.record),get view(){return view},toggle,sync(){applySkin(skinName);applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
+window.hub={get cover(){return (meta&&meta.cover)||(cur&&cur.img)||''},get color(){return cur?cur.c:''},trackStep,setView,isRecord:()=>!!(cur&&cur.record),get view(){return view},toggle,sync(){applySkin(skinName);applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
 (async()=>{/* keep favourites, history, stats, alarms across sessions: mirror localStorage <-> IndexedDB, ask for persistent storage */
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
   try{const kv=await IDB.kvAll();let restored=false;
@@ -824,12 +824,20 @@ if(location.hash==='#demo'){cur=STATIONS[3];applyStationLabel();setPlayingUI(tru
 })();
 </script>
 <script type="module">
-import { init } from './turntable3d.js';
-try {
-  const st = document.getElementById('stage');
-  const t = init(st); window.tt3d = t; st.classList.add('has3d');
-  t.onTap(() => window.hub.toggle()); window.hub.sync();
-} catch (e) { console.error('3D init failed', e); document.getElementById('stage').classList.add('no3d'); }
+const phone = matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)').matches;
+if (phone) {
+  // Phone: simple player, no 3D turntable (saves battery); calls to tt3d become no-ops
+  document.body.classList.add('phone');
+  window.tt3d = new Proxy({}, { get: () => () => {} });
+  try { window.hub.sync(); } catch (e) {}
+} else {
+  try {
+    const { init } = await import('./turntable3d.js');
+    const st = document.getElementById('stage');
+    const t = init(st); window.tt3d = t; st.classList.add('has3d');
+    t.onTap(() => window.hub.toggle()); window.hub.sync();
+  } catch (e) { console.error('3D init failed', e); document.getElementById('stage').classList.add('no3d'); }
+}
 </script>
 </body>
 </html>
