@@ -671,6 +671,24 @@ body.phone main{padding-bottom:calc(var(--peek) + 10px + env(safe-area-inset-bot
 body.phone .deck{justify-content:center;padding-top:0}
 body.phone #mArt{width:max(150px,min(68vw,calc(100dvh - 540px),320px))}
 body.phone aside:not(.open)::after{content:"";position:absolute;left:0;right:0;top:calc(var(--peek) - 44px);height:44px;background:linear-gradient(rgba(21,21,21,0),#151515);pointer-events:none;z-index:3}
+/* flow v2: sheet hidden until the CTA is pressed; CTA pinned at the bottom */
+body.phone aside{height:91dvh;max-height:none;transform:translateY(105%);box-shadow:none}
+body.phone aside.open{transform:none;box-shadow:0 -14px 40px rgba(0,0,0,.55)}
+body.phone aside:not(.open)::after{display:none}
+body.phone aside .grab .gl{display:none}
+body.phone aside .grab{padding:12px 6px 6px}
+body.phone aside .grab i{margin-bottom:6px}
+body.phone{--cta:64px}
+body.phone #mPick{display:flex!important;position:fixed;z-index:35;left:9%;right:9%;bottom:calc(22px + env(safe-area-inset-bottom));height:var(--cta);margin:0;
+  align-items:center;justify-content:center;gap:10px;border:0;border-radius:18px;background:#f3eee9;color:#141110;font:600 17px Urbanist,system-ui,sans-serif;box-shadow:0 12px 30px rgba(0,0,0,.45);cursor:pointer;transition:transform .15s}
+body.phone #mPick.sec{background:rgba(255,255,255,.09);color:#f3eee9;box-shadow:none;font-weight:500}
+body.phone #mPick svg{width:22px;height:22px}
+body.phone #mPick:active{transform:scale(.98)}
+body.phone.drawer-open #mPick{opacity:0;pointer-events:none}
+body.phone main{padding-bottom:calc(var(--cta) + 40px + env(safe-area-inset-bottom))}
+body.phone.no-cur .now{display:none}
+body.phone #mArt{width:max(150px,min(72vw,calc(100dvh - 400px),340px))}
+body.phone .toast{bottom:calc(var(--cta) + 36px + env(safe-area-inset-bottom))}
 </style>
 </head>
 <body class="chill">
@@ -1464,11 +1482,12 @@ let lastCv=null;setInterval(()=>{if(!window.hub)return;const cv=hub.cover||'';co
   art.style.setProperty('--c',hub.color||'#3a3330');
   art.classList.toggle('playing',!$('#now').classList.contains('paused'));},500);
 setTimeout(()=>{try{hub.emptyLabel()}catch(e){}},0);
-const cta=document.createElement('button');cta.id='mPick';$('#now').appendChild(cta);
+const cta=document.createElement('button');cta.id='mPick';document.body.appendChild(cta);
 cta.onclick=()=>set(true);
+const RADIO_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2.5"/><path d="M7 8 17 3.5"/><circle cx="15.5" cy="14" r="2.6"/><path d="M6.5 12.5h4M6.5 15.5h4"/></svg>';
 setInterval(()=>{const t=$('#npTitle').textContent;const empty=/^Pick a /.test(t);document.body.classList.toggle('no-cur',empty);
-  if(empty){const r=true;const txt=r?'Pick a radio station':'Pick a record';
-    if(cta.dataset.t!==txt){cta.dataset.t=txt;cta.innerHTML=(r?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2.5"/><path d="M7 8 17 3.5"/><circle cx="15.5" cy="14" r="2.6"/><path d="M6.5 12.5h4M6.5 15.5h4"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg>')+'<span>'+txt+'</span>';}}},300);
+  const txt=empty?'Pick a radio station':'Change station';
+  if(cta.dataset.t!==txt){cta.dataset.t=txt;cta.innerHTML=RADIO_SVG+'<span>'+txt+'</span>';cta.classList.toggle('sec',!empty);}},300);
 // drawer
 const aside=$('aside');const grab=document.createElement('div');grab.className='grab';
 grab.innerHTML='<i></i><div class="gl"><span id="gTitle">Records</span><span id="gTimer"></span></div>';

@@ -12,11 +12,12 @@ let lastCv=null;setInterval(()=>{if(!window.hub)return;const cv=hub.cover||'';co
   art.style.setProperty('--c',hub.color||'#3a3330');
   art.classList.toggle('playing',!$('#now').classList.contains('paused'));},500);
 setTimeout(()=>{try{hub.emptyLabel()}catch(e){}},0);
-const cta=document.createElement('button');cta.id='mPick';$('#now').appendChild(cta);
+const cta=document.createElement('button');cta.id='mPick';document.body.appendChild(cta);
 cta.onclick=()=>set(true);
+const RADIO_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2.5"/><path d="M7 8 17 3.5"/><circle cx="15.5" cy="14" r="2.6"/><path d="M6.5 12.5h4M6.5 15.5h4"/></svg>';
 setInterval(()=>{const t=$('#npTitle').textContent;const empty=/^Pick a /.test(t);document.body.classList.toggle('no-cur',empty);
-  if(empty){const r=true;const txt=r?'Pick a radio station':'Pick a record';
-    if(cta.dataset.t!==txt){cta.dataset.t=txt;cta.innerHTML=(r?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2.5"/><path d="M7 8 17 3.5"/><circle cx="15.5" cy="14" r="2.6"/><path d="M6.5 12.5h4M6.5 15.5h4"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg>')+'<span>'+txt+'</span>';}}},300);
+  const txt=empty?'Pick a radio station':'Change station';
+  if(cta.dataset.t!==txt){cta.dataset.t=txt;cta.innerHTML=RADIO_SVG+'<span>'+txt+'</span>';cta.classList.toggle('sec',!empty);}},300);
 // drawer
 const aside=$('aside');const grab=document.createElement('div');grab.className='grab';
 grab.innerHTML='<i></i><div class="gl"><span id="gTitle">Records</span><span id="gTimer"></span></div>';
