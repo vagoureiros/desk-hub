@@ -64,3 +64,16 @@ body.phone #radioBtn{display:none!important}
 body.phone aside>.card.grow{display:none!important}
 body.phone aside{height:auto;max-height:86dvh}
 body.phone #crateTitle{visibility:hidden}
+/* collapsed sheet: show a cut-off preview of the stations */
+body.phone{--peek:196px}
+body.phone aside{transform:translateY(calc(100% - var(--peek) - env(safe-area-inset-bottom)))}
+body.phone aside.open{transform:none}
+body.phone aside>.card:not(.grow) h3{display:none!important}
+body.phone aside>.card:not(.grow){padding-top:14px}
+body.phone aside .grab{padding-bottom:8px}
+body.phone #moodBar{margin:0 0 12px}
+body.phone .mchip.st{background:#f3eee9;color:#141110;font-weight:600}
+body.phone main{padding-bottom:calc(var(--peek) + 10px + env(safe-area-inset-bottom))}
+body.phone .deck{justify-content:center;padding-top:0}
+body.phone #mArt{width:max(150px,min(68vw,calc(100dvh - 540px),320px))}
+body.phone aside:not(.open)::after{content:"";position:absolute;left:0;right:0;top:calc(var(--peek) - 44px);height:44px;background:linear-gradient(rgba(21,21,21,0),#151515);pointer-events:none;z-index:3}

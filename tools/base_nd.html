@@ -529,7 +529,7 @@ function renderMoodBar(){let bar=$('#moodBar');if(!bar){bar=document.createEleme
     b.onclick=()=>setMoodF(val);if(val!=='All'){let t=null;b.addEventListener('pointerdown',()=>{t=setTimeout(()=>{t=null;b.dataset.lp='1';delMood(val)},700)});['pointerup','pointerleave','pointercancel'].forEach(e=>b.addEventListener(e,()=>clearTimeout(t)));b.addEventListener('click',e=>{if(b.dataset.lp){delete b.dataset.lp;e.stopImmediatePropagation();}},true);b.addEventListener('contextmenu',e=>e.preventDefault());}
     bar.appendChild(b);};
   mk('All','All',STATIONS.length);moods().forEach(md=>mk(md,md,STATIONS.filter(s=>moodOf(s)===md).length));
-  const p=document.createElement('button');p.className='mchip add';p.textContent='+ Mood';p.onclick=()=>newMood(n=>setMoodF(n));bar.appendChild(p);}
+  const p=document.createElement('button');p.className='mchip add';p.textContent='+ Mood';p.onclick=()=>newMood(n=>setMoodF(n));bar.appendChild(p);if(document.body.classList.contains('phone')){const st=document.createElement('button');st.className='mchip st';st.textContent='+ Station';st.onclick=()=>openSheet();bar.insertBefore(st,bar.firstChild);}}
 function moodMenu(s){let m=$('#moodMenu');if(!m){m=document.createElement('div');m.id='moodMenu';document.body.appendChild(m);m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')});}
   const cm=moodOf(s);m.innerHTML=`<div class="mm"><b>${esc(s.name)}</b><p>Mood</p><div class="mrow"></div><button class="rmv">Remove station</button><button class="cnl">Cancel</button></div>`;
   const row=m.querySelector('.mrow');const close=()=>m.classList.remove('on');
