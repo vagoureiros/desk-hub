@@ -267,3 +267,4 @@ body::before{background:
 #songLine .tk{display:none;width:30px;height:30px;border-radius:50%;place-items:center;color:rgba(243,238,233,.75);flex:none}
 #songLine .tk svg{width:15px;height:15px}
 body.is-record #songLine .tk{display:grid}
+.hrow .links a.yt{display:inline-flex;align-items:center;gap:4px;background:#ff3b30;color:#fff!important;border-radius:999px;padding:2px 9px;font-weight:600}
