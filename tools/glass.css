@@ -274,4 +274,9 @@ body.is-record #songLine .tk{display:grid}
 .hrow .cv.pv i{background:#ff3b30}
 .hrow .cv.pv i::before{margin:0;width:9px;height:10px;border:0;border-left:3px solid #fff;border-right:3px solid #fff;box-sizing:border-box}
 .hrow .cv.ld i{animation:pvp 1s ease-in-out infinite}@keyframes pvp{50%{opacity:.4}}
-.hrow .cv.pv{box-shadow:0 0 0 2px #ff3b30}
+
+.hrow .cv svg{position:absolute;left:-4px;top:-4px;width:60px;height:60px;overflow:visible;pointer-events:none;opacity:0;transition:opacity .2s}
+.hrow .cv.pv svg,.hrow .cv.ld svg{opacity:1}
+.hrow .cv svg rect{fill:none;stroke-width:2.5}
+.hrow .cv svg .tr{stroke:rgba(255,59,48,.25)}
+.hrow .cv svg .pr{stroke:#ff3b30;stroke-linecap:round;stroke-dasharray:100 100;stroke-dashoffset:100}
