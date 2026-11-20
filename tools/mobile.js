@@ -11,7 +11,7 @@ let lastCv=null;setInterval(()=>{if(!window.hub)return;const cv=hub.cover||'';co
   if(cv!==lastCv){lastCv=cv;im.style.backgroundImage=cv?`url("${cv.replace(/"/g,'%22')}")`:'';art.classList.toggle('has',!!cv);}
   art.style.setProperty('--c',hub.color||'#3a3330');
   art.classList.toggle('playing',!$('#now').classList.contains('paused'));},500);
-const hint=$('#npArtist');if(hint&&/on the right/.test(hint.textContent))hint.textContent='Tap the cover, or pick a record below';
+setTimeout(()=>{try{hub.emptyLabel()}catch(e){}},0);
 // drawer
 const aside=$('aside');const grab=document.createElement('div');grab.className='grab';
 grab.innerHTML='<i></i><div class="gl"><span id="gTitle">Records</span><span id="gTimer"></span></div>';
@@ -24,7 +24,7 @@ grab.addEventListener('touchend',e=>{if(y0==null)return;const dy=e.changedTouche
 // close drawer when a record/station is chosen
 $('#crate').addEventListener('click',e=>{const t=e.target.closest('.sleeve');if(t&&!t.classList.contains('wish')&&!t.classList.contains('add'))setTimeout(()=>set(false),250);});
 // peek label: crate title + running timer
-setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('#gTimer');if(ct&&gt)gt.textContent=ct.textContent.replace(/\s*·.*$/,'');
-  if(tt&&gm){const run=$('#tStart')&&/pause/i.test($('#tStart').textContent);gm.textContent=(run?'● ':'')+'Timer '+tt.textContent;gm.classList.toggle('run',run);}},700);
+setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('#gTimer');if(gt)gt.textContent=document.body.classList.contains('radio-view')?'Stations':'Records';
+  if(tt&&gm){const run=$('#tStart')&&/pause/i.test($('#tStart').textContent);gm.textContent=document.body.classList.contains('chill')?'Breathe':(run?'● ':'')+'Timer '+tt.textContent;gm.classList.toggle('run',run);}},700);
 })();
 </script>

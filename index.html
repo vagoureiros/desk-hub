@@ -787,7 +787,7 @@ function tick(){const d=new Date();const t=d.toLocaleTimeString('en-GB',{hour:'2
 setInterval(tick,1000);tick();
 
 /* ---------- Mode ---------- */
-function setMode(m,silent){mode=m;store.set('mode',m);document.body.className=m;
+function setMode(m,silent){mode=m;store.set('mode',m);document.body.classList.remove('work','chill');document.body.classList.add(m);
   $$('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));
   const on=$(`#modes button[data-mode="${m}"]`);const p=$('#pill');p.style.left=on.offsetLeft+'px';p.style.width=on.offsetWidth+'px';
   $('#pWork').classList.toggle('on',m==='work');$('#pChill').classList.toggle('on',m==='chill');
@@ -851,7 +851,10 @@ async function loadTrack(i){if(!cur||!cur.record||!cur.tracks.length)return fals
   const b=await IDB.getBlob(cur.tracks[trackIdx].id);if(!b){toast('Track file missing');return false;}if(trackURL)URL.revokeObjectURL(trackURL);trackURL=URL.createObjectURL(b);
   switching=Date.now();audio.src=trackURL;meta={title:'',artist:'',cover:''};lastKey='';return true;}
 async function trackStep(d){if(!cur||!cur.record)return step(d);const wasPlaying=playing;if(await loadTrack(trackIdx+d)){if(wasPlaying){audio.play().catch(()=>{});}pollMeta();mediaSession();}}
-function setView(v){view=v;store.set('view',v);document.body.classList.toggle('radio-view',v==='radio');renderCrate();}
+function emptyLabel(){if(cur)return;const ph=document.body.classList.contains('phone'),r=view==='radio';
+  $('#npTitle').textContent=r?'Pick a radio station':'Pick a record';
+  $('#npArtist').textContent=r?(ph?'Open Stations below and tap one':'Tap a station on the right'):(ph?'Tap the cover, or pick a record below':'Tap the vinyl or a record on the right');}
+function setView(v){view=v;store.set('view',v);document.body.classList.toggle('radio-view',v==='radio');renderCrate();emptyLabel();}
 function crateList(){return view==='records'?RECORDS:STATIONS.filter(s=>s.mode===mode)}
 function renderCrate(){const c=$('#crate');c.innerHTML='';c.onscroll=crateFade;
   crateList().forEach(s=>{const b=document.createElement('div');b.setAttribute('role','button');b.className='sleeve'+(cur&&cur.id===s.id?' cur':'')+(s.record?' recd':'')+(s.wish?' wish':'');b.style.setProperty('--c',s.c);
@@ -966,7 +969,7 @@ function mediaSession(){if(!('mediaSession'in navigator)||!cur)return;try{
 
 /* ---------- Focus timer ---------- */
 const brk=l=>({5:1,15:3,25:5,50:10})[l]||5;
-let tLen=store.get('tlen',25), tLeft=tLen*60, tRun=false, tPhase='focus', tInt=null, tEnd=0;
+let tLen=5, tLeft=tLen*60, tRun=false, tPhase='focus', tInt=null, tEnd=0;
 const C=553;
 function today(){return new Date().toISOString().slice(0,10)}
 function stats(){const s=store.get('stats',{});return s[today()]||{n:0,min:0}}
@@ -1147,7 +1150,7 @@ function renderHist(){const L=$('#hList');const l=hTab==='recent'?hist():liked()
 $('#histBtn').onclick=()=>{renderHist();$('#hist').classList.add('on');};
 $('#hClose').onclick=()=>{stopPv();$('#hist').classList.remove('on')};$('#hist').addEventListener('click',e=>{if(e.target.id==='hist'){stopPv();$('#hist').classList.remove('on')}});
 $$('#hist .tabs .chip').forEach(b=>b.onclick=()=>{hTab=b.dataset.tab;$$('#hist .tabs .chip').forEach(x=>x.classList.toggle('on',x===b));renderHist();});
-window.hub={get cover(){return (meta&&meta.cover)||(cur&&cur.img)||''},get color(){return cur?cur.c:''},trackStep,setView,isRecord:()=>!!(cur&&cur.record),get view(){return view},toggle,sync(){applySkin(skinName);applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
+window.hub={emptyLabel,get cover(){return (meta&&meta.cover)||(cur&&cur.img)||''},get color(){return cur?cur.c:''},trackStep,setView,isRecord:()=>!!(cur&&cur.record),get view(){return view},toggle,sync(){applySkin(skinName);applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
 (async()=>{/* keep favourites, history, stats, alarms across sessions: mirror localStorage <-> IndexedDB, ask for persistent storage */
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
   try{const kv=await IDB.kvAll();let restored=false;
@@ -1155,7 +1158,7 @@ window.hub={get cover(){return (meta&&meta.cover)||(cur&&cur.img)||''},get color
     for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&key.startsWith('hub.')&&!(key.slice(4) in kv)){try{IDB.kvPut(key.slice(4),JSON.parse(localStorage.getItem(key)))}catch(e){}}}
     if(restored&&!sessionStorage.getItem('hubRestored')){sessionStorage.setItem('hubRestored','1');location.reload();}
   }catch(e){}})();
-loadRecords();document.body.classList.toggle('radio-view',view==='radio');
+loadRecords();document.body.classList.toggle('radio-view',view==='radio');emptyLabel();
 (()=>{const h=$('#histBtn');if(!h)return;const rb=document.createElement('button');rb.className='hbtn';rb.id='radioBtn';rb.setAttribute('aria-label','Radio');
   rb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2.5"/><path d="M7 8 17 3.5"/><circle cx="15.5" cy="14" r="2.6"/><path d="M6.5 12.5h4M6.5 15.5h4"/></svg>';
   h.parentNode.insertBefore(rb,h);rb.onclick=()=>{setView(view==='radio'?'records':'radio');rb.classList.toggle('on',view==='radio');};rb.classList.toggle('on',view==='radio');})();
@@ -1366,7 +1369,7 @@ let lastCv=null;setInterval(()=>{if(!window.hub)return;const cv=hub.cover||'';co
   if(cv!==lastCv){lastCv=cv;im.style.backgroundImage=cv?`url("${cv.replace(/"/g,'%22')}")`:'';art.classList.toggle('has',!!cv);}
   art.style.setProperty('--c',hub.color||'#3a3330');
   art.classList.toggle('playing',!$('#now').classList.contains('paused'));},500);
-const hint=$('#npArtist');if(hint&&/on the right/.test(hint.textContent))hint.textContent='Tap the cover, or pick a record below';
+setTimeout(()=>{try{hub.emptyLabel()}catch(e){}},0);
 // drawer
 const aside=$('aside');const grab=document.createElement('div');grab.className='grab';
 grab.innerHTML='<i></i><div class="gl"><span id="gTitle">Records</span><span id="gTimer"></span></div>';
@@ -1379,8 +1382,8 @@ grab.addEventListener('touchend',e=>{if(y0==null)return;const dy=e.changedTouche
 // close drawer when a record/station is chosen
 $('#crate').addEventListener('click',e=>{const t=e.target.closest('.sleeve');if(t&&!t.classList.contains('wish')&&!t.classList.contains('add'))setTimeout(()=>set(false),250);});
 // peek label: crate title + running timer
-setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('#gTimer');if(ct&&gt)gt.textContent=ct.textContent.replace(/\s*·.*$/,'');
-  if(tt&&gm){const run=$('#tStart')&&/pause/i.test($('#tStart').textContent);gm.textContent=(run?'● ':'')+'Timer '+tt.textContent;gm.classList.toggle('run',run);}},700);
+setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('#gTimer');if(gt)gt.textContent=document.body.classList.contains('radio-view')?'Stations':'Records';
+  if(tt&&gm){const run=$('#tStart')&&/pause/i.test($('#tStart').textContent);gm.textContent=document.body.classList.contains('chill')?'Breathe':(run?'● ':'')+'Timer '+tt.textContent;gm.classList.toggle('run',run);}},700);
 })();
 </script>
 
