@@ -53,3 +53,9 @@ body.phone #pill{display:none}
 body.phone .modes{padding:3px}
 body.phone .modes button{border-radius:999px;color:var(--muted,#9a9a9a);display:grid;place-items:center}
 body.phone.work .modes [data-mode=work],body.phone.chill .modes [data-mode=chill]{background:#f3eee9;color:#141110}
+body.phone #mPick{display:none}
+body.phone.no-cur .now{display:flex;justify-content:center}
+body.phone.no-cur .now>div:first-child,body.phone.no-cur .now .ctrls{display:none}
+body.phone.no-cur #mPick{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:56px;padding:0 28px;border:0;border-radius:999px;background:#f3eee9;color:#141110;font:600 17px Urbanist,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.4);cursor:pointer;margin-top:6px}
+body.phone #mPick svg{width:22px;height:22px}
+body.phone #mPick:active{transform:scale(.97)}
