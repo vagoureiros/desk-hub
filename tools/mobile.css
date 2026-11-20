@@ -95,3 +95,21 @@ body.phone main{padding-bottom:calc(var(--cta) + 40px + env(safe-area-inset-bott
 body.phone.no-cur .now{display:none}
 body.phone #mArt{width:max(150px,min(72vw,calc(100dvh - 400px),340px))}
 body.phone .toast{bottom:calc(var(--cta) + 36px + env(safe-area-inset-bottom))}
+/* on call = status only on phones */
+body.phone #oaBtn{pointer-events:none;opacity:.45}
+body.phone #oaBtn i{background:#7d7570!important;box-shadow:none!important}
+/* centered play button under a centered title */
+body.phone .now{display:flex!important;flex-direction:column;align-items:center;text-align:center;gap:14px}
+body.phone .now>div:first-child{width:100%}
+body.phone .now .np-row{justify-content:center}
+body.phone .now .ctrls{justify-content:center}
+body.phone.no-cur .now{display:none!important}
+/* pull to refresh */
+body.phone .app{transition:transform .25s ease}
+#mPtr{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 6px);z-index:80;width:36px;height:36px;border-radius:50%;background:#1d1d1f;box-shadow:0 6px 18px rgba(0,0,0,.4);
+  transform:translate(-50%,-50px);opacity:0;display:grid;place-items:center;pointer-events:none;transition:opacity .2s}
+#mPtr i{width:16px;height:16px;border-radius:50%;border:2px solid #a39c96;border-top-color:transparent}
+#mPtr.ready i{border-color:#f3eee9;border-top-color:transparent}
+#mPtr.spin i{animation:mspin .7s linear infinite}
+body.phone{overscroll-behavior-y:contain}
+body.phone .toast{bottom:calc(var(--cta) + 56px + env(safe-area-inset-bottom))!important}

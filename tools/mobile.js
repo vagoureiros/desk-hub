@@ -35,5 +35,17 @@ setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('
 
 // phone = radio only: no records/radio switch; breathing gets its own screen
 const goRadio=()=>{try{if(hub.view!=='radio')hub.setView('radio')}catch(e){}};setTimeout(goRadio,0);setTimeout(goRadio,800);
+
+// ON CALL is automatic on phones (system interruption), so the pill is a status, not a button
+const oab=$('#oaBtn');if(oab){oab.onclick=null;oab.setAttribute('aria-disabled','true');oab.title='Turns on by itself when a call comes in';}
+// pull down anywhere on the page to refresh
+const ptr=document.createElement('div');ptr.id='mPtr';ptr.innerHTML='<i></i>';document.body.appendChild(ptr);
+let py=null,pd=0;const TH=90;
+document.addEventListener('touchstart',e=>{if(document.body.classList.contains('drawer-open')||e.target.closest('aside,#mBreath,#hist,#sheet,#alarmSheet,#moodMenu,#onair'))return;py=e.touches[0].clientY;pd=0;},{passive:true});
+document.addEventListener('touchmove',e=>{if(py==null)return;pd=Math.max(0,e.touches[0].clientY-py);const k=Math.min(1,pd/TH);
+  ptr.style.transform=`translate(-50%,${Math.min(pd*.6,80)-50}px) rotate(${pd*2.4}deg)`;ptr.style.opacity=k;ptr.classList.toggle('ready',pd>=TH);
+  document.querySelector('.app').style.transform=`translateY(${Math.min(pd*.35,40)}px)`;},{passive:true});
+document.addEventListener('touchend',()=>{if(py==null)return;const go=pd>=TH;py=null;document.querySelector('.app').style.transform='';
+  if(go){ptr.classList.add('spin');setTimeout(()=>location.reload(),350);}else{ptr.style.opacity=0;ptr.style.transform='translate(-50%,-50px)';}},{passive:true});
 })();
 </script>

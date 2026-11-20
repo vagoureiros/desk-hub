@@ -595,7 +595,7 @@ async function play(){playbackSession();if(!cur){const f=crateList().find(x=>!x.
   setPlayingUI(true);toast('Ο δίσκος μπαίνει…',1400);
   const p=audio.play(); if(p&&p.catch) p.catch(err=>{if(err&&err.name==='AbortError')return;setPlayingUI(false);toast('Δεν ξεκίνησε η αναπαραγωγή ('+(err&&err.name)+')',4000);});
   pollMeta(true);mediaSession();}
-function pause(){audio.pause();setPlayingUI(false);
+function pause(){userPause=true;setTimeout(()=>userPause=false,400);audio.pause();setPlayingUI(false);
   // drop the live buffer so resume is "live" again
   setTimeout(()=>{if(!playing&&!(cur&&cur.record)){audio.removeAttribute('src');audio.load();}},400);}
 function toggle(){playing?pause():play()}
@@ -605,7 +605,18 @@ audio.addEventListener('error',()=>{if(!playing||!audio.getAttribute('src')||!cu
   const code=audio.error?audio.error.code:'?';
   if(tryIdx<cur.streams.length-1){tryIdx++;switching=Date.now();audio.src=cur.streams[tryIdx];const p=audio.play();if(p&&p.catch)p.catch(()=>{});return;}
   setPlayingUI(false);toast('Ο σταθμός δεν απαντά (κωδ. '+code+'), δοκίμασε άλλον δίσκο',4000)});
-audio.addEventListener('pause',()=>{if(Date.now()-switching<2500)return;if(playing&&!audio.ended&&document.visibilityState==='visible'){/* paused externally (e.g. Control Center) */setPlayingUI(false)}});
+audio.addEventListener('pause',()=>{if(Date.now()-switching<2500||userPause)return;if(playing&&!audio.ended){
+  /* paused by the system, not by us: on phones this is almost always an incoming call */
+  if(document.body.classList.contains('phone')){autoCall('interrupt');return;}
+  if(document.visibilityState==='visible')setPlayingUI(false)}});
+let userPause=false,autoOA=false;
+function autoCall(why){if(onAir)return;autoOA=true;oaResume=true;const wasPlaying=playing;setPlayingUI(false);playing=false;enterOnAir();oaResume=wasPlaying||why==='interrupt';}
+function autoCallEnd(){if(!onAir||!autoOA)return;autoOA=false;exitOnAir();}
+/* when you come back to the page (call ended) close the on-call screen and resume */
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&autoOA)setTimeout(autoCallEnd,1200);});
+/* iOS: a running AudioContext switches to "interrupted" during calls, even when no music plays */
+(function watchCtx(){if(!document.body.classList.contains('phone')){setTimeout(watchCtx,1500);return;}try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  actx.addEventListener('statechange',()=>{if(actx.state==='interrupted')autoCall('ctx');else if(actx.state==='running'&&autoOA&&document.visibilityState==='visible')setTimeout(autoCallEnd,800);});}catch(e){}})();
 audio.addEventListener('play',()=>setPlayingUI(true));
 audio.addEventListener('ended',async()=>{if(!cur||!cur.record)return;if(trackIdx<cur.tracks.length-1){if(await loadTrack(trackIdx+1)){audio.play().catch(()=>{});pollMeta();mediaSession();}}else{setPlayingUI(false);trackIdx=0;audio.removeAttribute('src');window.tt3d&&tt3d.setProgress&&tt3d.setProgress(null);}});
 audio.addEventListener('timeupdate',()=>{if(!cur||!cur.record||!window.tt3d||!tt3d.setProgress)return;const d=audio.duration||0;const f=d?audio.currentTime/d:0;tt3d.setProgress((trackIdx+f)/Math.max(1,cur.tracks.length));});
