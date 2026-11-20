@@ -268,3 +268,10 @@ body::before{background:
 #songLine .tk svg{width:15px;height:15px}
 body.is-record #songLine .tk{display:grid}
 .hrow .links a.yt{display:inline-flex;align-items:center;gap:4px;background:#ff3b30;color:#fff!important;border-radius:999px;padding:2px 9px;font-weight:600}
+.hrow button.cv{border:0;padding:0;cursor:pointer;position:relative;background-size:cover;background-position:center;-webkit-appearance:none;appearance:none}
+.hrow .cv i{position:absolute;inset:0;margin:auto;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center}
+.hrow .cv i::before{content:"";margin-left:3px;border-left:9px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent}
+.hrow .cv.pv i{background:#ff3b30}
+.hrow .cv.pv i::before{margin:0;width:9px;height:10px;border:0;border-left:3px solid #fff;border-right:3px solid #fff;box-sizing:border-box}
+.hrow .cv.ld i{animation:pvp 1s ease-in-out infinite}@keyframes pvp{50%{opacity:.4}}
+.hrow .cv.pv{box-shadow:0 0 0 2px #ff3b30}

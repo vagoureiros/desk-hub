@@ -781,13 +781,27 @@ $('#likeBtn').onclick=()=>{const h=hist().find(x=>x.k===lastKey)||{k:lastKey,tit
   if(!h.cover&&meta.cover)h.cover=meta.cover;const was=isLiked(lastKey);toggleLike(h);const b=$('#likeBtn');b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');toast(was?'Αφαιρέθηκε από τα αγαπημένα':'Στα αγαπημένα ♥');};
 let hTab='recent';
 function ago(ts){const m=Math.round((Date.now()-ts)/60000);if(m<1)return'τώρα';if(m<60)return m+'′ πριν';const d=new Date(ts);const t=d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',hour12:false});return(new Date().toDateString()===d.toDateString()?'':d.toLocaleDateString('el-GR',{day:'numeric',month:'short'})+' ')+t;}
+/* 30s song previews (Apple/iTunes preview clips) for favourites & history */
+function songPreview(artist,title){return new Promise(res=>{const cb='pv'+Date.now()+Math.floor(Math.random()*1e5);const sc=document.createElement('script');
+  const done=u=>{try{delete window[cb]}catch(e){};sc.remove();res(u)};const to=setTimeout(()=>done(''),6000);
+  window[cb]=d=>{clearTimeout(to);const r=(d&&d.results||[]).find(x=>x.previewUrl);done(r?r.previewUrl:'')};
+  sc.src=`https://itunes.apple.com/search?term=${encodeURIComponent((artist||'')+' '+title)}&entity=song&limit=3&callback=${cb}`;sc.onerror=()=>{clearTimeout(to);done('')};document.head.appendChild(sc);});}
+const pv=new Audio();pv.preload='auto';let pvKey=null,pvResume=false;
+function savePreview(k,u){[['hist',hist()],['liked',liked()]].forEach(([n,l])=>{let ch=false;l.forEach(x=>{if(x.k===k&&x.preview!==u){x.preview=u;ch=true}});if(ch)store.set(n,l)});}
+function stopPv(){if(!pvKey)return;pv.pause();pvKey=null;$$('.hrow .cv.pv').forEach(x=>x.classList.remove('pv'));if(pvResume){pvResume=false;play();}}
+pv.addEventListener('ended',stopPv);
+async function playPreview(e,cv){if(pvKey===e.k){stopPv();return;}stopPv();let u=e.preview;
+  if(!u){cv.classList.add('ld');u=await songPreview(e.artist,e.title);cv.classList.remove('ld');if(u){e.preview=u;savePreview(e.k,u);}}
+  if(!u){toast('No preview found for this song');return;}
+  pvResume=playing;if(playing)pause();pv.src=u;pv.currentTime=0;pv.play().catch(()=>{});pvKey=e.k;cv.classList.add('pv');}
 function renderHist(){const L=$('#hList');const l=hTab==='recent'?hist():liked();
   if(!l.length){L.innerHTML='<div class="empty">'+(hTab==='recent'?'Ακόμα τίποτα. Τα τραγούδια εμφανίζονται εδώ όταν ο σταθμός λέει τι παίζει (π.χ. Εν Λευκώ, Pepper, Play Lounge).':'Πάτα την καρδιά δίπλα στον τίτλο του τραγουδιού για να το κρατήσεις εδώ.')+'</div>';return;}
   L.innerHTML='';l.forEach(e=>{const q=encodeURIComponent((e.artist+' '+e.title).trim());const r=document.createElement('div');r.className='hrow';r.style.setProperty('--c',e.c||'#3a2a20');
-    r.innerHTML=`<div class="cv" style="${e.cover?`background-image:url('${e.cover.replace(/'/g,'%27')}')`:''}"></div><div style="min-width:0"><div class="t">${esc(e.title)}</div><div class="a">${esc([e.artist,e.station].filter(Boolean).join(' · '))} · ${ago(hTab==='liked'?(e.likedAt||e.ts):e.ts)}</div><div class="links"><a class="yt" href="https://www.youtube.com/results?search_query=${encodeURIComponent([e.artist,e.title,'official video'].filter(Boolean).join(' '))}" target="_blank" rel="noopener">▶ Official video</a><a href="https://open.spotify.com/search/${q}" target="_blank" rel="noopener">Spotify</a><a href="https://music.youtube.com/search?q=${q}" target="_blank" rel="noopener">YouTube Music</a><a href="https://music.apple.com/search?term=${q}" target="_blank" rel="noopener">Apple Music</a></div></div><button class="hv${isLiked(e.k)?' on':''}" aria-label="Μου αρέσει">${HEART}</button>`;
-    r.querySelector('.hv').onclick=()=>{toggleLike(e);renderHist();};L.appendChild(r);});}
+    r.innerHTML=`<button class="cv${pvKey===e.k?' pv':''}" aria-label="Play a 30s preview" style="${e.cover?`background-image:url('${e.cover.replace(/'/g,'%27')}')`:''}"><i></i></button><div style="min-width:0"><div class="t">${esc(e.title)}</div><div class="a">${esc([e.artist,e.station].filter(Boolean).join(' · '))} · ${ago(hTab==='liked'?(e.likedAt||e.ts):e.ts)}</div><div class="links"><a class="yt" href="https://www.youtube.com/results?search_query=${encodeURIComponent([e.artist,e.title,'official video'].filter(Boolean).join(' '))}" target="_blank" rel="noopener">▶ Official video</a><a href="https://open.spotify.com/search/${q}" target="_blank" rel="noopener">Spotify</a><a href="https://music.youtube.com/search?q=${q}" target="_blank" rel="noopener">YouTube Music</a><a href="https://music.apple.com/search?term=${q}" target="_blank" rel="noopener">Apple Music</a></div></div><button class="hv${isLiked(e.k)?' on':''}" aria-label="Μου αρέσει">${HEART}</button>`;
+    r.querySelector('.hv').onclick=()=>{toggleLike(e);renderHist();};const cv=r.querySelector('.cv');cv.onclick=()=>playPreview(e,cv);L.appendChild(r);
+    if(!e.preview&&e.title)songPreview(e.artist,e.title).then(u=>{if(u){e.preview=u;savePreview(e.k,u);}});});}
 $('#histBtn').onclick=()=>{renderHist();$('#hist').classList.add('on');};
-$('#hClose').onclick=()=>$('#hist').classList.remove('on');$('#hist').addEventListener('click',e=>{if(e.target.id==='hist')$('#hist').classList.remove('on')});
+$('#hClose').onclick=()=>{stopPv();$('#hist').classList.remove('on')};$('#hist').addEventListener('click',e=>{if(e.target.id==='hist'){stopPv();$('#hist').classList.remove('on')}});
 $$('#hist .tabs .chip').forEach(b=>b.onclick=()=>{hTab=b.dataset.tab;$$('#hist .tabs .chip').forEach(x=>x.classList.toggle('on',x===b));renderHist();});
 window.hub={trackStep,setView,isRecord:()=>!!(cur&&cur.record),get view(){return view},toggle,sync(){applySkin(skinName);applyStationLabel();if(meta.cover)tt3d.setCover(meta.cover);tt3d.setPlaying(playing);}};
 (async()=>{/* keep favourites, history, stats, alarms across sessions: mirror localStorage <-> IndexedDB, ask for persistent storage */
