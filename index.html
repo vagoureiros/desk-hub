@@ -905,7 +905,10 @@ function select(s,autoplay,dir){if(s.record&&s.wish){pickFiles(s);toast('Pick th
   if(changed){meta={title:'',artist:'',cover:''};lastKey='';$('#likeBtn').classList.remove('show');setCover('');$('#npTitle').textContent=s.name;$('#npArtist').textContent=s.sub;
     switching=Date.now();tryIdx=0;if(s.record){trackIdx=0;audio.removeAttribute('src');}else audio.src=s.streams[0];}
   if(autoplay) play(); }
-async function play(){if(!cur){const f=crateList().find(x=>!x.wish);if(!f){toast('Add a record first');return;}select(f,false)}
+/* iOS 17+: a 'playback' audio session keeps music going when you leave Safari or lock the screen (and ignores the silent switch) */
+function playbackSession(){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}}
+playbackSession();
+async function play(){playbackSession();if(!cur){const f=crateList().find(x=>!x.wish);if(!f){toast('Add a record first');return;}select(f,false)}
   if(!audio.getAttribute('src')){tryIdx=0;if(cur.record){if(!(await loadTrack(trackIdx)))return;}else audio.src=cur.streams[0];}
   setPlayingUI(true);toast('Dropping the needle…',1400);
   const p=audio.play(); if(p&&p.catch) p.catch(err=>{if(err&&err.name==='AbortError')return;setPlayingUI(false);toast('Playback didn’t start ('+(err&&err.name)+')',4000);});
@@ -964,7 +967,7 @@ function tint(c){const a=$('#ambient');if(!c){a.style.background='';return;}
 
 function mediaSession(){if(!('mediaSession'in navigator)||!cur)return;try{
   navigator.mediaSession.metadata=new MediaMetadata({title:meta.title||cur.name,artist:meta.artist||cur.sub,album:cur.name,artwork:meta.cover?[{src:meta.cover,sizes:'600x600',type:'image/jpeg'}]:[]});
-  navigator.mediaSession.setActionHandler('play',play);navigator.mediaSession.setActionHandler('pause',pause);
+  navigator.mediaSession.setActionHandler('play',play);try{navigator.mediaSession.setActionHandler('stop',pause)}catch(e){}navigator.mediaSession.setActionHandler('pause',pause);
   navigator.mediaSession.setActionHandler('nexttrack',()=>trackStep(1));navigator.mediaSession.setActionHandler('previoustrack',()=>trackStep(-1));}catch(e){}}
 
 /* ---------- Focus timer ---------- */
