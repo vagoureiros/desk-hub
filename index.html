@@ -707,6 +707,22 @@ body.phone .app{transition:transform .25s ease}
 #mPtr.spin i{animation:mspin .7s linear infinite}
 body.phone{overscroll-behavior-y:contain}
 body.phone .toast{bottom:calc(var(--cta) + 56px + env(safe-area-inset-bottom))!important}
+/* sheet v3: no inner card — tabs on top, stations right below */
+body.phone aside{padding:0 0 calc(16px + env(safe-area-inset-bottom))}
+body.phone aside>.card:not(.grow){background:none!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0;margin:0}
+body.phone aside .grab{margin:0;padding:10px 18px 4px;background:#151515}
+body.phone aside .grab .gl{display:flex!important;justify-content:space-between;align-items:center;padding:6px 0 0}
+body.phone aside .grab #gTitle{font:600 20px Urbanist,system-ui,sans-serif;color:#f3eee9}
+body.phone #gAdd{height:34px;padding:0 14px;border-radius:999px;border:0;background:#f3eee9;color:#141110;font:600 14px Urbanist,system-ui,sans-serif;cursor:pointer}
+body.phone #moodBar{position:sticky;top:76px;z-index:2;background:#151515;margin:0;padding:10px 18px 0;gap:22px;border-bottom:1px solid rgba(255,255,255,.08)}
+body.phone #moodBar .mchip{height:40px;padding:0 0 2px;border-radius:0;background:none!important;color:#8d8580;font-size:15px;border-bottom:2px solid transparent}
+body.phone #moodBar .mchip.on{color:#f3eee9;border-bottom-color:#f3eee9}
+body.phone #moodBar .mchip small{font-size:11px}
+body.phone #moodBar .mchip.add{border:0;border-bottom:2px solid transparent;color:#a9a19b}
+body.phone aside .crate{max-height:none!important;overflow:visible!important;-webkit-mask-image:none!important;mask-image:none!important;margin:0;padding:14px 12px 4px;gap:8px;grid-auto-rows:96px}
+body.phone aside .crate>.sleeve{height:96px;background:transparent!important;border:0}
+body.phone aside .crate>.sleeve.cur{background:rgba(255,255,255,.07)!important}
+body.phone aside .crate>.sleeve.add{display:none}
 </style>
 </head>
 <body class="chill">
@@ -963,7 +979,7 @@ function renderMoodBar(){let bar=$('#moodBar');if(!bar){bar=document.createEleme
     b.onclick=()=>setMoodF(val);if(val!=='All'){let t=null;b.addEventListener('pointerdown',()=>{t=setTimeout(()=>{t=null;b.dataset.lp='1';delMood(val)},700)});['pointerup','pointerleave','pointercancel'].forEach(e=>b.addEventListener(e,()=>clearTimeout(t)));b.addEventListener('click',e=>{if(b.dataset.lp){delete b.dataset.lp;e.stopImmediatePropagation();}},true);b.addEventListener('contextmenu',e=>e.preventDefault());}
     bar.appendChild(b);};
   mk('All','All',STATIONS.length);moods().forEach(md=>mk(md,md,STATIONS.filter(s=>moodOf(s)===md).length));
-  const p=document.createElement('button');p.className='mchip add';p.textContent='+ Mood';p.onclick=()=>newMood(n=>setMoodF(n));bar.appendChild(p);if(document.body.classList.contains('phone')){const st=document.createElement('button');st.className='mchip st';st.textContent='+ Station';st.onclick=()=>openSheet();bar.insertBefore(st,bar.firstChild);}}
+  const p=document.createElement('button');p.className='mchip add';p.textContent='+ Mood';p.onclick=()=>newMood(n=>setMoodF(n));bar.appendChild(p);}
 function moodMenu(s){let m=$('#moodMenu');if(!m){m=document.createElement('div');m.id='moodMenu';document.body.appendChild(m);m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')});}
   const cm=moodOf(s);m.innerHTML=`<div class="mm"><b>${esc(s.name)}</b><p>Mood</p><div class="mrow"></div><button class="rmv">Remove station</button><button class="cnl">Cancel</button></div>`;
   const row=m.querySelector('.mrow');const close=()=>m.classList.remove('on');
@@ -1519,8 +1535,9 @@ setInterval(()=>{const t=$('#npTitle').textContent;const empty=/^Pick a /.test(t
   if(cta.dataset.t!==txt){cta.dataset.t=txt;cta.innerHTML=RADIO_SVG+'<span>'+txt+'</span>';cta.classList.toggle('sec',!empty);}},300);
 // drawer
 const aside=$('aside');const grab=document.createElement('div');grab.className='grab';
-grab.innerHTML='<i></i><div class="gl"><span id="gTitle">Records</span><span id="gTimer"></span></div>';
+grab.innerHTML='<i></i><div class="gl"><span id="gTitle">Stations</span><button id="gAdd">+ Station</button></div>';
 aside.insertBefore(grab,aside.firstChild);
+grab.querySelector('#gAdd').addEventListener('click',e=>{e.stopPropagation();const b=document.getElementById('crateAdd');if(b)b.click();});
 const scrim=document.createElement('div');scrim.id='mScrim';$('main').appendChild(scrim);
 const set=o=>{aside.classList.toggle('open',o);document.body.classList.toggle('drawer-open',o);if(!o)aside.scrollTop=0;};
 grab.onclick=()=>set(!aside.classList.contains('open'));scrim.onclick=()=>set(false);
@@ -1529,7 +1546,7 @@ grab.addEventListener('touchend',e=>{if(y0==null)return;const dy=e.changedTouche
 // close drawer when a record/station is chosen
 $('#crate').addEventListener('click',e=>{const t=e.target.closest('.sleeve');if(t&&!t.classList.contains('wish')&&!t.classList.contains('add'))setTimeout(()=>set(false),250);});
 // peek label: crate title + running timer
-setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('#gTimer');const ctt=ct?ct.textContent.split(' · '):['Stations',''];if(gt)gt.textContent=ctt[0];
+setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('#gTimer');const ctt=ct?ct.textContent.split(' · '):['Stations',''];if(gt)gt.textContent='Stations';
   if(tt&&gm){const run=$('#tStart')&&/pause/i.test($('#tStart').textContent);gm.textContent=(ctt[1]||'0')+(ctt[1]==='1'?' station':' stations');gm.classList.remove('run');}},700);
 
 // phone = radio only: no records/radio switch; breathing gets its own screen

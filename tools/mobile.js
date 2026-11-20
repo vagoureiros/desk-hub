@@ -20,8 +20,9 @@ setInterval(()=>{const t=$('#npTitle').textContent;const empty=/^Pick a /.test(t
   if(cta.dataset.t!==txt){cta.dataset.t=txt;cta.innerHTML=RADIO_SVG+'<span>'+txt+'</span>';cta.classList.toggle('sec',!empty);}},300);
 // drawer
 const aside=$('aside');const grab=document.createElement('div');grab.className='grab';
-grab.innerHTML='<i></i><div class="gl"><span id="gTitle">Records</span><span id="gTimer"></span></div>';
+grab.innerHTML='<i></i><div class="gl"><span id="gTitle">Stations</span><button id="gAdd">+ Station</button></div>';
 aside.insertBefore(grab,aside.firstChild);
+grab.querySelector('#gAdd').addEventListener('click',e=>{e.stopPropagation();const b=document.getElementById('crateAdd');if(b)b.click();});
 const scrim=document.createElement('div');scrim.id='mScrim';$('main').appendChild(scrim);
 const set=o=>{aside.classList.toggle('open',o);document.body.classList.toggle('drawer-open',o);if(!o)aside.scrollTop=0;};
 grab.onclick=()=>set(!aside.classList.contains('open'));scrim.onclick=()=>set(false);
@@ -30,7 +31,7 @@ grab.addEventListener('touchend',e=>{if(y0==null)return;const dy=e.changedTouche
 // close drawer when a record/station is chosen
 $('#crate').addEventListener('click',e=>{const t=e.target.closest('.sleeve');if(t&&!t.classList.contains('wish')&&!t.classList.contains('add'))setTimeout(()=>set(false),250);});
 // peek label: crate title + running timer
-setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('#gTimer');const ctt=ct?ct.textContent.split(' · '):['Stations',''];if(gt)gt.textContent=ctt[0];
+setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('#gTimer');const ctt=ct?ct.textContent.split(' · '):['Stations',''];if(gt)gt.textContent='Stations';
   if(tt&&gm){const run=$('#tStart')&&/pause/i.test($('#tStart').textContent);gm.textContent=(ctt[1]||'0')+(ctt[1]==='1'?' station':' stations');gm.classList.remove('run');}},700);
 
 // phone = radio only: no records/radio switch; breathing gets its own screen
