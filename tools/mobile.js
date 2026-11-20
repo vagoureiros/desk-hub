@@ -4,11 +4,13 @@
 document.body.classList.add('phone');
 const $=q=>document.querySelector(q);
 // album art player
-const art=document.createElement('button');art.id='mArt';art.setAttribute('aria-label','Play / pause');art.innerHTML='<i class="disc"></i><span class="img"></span>';
+const art=document.createElement('button');art.id='mArt';art.setAttribute('aria-label','Play / pause');art.innerHTML='<i class="disc"></i><span class="logo"><b></b></span><span class="img"></span>';
 const wave=$('#wave');wave.parentNode.insertBefore(art,wave);
 art.onclick=()=>window.hub&&hub.toggle();
 let lastCv=null;setInterval(()=>{if(!window.hub)return;const cv=hub.cover||'';const im=art.querySelector('.img');
   if(cv!==lastCv){lastCv=cv;im.style.backgroundImage=cv?`url("${cv.replace(/"/g,'%22')}")`:'';art.classList.toggle('has',!!cv);}
+  const lg=hub.logo||'';if(lg!==art.dataset.lg){art.dataset.lg=lg;const lb=art.querySelector('.logo b');art.classList.remove('haslogo');lb.style.backgroundImage='';
+    if(lg){const t=new Image();t.onload=()=>{if(art.dataset.lg===lg){lb.style.backgroundImage=`url("${lg.replace(/"/g,'%22')}")`;art.classList.add('haslogo');}};t.src=lg;}}
   art.style.setProperty('--c',hub.color||'#3a3330');
   art.classList.toggle('playing',!$('#now').classList.contains('paused'));},500);
 setTimeout(()=>{try{hub.emptyLabel()}catch(e){}},0);

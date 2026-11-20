@@ -129,3 +129,10 @@ body.phone aside .crate{max-height:none!important;overflow:visible!important;-we
 body.phone aside .crate>.sleeve{height:96px;background:transparent!important;border:0}
 body.phone aside .crate>.sleeve.cur{background:rgba(255,255,255,.07)!important}
 body.phone aside .crate>.sleeve.add{display:none}
+/* station logo on the media when there is no song cover */
+body.phone #mArt .logo{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .4s;
+  background:radial-gradient(120% 100% at 30% 15%,color-mix(in srgb,var(--c) 85%,#fff 12%),color-mix(in srgb,var(--c) 45%,#0e0e0e) 75%)}
+body.phone #mArt .logo b{width:46%;aspect-ratio:1;border-radius:22%;background:#fff center/78% no-repeat;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+body.phone #mArt.haslogo .logo{opacity:1}
+body.phone #mArt.haslogo .disc{opacity:0}
+body.phone #mArt.has .logo{opacity:0}
