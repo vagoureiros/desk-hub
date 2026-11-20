@@ -428,7 +428,7 @@ loadStations();
 let tryIdx=0;
 
 const audio=$('#audio');
-let mode=store.get('mode','work');
+let mode='work';
 let cur=STATIONS.find(s=>s.id===store.get('station',''))||null;
 let switching=0, playing=false, meta={title:'',artist:'',cover:''}, metaTimer=null, lastKey='';
 
@@ -513,12 +513,36 @@ function emptyLabel(){if(cur)return;const ph=document.body.classList.contains('p
   $('#npTitle').textContent=r?'Pick a radio station':'Pick a record';
   $('#npArtist').textContent=r?(ph?'Open Stations below and tap one':'Tap a station on the right'):(ph?'Tap the cover, or pick a record below':'Tap the vinyl or a record on the right');}
 function setView(v){view=v;store.set('view',v);document.body.classList.toggle('radio-view',v==='radio');renderCrate();emptyLabel();}
-function crateList(){return view==='records'?RECORDS:STATIONS.filter(s=>s.mode===mode)}
+/* ---------- Moods: your own groups for stations (replaces the Focus/Chill toggle) ---------- */
+function moods(){return store.get('moods',['Focus','Chill'])}
+function moodOf(s){const m=store.get('moodOf',{});return m[s.id]||(s.mode==='chill'?'Chill':'Focus')}
+function setMoodOf(s,md){const m=store.get('moodOf',{});m[s.id]=md;store.set('moodOf',m);}
+let moodF=store.get('moodF','All');if(moodF!=='All'&&!moods().includes(moodF))moodF='All';
+function setMoodF(m){moodF=m;store.set('moodF',m);renderCrate();}
+function newMood(after){const n=(prompt('Name your mood (e.g. Morning, Deep work, Evening)')||'').trim().slice(0,20);if(!n)return null;
+  const l=moods();if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);store.set('moods',l);}if(after)after(n);return n;}
+function delMood(md){if(!confirm(`Delete the mood “${md}”? Its stations stay, under “All”.`))return;
+  store.set('moods',moods().filter(x=>x!==md));const m=store.get('moodOf',{});for(const k in m)if(m[k]===md)m[k]='Focus';store.set('moodOf',m);if(moodF===md)moodF='All';store.set('moodF',moodF);renderCrate();}
+function renderMoodBar(){let bar=$('#moodBar');if(!bar){bar=document.createElement('div');bar.id='moodBar';$('#crate').parentNode.insertBefore(bar,$('#crate'));}
+  bar.style.display=view==='radio'?'':'none';if(view!=='radio')return;bar.innerHTML='';
+  const mk=(label,val,cnt)=>{const b=document.createElement('button');b.className='mchip'+(moodF===val?' on':'');b.innerHTML=esc(label)+(cnt!=null?`<small>${cnt}</small>`:'');
+    b.onclick=()=>setMoodF(val);if(val!=='All'){let t=null;b.addEventListener('pointerdown',()=>{t=setTimeout(()=>{t=null;b.dataset.lp='1';delMood(val)},700)});['pointerup','pointerleave','pointercancel'].forEach(e=>b.addEventListener(e,()=>clearTimeout(t)));b.addEventListener('click',e=>{if(b.dataset.lp){delete b.dataset.lp;e.stopImmediatePropagation();}},true);b.addEventListener('contextmenu',e=>e.preventDefault());}
+    bar.appendChild(b);};
+  mk('All','All',STATIONS.length);moods().forEach(md=>mk(md,md,STATIONS.filter(s=>moodOf(s)===md).length));
+  const p=document.createElement('button');p.className='mchip add';p.textContent='+ Mood';p.onclick=()=>newMood(n=>setMoodF(n));bar.appendChild(p);}
+function moodMenu(s){let m=$('#moodMenu');if(!m){m=document.createElement('div');m.id='moodMenu';document.body.appendChild(m);m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')});}
+  const cm=moodOf(s);m.innerHTML=`<div class="mm"><b>${esc(s.name)}</b><p>Mood</p><div class="mrow"></div><button class="rmv">Remove station</button><button class="cnl">Cancel</button></div>`;
+  const row=m.querySelector('.mrow');const close=()=>m.classList.remove('on');
+  moods().forEach(md=>{const b=document.createElement('button');b.className='mchip'+(md===cm?' on':'');b.textContent=md;b.onclick=()=>{setMoodOf(s,md);close();renderCrate();toast(`${s.name} → ${md}`);};row.appendChild(b);});
+  const nb=document.createElement('button');nb.className='mchip add';nb.textContent='+ New mood';nb.onclick=()=>{close();newMood(n=>{setMoodOf(s,n);renderCrate();toast(`${s.name} → ${n}`);});};row.appendChild(nb);
+  m.querySelector('.rmv').onclick=()=>{close();removeStation(s);};m.querySelector('.cnl').onclick=close;
+  requestAnimationFrame(()=>m.classList.add('on'));}
+function crateList(){return view==='records'?RECORDS:STATIONS.filter(s=>moodF==='All'||moodOf(s)===moodF)}
 function renderCrate(){const c=$('#crate');c.innerHTML='';c.onscroll=crateFade;
   crateList().forEach(s=>{const b=document.createElement('div');b.setAttribute('role','button');b.className='sleeve'+(cur&&cur.id===s.id?' cur':'')+(s.record?' recd':'')+(s.wish?' wish':'');b.style.setProperty('--c',`linear-gradient(150deg,${s.c},${shade(s.c,-35)})`);
     b.innerHTML=`<span>${esc(s.name)}</span><em>${esc(s.sub||'')}</em><div class="rm"><i>Αφαίρεση</i><u>Άκυρο</u></div>`;
     let lp=null,longed=false;
-    b.addEventListener('pointerdown',()=>{longed=false;lp=setTimeout(()=>{longed=true;$$('.sleeve.ask').forEach(x=>x.classList.remove('ask'));b.classList.add('ask');},600);});
+    b.addEventListener('pointerdown',()=>{longed=false;lp=setTimeout(()=>{longed=true;if(!s.record){moodMenu(s);return;}$$('.sleeve.ask').forEach(x=>x.classList.remove('ask'));b.classList.add('ask');},600);});
     ['pointerup','pointerleave','pointercancel'].forEach(e=>b.addEventListener(e,()=>clearTimeout(lp)));
     b.addEventListener('contextmenu',e=>e.preventDefault());
     b.onclick=e=>{if(longed){longed=false;return;}
@@ -526,7 +550,7 @@ function renderCrate(){const c=$('#crate');c.innerHTML='';c.onscroll=crateFade;
       select(s,true)};
     const cc=b.querySelector('.chipc');if(cc)setChipImg(cc,s);
     c.appendChild(b);});
-  const n=crateList().length;$('#crateTitle').textContent=view==='records'?('Records · '+n):((mode==='work'?'Συγκέντρωση':'Χαλάρωση')+' · '+n+(n===1?' δίσκος':' δίσκοι'));$('#crateAdd').textContent=view==='records'?'+ Record':'+ Σταθμός';
+  const n=crateList().length;$('#crateTitle').textContent=view==='records'?('Records · '+n):((moodF==='All'?'Stations':moodF)+' · '+n);renderMoodBar();$('#crateAdd').textContent=view==='records'?'+ Record':'+ Σταθμός';
   const a=document.createElement('button');a.className='sleeve add';a.innerHTML='<b>+</b><em>Προσθήκη</em>';a.onclick=()=>view==='records'?pickFiles():openSheet();c.appendChild(a);
   $('#crateHint').textContent=cur?'κράτα πατημένο για αφαίρεση':'πάτα για να παίξει';
   requestAnimationFrame(crateFade);}
@@ -667,7 +691,6 @@ $('#endBtn').onclick=()=>{clearInterval(tInt);tRun=false;tPhase='focus';tLeft=tL
   const focusTxt=s.n?`Σήμερα έκανες <b>${s.n}</b> ${s.n===1?'κύκλο':'κύκλους'} συγκέντρωσης · ${hm(s.min)}.<br>`:'';
   const callTxt=nc?`Σε κλήση: <b>${hm(cm)}</b> · ${nc} ${nc===1?'κλήση':'κλήσεις'}.<br>`:'';
   $('#eodTxt').innerHTML=focusTxt+callTxt+'Κλείσε το laptop. Τα υπόλοιπα αύριο.';
-  setMode('chill');
   select(STATIONS.find(x=>x.id==='enlefko'),true);
   $('#eod').classList.add('on');};
 $('#eodClose').onclick=()=>$('#eod').classList.remove('on');
@@ -751,7 +774,7 @@ async function search(q){const seq=++qSeq;const res=$('#results');res.innerHTML=
     const tryB=row.querySelector('.try'),addB=row.querySelector('.add');
     const showB=row.querySelector('.show');if(showB)showB.onclick=()=>{const h=crateList().find(s=>s.streams.includes(url));closeSheet();if(h)setTimeout(()=>showInCrate(h.id),380);};
     if(tryB)tryB.onclick=()=>{const t=st();t.stream=url;select(t,true);toast('Δοκιμή: '+t.name);};
-    if(addB)addB.onclick=()=>{const t=st();const c=store.get('custom',[]);c.push(t);store.set('custom',c);loadStations();
+    if(addB)addB.onclick=()=>{const t=st();const c=store.get('custom',[]);c.push(t);store.set('custom',c);if(moodF!=='All')setMoodOf(t,moodF);loadStations();
       const added=STATIONS.find(s=>s.id===t.id);select(added,true);addB.parentNode.innerHTML='<button class="done" disabled>Προστέθηκε ✓</button>';toast('Προστέθηκε στο τέλος της λίστας σου');setTimeout(()=>showInCrate(t.id),100);};
     res.appendChild(row);});}
 /* ---------- On Air (meeting) ---------- */

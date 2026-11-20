@@ -24,7 +24,7 @@ s=s[:a]+'''<svg viewBox="0 0 200 200"><defs><mask id="rm"><circle id="ringArc" c
 s=s.replace('<div class="ambient" id="ambient"></div>','<div class="mesh"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i></div>\n<div class="ambient" id="ambient"></div>')
 s=s.replace('<button class="chip on" data-len="25">25′</button><button class="chip" data-len="50">50′</button>','<button class="chip" data-len="5">5′</button><button class="chip" data-len="15">15′</button><button class="chip on" data-len="25">25′</button><button class="chip" data-len="50">50′</button>')
 s=s.replace('<div class="now" id="now">','<canvas id="wave"></canvas>\n      <div class="now" id="now">',1)
-s=s.replace('</body>',open('/home/claude/tools/wave.js').read()+open('/home/claude/tools/alarm.js').read()+open('/home/claude/tools/mobile.js').read()+'\n</body>',1)
+s=s.replace('</body>',open('/home/claude/tools/wave.js').read()+open('/home/claude/tools/alarm.js').read()+open('/home/claude/tools/breath.js').read()+open('/home/claude/tools/mobile.js').read()+'\n</body>',1)
 import re as _re  # EYE_ICON
 s=_re.sub(r'(<button class="hbtn" id="skinBtn"[^>]*>)<svg.*?</svg>',r'\1<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',s,count=1,flags=_re.S)
 exec(open('/home/claude/tools/i18n_en.py').read())

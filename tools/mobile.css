@@ -62,15 +62,5 @@ body.phone #mPick:active{transform:scale(.97)}
 /* phone: radio only, breathing on its own screen */
 body.phone #radioBtn{display:none!important}
 body.phone aside>.card.grow{display:none!important}
-body.phone #mBreath{position:fixed;inset:0;z-index:60;background:radial-gradient(120% 80% at 50% 40%,#2a1636,#0d0b0f 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  padding:calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 30px);opacity:0;pointer-events:none;transform:scale(1.03);transition:opacity .35s,transform .35s}
-body.phone #mBreath.on{opacity:1;pointer-events:auto;transform:none}
-body.phone #mBreath h2{font:300 40px Fraunces,serif;margin:0;color:#f3eee9}
-body.phone #mBreath>p{margin:0 0 30px;color:#a59aa8;font-size:15px;text-align:center}
-body.phone #mBreath .x{position:absolute;top:calc(env(safe-area-inset-top) + 16px);right:18px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:#f3eee9;font-size:26px;line-height:1}
-body.phone #mBreath #pChill{display:flex!important;flex-direction:column;align-items:center;gap:26px;opacity:1!important;position:static!important;transform:none!important;visibility:visible!important}
-body.phone #mBreath .breath{width:min(72vw,300px);height:min(72vw,300px)}
-body.phone #mBreath .breath .orb{width:42%;height:42%}
-body.phone #mBreath #breathTxt{font-size:26px}
-body.phone #mBreath .chip.solid{height:52px;padding:0 30px;font-size:16px}
 body.phone aside{height:auto;max-height:86dvh}
+body.phone #crateTitle{visibility:hidden}

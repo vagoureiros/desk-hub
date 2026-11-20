@@ -560,6 +560,38 @@ body.is-record #songLine .tk{display:grid}
 .hrow .cv svg rect{fill:none;stroke-width:2.5}
 .hrow .cv svg .tr{stroke:rgba(255,59,48,.25)}
 .hrow .cv svg .pr{stroke:#ff3b30;stroke-linecap:round;stroke-dasharray:100 100;stroke-dashoffset:100}
+
+/* breathing screen (all sizes) */
+#mBreath{position:fixed;inset:0;z-index:60;background:radial-gradient(120% 80% at 50% 40%,#2a1636,#0d0b0f 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  padding:calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 30px);opacity:0;pointer-events:none;transform:scale(1.03);transition:opacity .35s,transform .35s}
+#mBreath.on{opacity:1;pointer-events:auto;transform:none}
+#mBreath h2{font:300 40px Fraunces,serif;margin:0;color:#f3eee9}
+#mBreath>p{margin:0 0 30px;color:#a59aa8;font-size:15px;text-align:center}
+#mBreath .x{position:absolute;top:calc(env(safe-area-inset-top) + 16px);right:18px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:#f3eee9;font-size:26px;line-height:1}
+#mBreath #pChill{display:flex!important;flex-direction:column;align-items:center;gap:26px;opacity:1!important;position:static!important;transform:none!important;visibility:visible!important}
+#mBreath .breath{width:min(72vw,300px);height:min(72vw,300px)}
+#mBreath .breath .orb{width:42%;height:42%}
+#mBreath #breathTxt{font-size:26px}
+#mBreath .chip.solid{height:52px;padding:0 30px;font-size:16px}
+#modes{display:none!important}
+#moodBar{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:-2px 0 12px;padding-bottom:2px}
+#moodBar::-webkit-scrollbar{display:none}
+.mchip{flex:none;height:32px;padding:0 13px;border-radius:999px;border:0;background:rgba(255,255,255,.07);color:#cfc8c2;font:500 13.5px Urbanist,system-ui,sans-serif;display:inline-flex;align-items:center;gap:6px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.mchip small{font-size:11px;opacity:.55}
+.mchip.on{background:#f3eee9;color:#141110}
+.mchip.add{background:transparent;border:1px dashed rgba(255,255,255,.22);color:#a9a19b}
+#moodMenu{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+#moodMenu.on{opacity:1;pointer-events:auto}
+#moodMenu .mm{width:min(440px,100%);background:#1b1b1b;border-radius:22px 22px 0 0;padding:22px 20px calc(18px + env(safe-area-inset-bottom));transform:translateY(30px);transition:transform .3s;display:flex;flex-direction:column;gap:10px}
+#moodMenu.on .mm{transform:none}
+#moodMenu b{font:600 19px Urbanist,system-ui,sans-serif;color:#f3eee9}
+#moodMenu p{margin:4px 0 0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8d8580}
+#moodMenu .mrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+#moodMenu .rmv,#moodMenu .cnl{height:48px;border-radius:14px;border:0;font:600 15px Urbanist,system-ui,sans-serif;cursor:pointer}
+#moodMenu .rmv{background:rgba(255,69,58,.12);color:#ff6b5e}
+#moodMenu .cnl{background:rgba(255,255,255,.07);color:#f3eee9}
+@media (min-width:701px){#moodMenu{align-items:center}#moodMenu .mm{border-radius:22px}}
+#mBreath #pChill .row{justify-content:center}
 /* ---------- Phone ---------- */
 body.phone{overflow:hidden}
 body.phone .app{height:100dvh;padding:calc(env(safe-area-inset-top) + 14px) 18px 0;grid-template-rows:auto 1fr}
@@ -624,18 +656,8 @@ body.phone #mPick:active{transform:scale(.97)}
 /* phone: radio only, breathing on its own screen */
 body.phone #radioBtn{display:none!important}
 body.phone aside>.card.grow{display:none!important}
-body.phone #mBreath{position:fixed;inset:0;z-index:60;background:radial-gradient(120% 80% at 50% 40%,#2a1636,#0d0b0f 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  padding:calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 30px);opacity:0;pointer-events:none;transform:scale(1.03);transition:opacity .35s,transform .35s}
-body.phone #mBreath.on{opacity:1;pointer-events:auto;transform:none}
-body.phone #mBreath h2{font:300 40px Fraunces,serif;margin:0;color:#f3eee9}
-body.phone #mBreath>p{margin:0 0 30px;color:#a59aa8;font-size:15px;text-align:center}
-body.phone #mBreath .x{position:absolute;top:calc(env(safe-area-inset-top) + 16px);right:18px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:#f3eee9;font-size:26px;line-height:1}
-body.phone #mBreath #pChill{display:flex!important;flex-direction:column;align-items:center;gap:26px;opacity:1!important;position:static!important;transform:none!important;visibility:visible!important}
-body.phone #mBreath .breath{width:min(72vw,300px);height:min(72vw,300px)}
-body.phone #mBreath .breath .orb{width:42%;height:42%}
-body.phone #mBreath #breathTxt{font-size:26px}
-body.phone #mBreath .chip.solid{height:52px;padding:0 30px;font-size:16px}
 body.phone aside{height:auto;max-height:86dvh}
+body.phone #crateTitle{visibility:hidden}
 </style>
 </head>
 <body class="chill">
@@ -791,7 +813,7 @@ loadStations();
 let tryIdx=0;
 
 const audio=$('#audio');
-let mode=store.get('mode','work');
+let mode='work';
 let cur=STATIONS.find(s=>s.id===store.get('station',''))||null;
 let switching=0, playing=false, meta={title:'',artist:'',cover:''}, metaTimer=null, lastKey='';
 
@@ -876,12 +898,36 @@ function emptyLabel(){if(cur)return;const ph=document.body.classList.contains('p
   $('#npTitle').textContent=r?'Pick a radio station':'Pick a record';
   $('#npArtist').textContent=r?(ph?'Open Stations below and tap one':'Tap a station on the right'):(ph?'Tap the cover, or pick a record below':'Tap the vinyl or a record on the right');}
 function setView(v){view=v;store.set('view',v);document.body.classList.toggle('radio-view',v==='radio');renderCrate();emptyLabel();}
-function crateList(){return view==='records'?RECORDS:STATIONS.filter(s=>s.mode===mode)}
+/* ---------- Moods: your own groups for stations (replaces the Focus/Chill toggle) ---------- */
+function moods(){return store.get('moods',['Focus','Chill'])}
+function moodOf(s){const m=store.get('moodOf',{});return m[s.id]||(s.mode==='chill'?'Chill':'Focus')}
+function setMoodOf(s,md){const m=store.get('moodOf',{});m[s.id]=md;store.set('moodOf',m);}
+let moodF=store.get('moodF','All');if(moodF!=='All'&&!moods().includes(moodF))moodF='All';
+function setMoodF(m){moodF=m;store.set('moodF',m);renderCrate();}
+function newMood(after){const n=(prompt('Name your mood (e.g. Morning, Deep work, Evening)')||'').trim().slice(0,20);if(!n)return null;
+  const l=moods();if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);store.set('moods',l);}if(after)after(n);return n;}
+function delMood(md){if(!confirm(`Delete the mood “${md}”? Its stations stay, under “All”.`))return;
+  store.set('moods',moods().filter(x=>x!==md));const m=store.get('moodOf',{});for(const k in m)if(m[k]===md)m[k]='Focus';store.set('moodOf',m);if(moodF===md)moodF='All';store.set('moodF',moodF);renderCrate();}
+function renderMoodBar(){let bar=$('#moodBar');if(!bar){bar=document.createElement('div');bar.id='moodBar';$('#crate').parentNode.insertBefore(bar,$('#crate'));}
+  bar.style.display=view==='radio'?'':'none';if(view!=='radio')return;bar.innerHTML='';
+  const mk=(label,val,cnt)=>{const b=document.createElement('button');b.className='mchip'+(moodF===val?' on':'');b.innerHTML=esc(label)+(cnt!=null?`<small>${cnt}</small>`:'');
+    b.onclick=()=>setMoodF(val);if(val!=='All'){let t=null;b.addEventListener('pointerdown',()=>{t=setTimeout(()=>{t=null;b.dataset.lp='1';delMood(val)},700)});['pointerup','pointerleave','pointercancel'].forEach(e=>b.addEventListener(e,()=>clearTimeout(t)));b.addEventListener('click',e=>{if(b.dataset.lp){delete b.dataset.lp;e.stopImmediatePropagation();}},true);b.addEventListener('contextmenu',e=>e.preventDefault());}
+    bar.appendChild(b);};
+  mk('All','All',STATIONS.length);moods().forEach(md=>mk(md,md,STATIONS.filter(s=>moodOf(s)===md).length));
+  const p=document.createElement('button');p.className='mchip add';p.textContent='+ Mood';p.onclick=()=>newMood(n=>setMoodF(n));bar.appendChild(p);}
+function moodMenu(s){let m=$('#moodMenu');if(!m){m=document.createElement('div');m.id='moodMenu';document.body.appendChild(m);m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')});}
+  const cm=moodOf(s);m.innerHTML=`<div class="mm"><b>${esc(s.name)}</b><p>Mood</p><div class="mrow"></div><button class="rmv">Remove station</button><button class="cnl">Cancel</button></div>`;
+  const row=m.querySelector('.mrow');const close=()=>m.classList.remove('on');
+  moods().forEach(md=>{const b=document.createElement('button');b.className='mchip'+(md===cm?' on':'');b.textContent=md;b.onclick=()=>{setMoodOf(s,md);close();renderCrate();toast(`${s.name} → ${md}`);};row.appendChild(b);});
+  const nb=document.createElement('button');nb.className='mchip add';nb.textContent='+ New mood';nb.onclick=()=>{close();newMood(n=>{setMoodOf(s,n);renderCrate();toast(`${s.name} → ${n}`);});};row.appendChild(nb);
+  m.querySelector('.rmv').onclick=()=>{close();removeStation(s);};m.querySelector('.cnl').onclick=close;
+  requestAnimationFrame(()=>m.classList.add('on'));}
+function crateList(){return view==='records'?RECORDS:STATIONS.filter(s=>moodF==='All'||moodOf(s)===moodF)}
 function renderCrate(){const c=$('#crate');c.innerHTML='';c.onscroll=crateFade;
   crateList().forEach(s=>{const b=document.createElement('div');b.setAttribute('role','button');b.className='sleeve'+(cur&&cur.id===s.id?' cur':'')+(s.record?' recd':'')+(s.wish?' wish':'');b.style.setProperty('--c',s.c);
     b.innerHTML=`<i class="chipc"></i><span>${esc(s.name)}</span><em>${esc(s.sub||'')}</em><div class="rm"><i>Remove</i><u>Cancel</u></div>`;
     let lp=null,longed=false;
-    b.addEventListener('pointerdown',()=>{longed=false;lp=setTimeout(()=>{longed=true;$$('.sleeve.ask').forEach(x=>x.classList.remove('ask'));b.classList.add('ask');},600);});
+    b.addEventListener('pointerdown',()=>{longed=false;lp=setTimeout(()=>{longed=true;if(!s.record){moodMenu(s);return;}$$('.sleeve.ask').forEach(x=>x.classList.remove('ask'));b.classList.add('ask');},600);});
     ['pointerup','pointerleave','pointercancel'].forEach(e=>b.addEventListener(e,()=>clearTimeout(lp)));
     b.addEventListener('contextmenu',e=>e.preventDefault());
     b.onclick=e=>{if(longed){longed=false;return;}
@@ -889,7 +935,7 @@ function renderCrate(){const c=$('#crate');c.innerHTML='';c.onscroll=crateFade;
       select(s,true)};
     const cc=b.querySelector('.chipc');if(cc)setChipImg(cc,s);
     c.appendChild(b);});
-  const n=crateList().length;$('#crateTitle').textContent=view==='records'?('Records · '+n):((mode==='work'?'Focus':'Chill')+' · '+n+(n===1?' station':' stations'));$('#crateAdd').textContent=view==='records'?'+ Record':'+ Station';
+  const n=crateList().length;$('#crateTitle').textContent=view==='records'?('Records · '+n):((moodF==='All'?'Stations':moodF)+' · '+n);renderMoodBar();$('#crateAdd').textContent=view==='records'?'+ Record':'+ Station';
   const a=document.createElement('button');a.className='sleeve add';a.innerHTML='<b>+</b><em>Add</em>';a.onclick=()=>view==='records'?pickFiles():openSheet();c.appendChild(a);
   $('#crateHint').textContent=cur?'long-press to remove':'tap to play';
   requestAnimationFrame(crateFade);}
@@ -1030,7 +1076,6 @@ $('#endBtn').onclick=()=>{clearInterval(tInt);tRun=false;tPhase='focus';tLeft=tL
   const focusTxt=s.n?`Focus: <b>${s.n}</b> ${s.n===1?'round':'rounds'} · ${hm(s.min)}.<br>`:'';
   const callTxt=nc?`On call: <b>${hm(cm)}</b> · ${nc} ${nc===1?'call':'calls'}.<br>`:'';
   $('#eodTxt').innerHTML=focusTxt+callTxt+'Close the laptop. The rest can wait for tomorrow.';
-  setMode('chill');
   select(STATIONS.find(x=>x.id==='enlefko'),true);
   $('#eod').classList.add('on');};
 $('#eodClose').onclick=()=>$('#eod').classList.remove('on');
@@ -1114,7 +1159,7 @@ async function search(q){const seq=++qSeq;const res=$('#results');res.innerHTML=
     const tryB=row.querySelector('.try'),addB=row.querySelector('.add');
     const showB=row.querySelector('.show');if(showB)showB.onclick=()=>{const h=crateList().find(s=>s.streams.includes(url));closeSheet();if(h)setTimeout(()=>showInCrate(h.id),380);};
     if(tryB)tryB.onclick=()=>{const t=st();t.stream=url;select(t,true);toast('Trying: '+t.name);};
-    if(addB)addB.onclick=()=>{const t=st();const c=store.get('custom',[]);c.push(t);store.set('custom',c);loadStations();
+    if(addB)addB.onclick=()=>{const t=st();const c=store.get('custom',[]);c.push(t);store.set('custom',c);if(moodF!=='All')setMoodOf(t,moodF);loadStations();
       const added=STATIONS.find(s=>s.id===t.id);select(added,true);addB.parentNode.innerHTML='<button class="done" disabled>Added ✓</button>';toast('Added to the end of your list');setTimeout(()=>showInCrate(t.id),100);};
     res.appendChild(row);});}
 /* ---------- On Air (meeting) ---------- */
@@ -1381,6 +1426,18 @@ render();
 #idle.night #idleAlarms{opacity:.5}
 </style>
 <script>
+/* Breathing: header button opens a full-screen exercise (all screen sizes) */
+(()=>{const $=q=>document.querySelector(q);
+const bb=document.createElement('button');bb.className='hbtn';bb.id='breathBtn';bb.setAttribute('aria-label','Breathe');
+bb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="6.6" opacity=".6"/><circle cx="12" cy="12" r="9.8" opacity=".3"/></svg>';
+const hr=$('.hright');const ab=$('#alarmBtn')||$('#histBtn');hr.insertBefore(bb,ab);
+const ov=document.createElement('div');ov.id='mBreath';ov.innerHTML='<button class="x" aria-label="Close">×</button><h2>Breathe</h2><p>One minute. In for 4, hold, out for 4.</p>';
+document.body.appendChild(ov);const pc=$('#pChill');ov.appendChild(pc);
+bb.onclick=()=>{ov.classList.add('on')};
+ov.querySelector('.x').onclick=()=>{const b=$('#bStart');if(b&&/stop/i.test(b.textContent))b.click();ov.classList.remove('on')};
+})();
+</script>
+<script>
 /* Phone layout: album-art player + right panel in a bottom drawer */
 (()=>{const ph=matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)').matches;if(!ph)return;
 document.body.classList.add('phone');
@@ -1411,18 +1468,11 @@ grab.addEventListener('touchend',e=>{if(y0==null)return;const dy=e.changedTouche
 // close drawer when a record/station is chosen
 $('#crate').addEventListener('click',e=>{const t=e.target.closest('.sleeve');if(t&&!t.classList.contains('wish')&&!t.classList.contains('add'))setTimeout(()=>set(false),250);});
 // peek label: crate title + running timer
-setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('#gTimer');if(gt)gt.textContent='Stations';
-  if(tt&&gm){const run=$('#tStart')&&/pause/i.test($('#tStart').textContent);const n=document.querySelectorAll('#crate .sleeve:not(.add)').length;gm.textContent=(document.body.classList.contains('chill')?'Chill':'Focus')+' · '+n;gm.classList.remove('run');}},700);
+setInterval(()=>{const ct=$('#crateTitle'),tt=$('#tTime'),gt=$('#gTitle'),gm=$('#gTimer');const ctt=ct?ct.textContent.split(' · '):['Stations',''];if(gt)gt.textContent=ctt[0];
+  if(tt&&gm){const run=$('#tStart')&&/pause/i.test($('#tStart').textContent);gm.textContent=(ctt[1]||'0')+(ctt[1]==='1'?' station':' stations');gm.classList.remove('run');}},700);
 
 // phone = radio only: no records/radio switch; breathing gets its own screen
 const goRadio=()=>{try{if(hub.view!=='radio')hub.setView('radio')}catch(e){}};setTimeout(goRadio,0);setTimeout(goRadio,800);
-const bb=document.createElement('button');bb.className='hbtn';bb.id='breathBtn';bb.setAttribute('aria-label','Breathe');
-bb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="6.6" opacity=".6"/><circle cx="12" cy="12" r="9.8" opacity=".3"/></svg>';
-const hr=$('.hright');hr.insertBefore(bb,hr.firstChild);
-const ov=document.createElement('div');ov.id='mBreath';ov.innerHTML='<button class="x" aria-label="Close">×</button><h2>Breathe</h2><p>One minute. In for 4, hold, out for 4.</p>';
-document.body.appendChild(ov);const pc=$('#pChill');ov.appendChild(pc);
-bb.onclick=()=>{ov.classList.add('on')};
-ov.querySelector('.x').onclick=()=>{const b=$('#bStart');if(b&&/stop/i.test(b.textContent))b.click();ov.classList.remove('on')};
 })();
 </script>
 
